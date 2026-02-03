@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-32",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_multiple",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->Let [$${\\mathrm\\varepsilon}_\\mathrm o$$] denote the dimentional formula of the permittivity of the vacuum, and [$$\\mu_o$$] that of the permeability of the vacuum.If M = mass, L = length, T = time and I = electric current,<!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">$$\\left[{\\mathrm\\varepsilon}_\\mathrm o\\right]\\;=\\;\\mathrm M^{-1}\\mathrm L^{-3}\\mathrm T^2\\;\\mathrm I$$</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">$$\\left[{\\mathrm\\varepsilon}_\\mathrm o\\right]\\;=\\;\\mathrm M^{-1}\\mathrm L^{-3}\\mathrm T^4\\mathrm I^2$$</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">$$\\left[{\\mathrm\\mu}_\\mathrm o\\right]\\;=\\;\\mathrm{MLT}^{-2}\\mathrm I^{-2}$$</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">$$\\left[{\\mathrm\\mu}_\\mathrm o\\right]\\;=\\;\\mathrm{ML}^2\\mathrm T^{-1}\\;\\mathrm I$$</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_multiple",
+    "value": "bc"
+  },
+  "explanation_html": "From coulombs law, we know that<br><br>$$F = {1 \\over {4\\pi {\\varepsilon _0}}}{{{q_1}{q_2}} \\over {{r^2}}} \\Rightarrow {\\varepsilon _0} = {1 \\over {4\\pi }}{{{q_1}{q_2}} \\over {{r^2}F}}$$<br><br>Therefore, $${\\varepsilon _0} = {{[{I^2}{T^2}]} \\over {[{L^2}][ML{T^{ - 2}}]}} = {M^{ - 1}}{L^{ - 3}}{T^4}{I^2}$$<br><br>Now, $$c = {1 \\over {\\sqrt {{\\varepsilon _0}{\\mu _0}} }} \\Rightarrow {c^2} = {1 \\over {{\\varepsilon _0}{\\mu _0}}}$$<br><br>Therefore, $${\\mu _0} = {1 \\over {{c^2}{\\varepsilon _0}}} = {1 \\over {{{[L{T^{ - 1}}]}^2}[{M^{ - 1}}{L^{ - 3}}{T^4}{I^2}]}} = [ML{T^{ - 2}}{I^{ - 2}}]$$<br><br>Answer (B), (C)"
+}

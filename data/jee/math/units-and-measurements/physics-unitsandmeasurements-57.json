@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-57",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2016",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "There are two Vernier calipers both of which have 1 cm divided into 10 equal divisions on the main scale.\nThe Vernier scale of one of the calipers (C<sub>1</sub>) has 10 equal divisions that correspond to 9 main scale\ndivisions. The Vernier scale of the other caliper (C<sub>2</sub>) has 10 equal divisions that correspond to 11 main\nscale divisions. The readings of the two calipers are shown in the figure. The measured values (in cm) by\ncalipers C<sub>1</sub> and C<sub>2</sub> respectively, are\n<br><br><img src=\"https://app-content.cdn.examgoal.net/fly/@width/image/1kwzykatk/1bdc3a94-7bc2-47f1-bebf-19d81b63c931/5a1ad480-597b-11ec-996b-3f9609fade5c/file-1kwzykatl.png?format=png\" data-orsrc=\"https://app-content.cdn.examgoal.net/image/1kwzykatk/1bdc3a94-7bc2-47f1-bebf-19d81b63c931/5a1ad480-597b-11ec-996b-3f9609fade5c/file-1kwzykatl.png\" loading=\"lazy\" style=\"max-width: 100%;height: auto;display: block;margin: 0 auto;max-height: 70vh\" alt=\"JEE Advanced 2016 Paper 2 Offline Physics - Units &amp; Measurements Question 44 English\">",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">2.85 and 2.82</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">2.87 and 2.83</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">2.87 and 2.86</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">2.87 and 2.87</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "b"
+  },
+  "explanation_html": "In both calipers C<sub>1</sub> and C<sub>2</sub>, 1 cm is divided into 10 equal divisions on the main scale. Thus, 1 division on the main scale is equal to x<sub>m1</sub> = x<sub>m2</sub> = 1 cm/10 = 0.1 cm. <br><br>In calipers C<sub>1</sub>, 10 equal divisions on the Vernier scale are equal to 9 main scale divisions.<br> Thus, 1 division on the Vernier scale of C<sub>1</sub> is equal to x<sub>v1</sub> = 9x<sub>m1</sub>/10 = 0.09 cm.<br><br> In calipers C<sub>2</sub>, 10 equal divisions on the Vernier scale are equal to 11 main scale divisions.<br> Thus, 1 division on the Vernier scale of C<sub>2</sub> is equal to x<sub>v2</sub> = 11x<sub>m2</sub>/10 = 0.11 cm.<br><br> <img src=\"https://app-content.cdn.examgoal.net/fly/1500/image/1kwzyvyci/fd6742ae-c022-4775-8ee5-0c7b948e9ffd/9e2def30-597c-11ec-996b-3f9609fade5c/file-1kwzyvycj.png?format=png\" data-orsrc=\"https://app-content.cdn.examgoal.net/image/1kwzyvyci/fd6742ae-c022-4775-8ee5-0c7b948e9ffd/9e2def30-597c-11ec-996b-3f9609fade5c/file-1kwzyvycj.png\" loading=\"lazy\" style=\"max-width: 100%;height: auto;display: block;margin: 0 auto;max-height: 60vh\" alt=\"JEE Advanced 2016 Paper 2 Offline Physics - Units &amp; Measurements Question 44 English Explanation\"> <br>Let main scale reading be MSR and v<sup>th</sup> division of the Vernier scale coincides with m<sup>th</sup> division of the main scale (m is counted beyond MSR). The value measured by this calipers is<br><br>X = MSR + x = MSR + mx<sub>m</sub> $$-$$ vx<sub>v</sub> .........(1)<br><br>In calipers C<sub>1</sub>, MSR<sub>1</sub> = 2.8 cm, m<sub>1</sub> = 7 and v<sub>1</sub> = 7 and in calipers C<sub>2</sub>, MSR<sub>2</sub> = 2.8 cm, m<sub>2</sub> = 8 and v<sub>2</sub> = 7. Substitute these values in equation (1) to get<br><br>X<sub>1</sub> = MSR<sub>1</sub> + m<sub>1</sub>x<sub>m1</sub> $$-$$ v<sub>1</sub>x<sub>v1</sub><br><br>= 2.8 + 7(0.1) $$-$$ 7(0.09) = 2.87 cm.<br><br>X<sub>2</sub> = MSR<sub>2</sub> + m<sub>2</sub>x<sub>m2</sub> $$-$$ v<sub>2</sub>x<sub>v2</sub><br><br>= 2.8 + 8(0.1) $$-$$ 7(0.11) = 2.83 cm."
+}

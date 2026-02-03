@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-38",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_multiple",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2019",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->Let us consider a system of units in which mass and angular momentum are dimensionless. If length has dimension of L, which of the following statement(s) is/are correct?<!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">The dimension of force is [L]<sup>-3</sup></div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">The dimension of power is [L]<sup>-5</sup></div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">The dimension of energy is [L]<sup>-2</sup></div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">The dimension of linear momentum is [L]<sup>-1</sup></div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_multiple",
+    "value": "acd"
+  },
+  "explanation_html": "$$[M] = [Mass] = [{M^0}{L^0}{T^0}]$$<br><br>[J] = [Angular momentum] = [ML<sup>2</sup>T<sup>-1</sup>]<br><br>[L] = [Length]<br><br>Now, $$[M{L^2}{T^{ - 1}}] = [{M^0}{L^0}{T^0}]$$<br><br>$$ \\therefore $$ [L<sup>2</sup>] = [T]<br><br>Power [P] = [MLT<sup>2</sup>.LT<sup>-1</sup>] = [ML<sup>2</sup>T<sup>-3</sup>]<br><br>= [L<sup>2</sup>L<sup>-6</sup>]<br><br>[P] = [L<sup>-4</sup>\\<br><br>Energy/Work [W] = [MLT<sup>-2</sup>.L]<br><br>= [L<sup>2</sup>L<sup>-4</sup>] = [L<sup>-2</sup>]<br><br>Force [F] = [MLT<sup>-2</sup>] = [L.L<sup>-4</sup>] = [L<sup>-3</sup>]<br><br>Linear momentum [p] = [MLT<sup>-1</sup>] = [L.L<sup>-2</sup>]<br><br>[p] = [L<sup>-1</sup>]"
+}

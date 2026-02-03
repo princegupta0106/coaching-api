@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-36",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "numerical",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2022",
+    "mode": "online",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<p>In a particular system of units, a physical quantity can be expressed in terms of the electric charge $e$, electron mass $m_{e}$, Planck's constant $h$, and Coulomb's constant $k=\\frac{1}{4 \\pi \\epsilon_{0}}$, where $\\epsilon_{0}$ is the permittivity of vacuum. In terms of these physical constants, the dimension of the magnetic field is $[B]=[e]^{\\alpha}\\left[m_{e}\\right]^{\\beta}[h]^{\\gamma}[k]^{\\delta}$. The value of $\\alpha+\\beta+\\gamma+\\delta$ is _______.</p>",
+  "options": [],
+  "answer": {
+    "type": "numerical",
+    "value": "4"
+  },
+  "explanation_html": "$$\n\\begin{aligned}\n&amp; \\mathrm{B}=\\mathrm{e}^\\alpha\\left(\\mathrm{m}_{\\mathrm{e}}\\right)^\\beta \\mathrm{h}^\\gamma \\mathrm{k}^\\delta \\\\\\\\\n&amp; {[\\mathrm{~B}]=\\left[\\mathrm{e}^\\alpha\\right]\\left[\\mathrm{m}_{\\mathrm{e}}\\right]^\\beta[\\mathrm{h}]^\\gamma\\left[\\mathrm{k}^\\delta\\right]} \\\\\\\\\n&amp; {\\left[\\mathrm{M}^1 \\mathrm{~T}^{-2} \\mathrm{~A}^{-1}\\right]=[\\mathrm{AT}]^\\alpha[\\mathrm{m}]^\\beta\\left[\\mathrm{ML}^2 \\mathrm{~T}^{-1}\\right]^\\gamma\\left[\\mathrm{ML}^3 \\mathrm{~A}^{-2} \\mathrm{~T}^{-4}\\right]^\\delta} \\\\\\\\\n&amp; \\mathrm{M}^{\\mathrm{l}} \\mathrm{T}^{-2} \\mathrm{~A}^{-1}=\\mathrm{m}^{\\beta+\\gamma+\\delta} \\mathrm{L}^{2 \\mathrm{r}+3 \\delta} \\mathrm{T}^{\\alpha-\\gamma-4 \\delta} \\mathrm{A}^{\\alpha-2 \\delta} \\\\\\\\\n&amp; \\text {Compare }: \\beta+\\gamma+\\delta=1 ; 2 \\gamma+3 \\delta=0, \\alpha-\\gamma-4 \\delta=-2, \\alpha-2 \\delta=-1 \\\\\\\\\n&amp; \\text {On solving } \\alpha=3, \\beta=2, \\gamma=-3, \\delta=2 \\\\\\\\\n&amp; \\alpha+\\beta+\\gamma+\\delta=4\n\\end{aligned}\n$$"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-17",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2008",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<p>Student I, II and III perform an experiment for measuring the acceleration due to gravity (g) using a\nsimple pendulum. They use different length of the pendulum and/or record time for different number\nof oscillations. The observations area shown in the table.</p>\n<p>Least count for length = 0.1 cm</p>\n<p>Least count for time = 0.1 s</p>\n<style type=\"text/css\">\n.tg  {border-collapse:collapse;border-spacing:0;}\n.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}\n.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}\n.tg .tg-s6z2{text-align:center}\n.tg .tg-baqh{text-align:center;vertical-align:top}\n</style>\n<div style=\"overflow-x:auto;\">\n<table class=\"tg\">\n  <tbody><tr>\n    <th class=\"tg-s6z2\"><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">Student</span></th>\n    <th class=\"tg-s6z2\"><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">Length of the</span><br><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">pendulum</span><br><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">(cm)</span></th>\n    <th class=\"tg-s6z2\"><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">No. of</span><br><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">oscillations</span><br><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">(n)</span></th>\n    <th class=\"tg-s6z2\"><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">Total time</span><br><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">for(n)</span><br><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">oscillations</span><br><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">(s)</span></th>\n    <th class=\"tg-baqh\"><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">Time</span><br><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">periods</span><br><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">(s)</span></th>\n  </tr>\n  <tr>\n    <td class=\"tg-s6z2\">I</td>\n    <td class=\"tg-s6z2\">64.0</td>\n    <td class=\"tg-s6z2\">8</td>\n    <td class=\"tg-s6z2\">128.0</td>\n    <td class=\"tg-baqh\">16.0</td>\n  </tr>\n  <tr>\n    <td class=\"tg-s6z2\">II</td>\n    <td class=\"tg-s6z2\">64.0</td>\n    <td class=\"tg-s6z2\">4</td>\n    <td class=\"tg-s6z2\">64.0</td>\n    <td class=\"tg-baqh\">16.0</td>\n  </tr>\n  <tr>\n    <td class=\"tg-s6z2\">III</td>\n    <td class=\"tg-s6z2\">20.0</td>\n    <td class=\"tg-s6z2\">4</td>\n    <td class=\"tg-s6z2\">36.0</td>\n    <td class=\"tg-baqh\">9.0</td>\n  </tr>\n</tbody></table>\n</div>\n<p>If E<sub>I</sub>, E<sub>II</sub> and E<sub>III</sub> are the percentage errors in g, i.e., $$\\left(\\frac{\\triangle g}g\\times100\\right)$$ for students I, II and III, respectively,then </p>",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">E<sub>I</sub> = 0</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">E<sub>I</sub> is minimum</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">E<sub>I</sub> = E<sub>II</sub></div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">E<sub>II</sub> is maximum</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "b"
+  },
+  "explanation_html": "<p>Time period (T) $$ = 2\\pi \\sqrt {{l \\over g}} $$</p>\n<p>or $${t \\over n} = 2\\pi \\sqrt {{l \\over g}} $$</p>\n<p>$$\\therefore$$ $$g = {{(4{\\pi ^2})({n^2})l} \\over {{t^2}}}$$</p>\n<p>% error in $$g = {{\\Delta g} \\over g} \\times 100$$</p>\n<p>$$ = \\left( {{{\\Delta l} \\over l} \\times {{2\\Delta l} \\over l}} \\right) \\times 100$$</p>\n<p>$${E_I} = \\left( {{{0.1} \\over {64}} + {{2 \\times 0.1} \\over {128}}} \\right) \\times 100 = 0.3125\\% $$</p>\n<p>$${E_{II}} = \\left( {{{0.1} \\over {64}} + {{2 \\times 0.1} \\over {64}}} \\right) \\times 100 = 0.46875\\% $$</p>\n<p>$${E_{III}} = \\left( {{{0.1} \\over {20}} + {{2 \\times 0.1} \\over {36}}} \\right) \\times 100 = 1.055\\% $$</p>\n<p>Hence, $$\\mathrm{E_I}$$ is minimum.</p>"
+}

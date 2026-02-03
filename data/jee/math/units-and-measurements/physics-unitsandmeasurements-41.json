@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-41",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2023",
+    "mode": "online",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "Young's modulus of elasticity $Y$ is expressed in terms of three derived quantities, namely, the gravitational constant $G$, Planck's constant $h$ and the speed of light $c$, as $Y=c^\\alpha h^\\beta G^\\gamma$. Which of the following is the correct option?",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">$\\alpha=7, \\beta=-1, \\gamma=-2$</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">$\\alpha=-7, \\beta=-1, \\gamma=-2$</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">$\\alpha=7, \\beta=-1, \\gamma=2$</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">$\\alpha=-7, \\beta=1, \\gamma=-2$</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "a"
+  },
+  "explanation_html": "Given the equation,\n\n$ Y = c^\\alpha h^\\beta G^\\gamma $\n\n<br><br>where Y represents Young's modulus, c the speed of light, h is Planck's constant, G is the gravitational constant, and α, β, and γ are powers to be determined. \n\n<br><br>We start by expressing the quantities involved in terms of their fundamental dimensions: Mass (M), Length (L), and Time (T). The equation in terms of dimensions is :\n\n<br><br>$ [M^1 L^{-1} T^{-2}] = [M^0 L^1 T^{-1}]^\\alpha [M^1 L^2 T^{-1}]^\\beta [M^{-1} L^3 T^{-2}]^\\gamma $\n\n<br><br>Next, by equating the powers of the dimensions M, L, and T on both sides of the equation, we form three separate equations:\n\n<br><br>1. Equating the powers of M, we get : $ \\beta - \\gamma = 1 $\n<br><br>2. Equating the powers of L, we get : $ \\alpha + 2\\beta + 3\\gamma = -1 $\n<br><br>3. Equating the powers of T, we get : $ -\\alpha - \\beta - 2\\gamma = -2 $\n\n<br><br>Now we can solve this system of equations. \n\n<br><br>From the first equation, we get $ \\beta = \\gamma + 1 $.\n\n<br><br>Substituting $ \\beta $ from the first equation into the second and third equations, we get :\n\n<br><br>For the second equation, substituting $ \\beta $ we get : $ \\alpha + 2(\\gamma + 1) + 3\\gamma = -1 $, which simplifies to $ \\alpha = -5\\gamma - 3 $.\n\n<br><br>For the third equation, substituting $ \\beta $ we get : $ -\\alpha - (\\gamma + 1) - 2\\gamma = -2 $, which simplifies to $ \\alpha = -3\\gamma - 1 $.\n\n<br><br>Setting the two equations for $ \\alpha $ equal to each other gives : $ -5\\gamma - 3 = -3\\gamma - 1 $, which simplifies to $ \\gamma = -2 $.\n\n<br><br>Substituting $ \\gamma = -2 $ back into the equations for $ \\alpha $ and $ \\beta $ we find $ \\alpha = 7 $ and $ \\beta = -1 $.\n\n<br><br>So, the solution to the system is $ \\alpha = 7, \\beta = -1, \\gamma = -2 $, which corresponds to Option A."
+}

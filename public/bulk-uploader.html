@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bulk Question Uploader</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+      }
+      .info-box {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        margin-bottom: 30px;
+        border-radius: 4px;
+      }
+      .info-box h3 {
+        color: #1976d2;
+        margin-bottom: 10px;
+      }
+      .info-box p {
+        color: #555;
+        margin: 5px 0;
+        font-size: 14px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+      }
+      select,
+      input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+      }
+      .upload-area {
+        border: 3px dashed #667eea;
+        border-radius: 12px;
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 20px;
+      }
+      .upload-area:hover {
+        background: #f0f4ff;
+        border-color: #5568d3;
+      }
+      .chapter-list {
+        margin: 20px 0;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      .chapter-item {
+        background: #f8f9fa;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+      }
+      .chapter-item h4 {
+        color: #333;
+        margin-bottom: 8px;
+      }
+      .file-count {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+      .question-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .question-badge {
+        background: #e0e0e0;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        color: #555;
+      }
+      .question-badge.success {
+        background: #c8e6c9;
+        color: #2e7d32;
+      }
+      .question-badge.error {
+        background: #ffcdd2;
+        color: #c62828;
+      }
+      button {
+        padding: 14px 30px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+      }
+      button:hover {
+        background: #5568d3;
+      }
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      .progress {
+        margin-top: 20px;
+        display: none;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 30px;
+        background: #f0f0f0;
+        border-radius: 15px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: #667eea;
+        transition: width 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+      }
+      .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 3000;
+        animation: slideIn 0.3s ease;
+      }
+      .toast.success {
+        background: #27ae60;
+      }
+      .toast.error {
+        background: #e74c3c;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      .back-btn {
+        background: #888;
+        margin-bottom: 20px;
+      }
+      .status-summary {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        display: none;
+      }
+      .status-summary h3 {
+        margin-bottom: 15px;
+        color: #333;
+      }
+      .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
+
+      <h1>📦 Bulk Question Uploader</h1>
+
+      <div class="info-box">
+        <h3>📁 Expected Folder Structure:</h3>
+        <p><strong>Subject Folder/</strong></p>
+        <p style="margin-left: 20px">└── Chapter 1/</p>
+        <p style="margin-left: 40px">├── question1.json</p>
+        <p style="margin-left: 40px">└── question2.json</p>
+        <p style="margin-left: 20px">└── Chapter 2/</p>
+        <p style="margin-left: 40px">├── question1.json</p>
+        <p style="margin-left: 40px">└── question2.json</p>
+      </div>
+
+      <div class="form-group">
+        <label>Select Exam:</label>
+        <select id="examSelect" onchange="loadSubjects()">
+          <option value="">-- Select Exam --</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Select Subject:</label>
+        <select id="subjectSelect" disabled>
+          <option value="">-- Select Subject --</option>
+        </select>
+      </div>
+
+      <div
+        class="upload-area"
+        onclick="document.getElementById('folderInput').click()"
+      >
+        <input
+          type="file"
+          id="folderInput"
+          webkitdirectory
+          directory
+          multiple
+          style="display: none"
+          onchange="handleFolder(this.files)"
+        />
+        <h3>📁 Select Subject Folder</h3>
+        <p style="color: #888; margin-top: 10px">
+          Click to browse and select the parent subject folder
+        </p>
+        <p style="color: #888; font-size: 12px; margin-top: 5px">
+          The folder should contain chapter subfolders with JSON files
+        </p>
+      </div>
+
+      <div class="chapter-list" id="chapterList"></div>
+
+      <button id="uploadBtn" onclick="uploadBulk()" disabled>
+        Upload All Chapters & Questions
+      </button>
+
+      <div class="progress" id="progress">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+      </div>
+
+      <div class="status-summary" id="statusSummary">
+        <h3>Upload Summary</h3>
+        <div class="stat-row">
+          <span>Chapters Created:</span>
+          <span id="chaptersCreated">0</span>
+        </div>
+        <div class="stat-row">
+          <span>Questions Uploaded:</span>
+          <span id="questionsUploaded">0</span>
+        </div>
+        <div class="stat-row">
+          <span>Failed:</span>
+          <span id="failedCount">0</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api";
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      let chapters = {};
+      let exams = [];
+      let subjects = [];
+
+      window.addEventListener("load", async () => {
+        if (!token || (user.role !== "staff" && user.role !== "admin")) {
+          alert("Access denied. Only staff and admin can upload questions.");
+          window.location.href = "/";
+          return;
+        }
+
+        await loadExams();
+      });
+
+      async function loadExams() {
+        try {
+          const response = await fetch(`${API_URL}/questions/exams`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            exams = data.exams || [];
+
+            const select = document.getElementById("examSelect");
+            select.innerHTML =
+              '<option value="">-- Select Exam --</option>' +
+              exams
+                .map((exam) => `<option value="${exam.id}">${exam.id}</option>`)
+                .join("");
+          }
+        } catch (error) {
+          showToast("Error loading exams", "error");
+        }
+      }
+
+      async function loadSubjects() {
+        const examId = document.getElementById("examSelect").value;
+        const subjectSelect = document.getElementById("subjectSelect");
+
+        if (!examId) {
+          subjectSelect.disabled = true;
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/exams/${examId}/subjects`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            subjects = data.subjects || [];
+
+            subjectSelect.innerHTML =
+              '<option value="">-- Select Subject --</option>' +
+              subjects
+                .map(
+                  (subject) =>
+                    `<option value="${subject.id}">${subject.id}</option>`,
+                )
+                .join("");
+            subjectSelect.disabled = false;
+          }
+        } catch (error) {
+          showToast("Error loading subjects", "error");
+        }
+      }
+
+      function handleFolder(files) {
+        const examId = document.getElementById("examSelect").value;
+        const subjectId = document.getElementById("subjectSelect").value;
+
+        if (!examId || !subjectId) {
+          showToast("Please select exam and subject first", "error");
+          return;
+        }
+
+        chapters = {};
+
+        Array.from(files).forEach((file) => {
+          if (!file.name.endsWith(".json")) return;
+
+          const pathParts = file.webkitRelativePath.split("/");
+
+          if (pathParts.length < 3) return;
+
+          const chapterName = pathParts[pathParts.length - 2];
+
+          if (!chapters[chapterName]) {
+            chapters[chapterName] = [];
+          }
+
+          chapters[chapterName].push(file);
+        });
+
+        displayChapters();
+        updateUploadButton();
+      }
+
+      function displayChapters() {
+        const chapterList = document.getElementById("chapterList");
+
+        if (Object.keys(chapters).length === 0) {
+          chapterList.innerHTML =
+            '<p style="text-align: center; color: #999;">No chapters found</p>';
+          return;
+        }
+
+        chapterList.innerHTML = Object.entries(chapters)
+          .map(
+            ([chapterName, files]) => `
+        <div class="chapter-item" id="chapter-${chapterName.replace(/\s+/g, "-")}">
+          <h4>📂 ${chapterName}</h4>
+          <div class="file-count">${files.length} question(s)</div>
+          <div class="question-list">
+            ${files.map((f, i) => `<span class="question-badge" id="q-${chapterName.replace(/\s+/g, "-")}-${i}">${f.name}</span>`).join("")}
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      function updateUploadButton() {
+        const examId = document.getElementById("examSelect").value;
+        const subjectId = document.getElementById("subjectSelect").value;
+        const uploadBtn = document.getElementById("uploadBtn");
+        uploadBtn.disabled =
+          !examId || !subjectId || Object.keys(chapters).length === 0;
+      }
+
+      async function uploadBulk() {
+        const examId = document.getElementById("examSelect").value;
+        const subjectId = document.getElementById("subjectSelect").value;
+
+        if (!examId || !subjectId || Object.keys(chapters).length === 0) {
+          showToast("Please select exam, subject and folder", "error");
+          return;
+        }
+
+        document.getElementById("uploadBtn").disabled = true;
+        document.getElementById("progress").style.display = "block";
+        document.getElementById("statusSummary").style.display = "block";
+
+        let chaptersCreated = 0;
+        let questionsUploaded = 0;
+        let failedCount = 0;
+
+        const totalChapters = Object.keys(chapters).length;
+        let processedChapters = 0;
+
+        for (const [chapterName, files] of Object.entries(chapters)) {
+          try {
+            // Parse all questions for this chapter
+            const questionsData = await Promise.all(
+              files.map(async (file) => {
+                const content = await file.text();
+                const data = JSON.parse(content);
+                return {
+                  id: data.id || file.name.replace(".json", ""),
+                  data,
+                };
+              }),
+            );
+
+            // Send in smaller batches to avoid payload size limit
+            const batchSize = 10;
+            let chapterQuestionSetId = null;
+
+            for (let i = 0; i < questionsData.length; i += batchSize) {
+              const batch = questionsData.slice(i, i + batchSize);
+              const isFirstBatch = i === 0;
+
+              const response = await fetch(`${API_URL}/questions/bulk-upload`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  examId,
+                  subjectId,
+                  chapterName,
+                  questions: batch,
+                  createChapter: isFirstBatch,
+                  questionSetId: chapterQuestionSetId,
+                }),
+              });
+
+              if (response.ok) {
+                const result = await response.json();
+
+                if (isFirstBatch && result.chapterCreated) {
+                  chaptersCreated++;
+                }
+
+                if (result.questionSetId) {
+                  chapterQuestionSetId = result.questionSetId;
+                }
+
+                questionsUploaded += result.questionsAdded || 0;
+
+                // Mark questions in this batch as success
+                batch.forEach((q, batchIdx) => {
+                  const overallIdx = i + batchIdx;
+                  const badge = document.getElementById(
+                    `q-${chapterName.replace(/\s+/g, "-")}-${overallIdx}`,
+                  );
+                  if (badge) badge.classList.add("success");
+                });
+              } else {
+                const error = await response.json();
+                console.error("Batch upload error:", error);
+                failedCount += batch.length;
+
+                batch.forEach((q, batchIdx) => {
+                  const overallIdx = i + batchIdx;
+                  const badge = document.getElementById(
+                    `q-${chapterName.replace(/\s+/g, "-")}-${overallIdx}`,
+                  );
+                  if (badge) badge.classList.add("error");
+                });
+              }
+            }
+          } catch (error) {
+            console.error("Upload error:", error);
+            failedCount += files.length;
+          }
+
+          processedChapters++;
+          const progress = (processedChapters / totalChapters) * 100;
+          document.getElementById("progressFill").style.width = progress + "%";
+          document.getElementById("progressFill").textContent =
+            Math.round(progress) + "%";
+
+          document.getElementById("chaptersCreated").textContent =
+            chaptersCreated;
+          document.getElementById("questionsUploaded").textContent =
+            questionsUploaded;
+          document.getElementById("failedCount").textContent = failedCount;
+        }
+
+        document.getElementById("uploadBtn").disabled = false;
+        showToast(
+          `Upload complete! Chapters: ${chaptersCreated}, Questions: ${questionsUploaded}, Failed: ${failedCount}`,
+          questionsUploaded > 0 ? "success" : "error",
+        );
+      }
+
+      function showToast(message, type = "success") {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.remove(), 3000);
+      }
+
+      function goBack() {
+        window.history.back();
+      }
+
+      document
+        .getElementById("subjectSelect")
+        .addEventListener("change", () => {
+          chapters = {};
+          document.getElementById("chapterList").innerHTML = "";
+          updateUploadButton();
+        });
+    </script>
+  </body>
+</html>

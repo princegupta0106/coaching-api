@@ -1,0 +1,1051 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --text-primary: #333;
+        --text-secondary: #666;
+        --border-color: #e0e0e0;
+        --accent-color: #667eea;
+        --sidebar-width: 260px;
+      }
+
+      body.dark-mode {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #2d2d2d;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --border-color: #404040;
+        --accent-color: #7c8adb;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        transition: background 0.3s, color 0.3s;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0);
+        transition: background 0.3s;
+      }
+
+      *:hover::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      body.dark-mode ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0);
+      }
+
+      body.dark-mode *:hover::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Offline Notification */
+      .offline-notification {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #e74c3c;
+        color: white;
+        padding: 8px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 10000;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .offline-notification.show {
+        transform: translateY(0);
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: var(--bg-primary);
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        z-index: 100;
+      }
+
+      .dark-mode-toggle {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .toggle-switch {
+        width: 50px;
+        height: 26px;
+        background: var(--border-color);
+        border-radius: 13px;
+        position: relative;
+        transition: background 0.3s;
+      }
+
+      .toggle-switch::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        top: 3px;
+        left: 3px;
+        transition: transform 0.3s;
+      }
+
+      .toggle-switch.active {
+        background: var(--accent-color);
+      }
+
+      .toggle-switch.active::after {
+        transform: translateX(24px);
+      }
+
+      .nav-menu {
+        flex: 1;
+        padding: 20px 0;
+        overflow-y: auto;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        cursor: pointer;
+        transition: background 0.2s;
+        border-left: 3px solid transparent;
+      }
+
+      .nav-item:hover {
+        background: var(--bg-secondary);
+      }
+
+      .nav-item.active {
+        background: rgba(102, 126, 234, 0.1);
+        border-left-color: var(--accent-color);
+        color: var(--accent-color);
+      }
+
+      .user-profile {
+        padding: 15px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--accent-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .user-info {
+        flex: 1;
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .user-email {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      .logout-btn {
+        padding: 8px 16px;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 30px;
+        min-height: 100vh;
+      }
+
+      .page-header {
+        margin-bottom: 30px;
+      }
+
+      .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+
+      /* Cards */
+      .card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        padding: 25px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+
+      /* Form Styles */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 14px;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        transition: border-color 0.2s;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent-color);
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--accent-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5568d3;
+      }
+
+      .btn-secondary {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+      }
+
+      .btn-secondary:hover {
+        background: var(--border-color);
+      }
+
+      .btn-danger {
+        background: #e74c3c;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #c0392b;
+      }
+
+      /* Student Set Items */
+      .set-item {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+
+      .set-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 15px;
+      }
+
+      .set-name {
+        font-weight: 600;
+        font-size: 16px;
+        color: var(--text-primary);
+      }
+
+      .set-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .set-actions .btn {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      .student-list {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* Student Selection Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal.show {
+        display: flex;
+      }
+
+      .modal-content {
+        background: var(--bg-primary);
+        border-radius: 8px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--text-secondary);
+      }
+
+      .modal-body {
+        padding: 20px;
+        overflow-y: auto;
+        flex: 1;
+      }
+
+      .student-checkbox-item {
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .student-checkbox-item:hover {
+        background: var(--bg-secondary);
+      }
+
+      .student-checkbox-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      .modal-footer {
+        padding: 20px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .floating-confirm {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        padding: 15px 30px;
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        transition: all 0.2s;
+        display: none;
+      }
+
+      .floating-confirm.show {
+        display: block;
+      }
+
+      .floating-confirm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+      }
+
+      .selected-count {
+        background: white;
+        color: var(--accent-color);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        margin-left: 8px;
+      }
+
+      /* Message/Alert */
+      .message {
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+      }
+
+      .message.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      /* Mobile */
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.mobile-open {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 20px 15px;
+        }
+
+        .modal-content {
+          width: 95%;
+          max-height: 90vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Offline Notification -->
+    <div class="offline-notification" id="offlineNotification">
+      ⚠️ No internet connection - Please check your network
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <span>Dark Mode</span>
+        <div class="toggle-switch" id="darkModeToggle"></div>
+      </div>
+
+      <div class="nav-menu">
+        <div class="nav-item active" onclick="showView('create')">
+          ➕ Create Student Set
+        </div>
+        <div class="nav-item" onclick="showView('manage')">
+          📋 Manage Student Sets
+        </div>
+        <div class="nav-item" onclick="showView('users')">
+          👥 Manage Users
+        </div>
+      </div>
+
+      <div class="user-profile">
+        <div class="user-avatar" id="userAvatar">A</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Admin</div>
+          <div class="user-email" id="userEmail">admin@example.com</div>
+        </div>
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+      <!-- Content will be loaded here -->
+    </div>
+
+    <!-- Student Selection Modal -->
+    <div class="modal" id="studentModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Select Students</div>
+          <button class="close-modal" onclick="closeStudentModal()">×</button>
+        </div>
+        <div class="modal-body" id="studentModalBody">
+          <!-- Student list will be loaded here -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeStudentModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="confirmStudentSelection()">
+            Add Selected (<span id="selectedCount">0</span>)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api";
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      let allStudents = [];
+      let selectedStudents = [];
+      let currentView = 'create';
+
+      // Offline detection
+      function updateOnlineStatus() {
+        const offlineNotification = document.getElementById('offlineNotification');
+        if (!navigator.onLine) {
+          offlineNotification.classList.add('show');
+        } else {
+          offlineNotification.classList.remove('show');
+        }
+      }
+
+      window.addEventListener('online', updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+      updateOnlineStatus();
+
+      // Initialize
+      window.addEventListener("load", async () => {
+        if (!token || user.role !== "admin") {
+          alert("Please login as admin");
+          window.location.href = "/";
+          return;
+        }
+
+        // Set user info
+        document.getElementById("userName").textContent = user.email.split("@")[0];
+        document.getElementById("userEmail").textContent = user.email;
+        document.getElementById("userAvatar").textContent = user.email[0].toUpperCase();
+
+        // Load dark mode preference
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+          document.getElementById("darkModeToggle").classList.add("active");
+        }
+
+        showView('create');
+        await loadAllStudents();
+      });
+
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+        const isDark = document.body.classList.contains("dark-mode");
+        document.getElementById("darkModeToggle").classList.toggle("active", isDark);
+        localStorage.setItem("darkMode", isDark);
+      }
+
+      function handleLogout() {
+        if (confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/";
+        }
+      }
+
+      function showView(view) {
+        currentView = view;
+        document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+        event.target.classList.add("active");
+
+        if (view === 'create') {
+          showCreateView();
+        } else if (view === 'manage') {
+          showManageView();
+        } else if (view === 'users') {
+          showUsersView();
+        }
+      }
+
+      function showMessage(message, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.textContent = message;
+        
+        const content = document.getElementById('mainContent');
+        content.insertBefore(messageDiv, content.firstChild);
+        
+        setTimeout(() => messageDiv.remove(), 5000);
+      }
+
+      // Create Student Set View
+      function showCreateView() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-header">
+            <div class="page-title">Create New Student Set</div>
+            <div class="page-subtitle">Organize students into sets for better management</div>
+          </div>
+
+          <div class="card">
+            <form onsubmit="createStudentSet(event)">
+              <div class="form-group">
+                <label for="setName">Set Name</label>
+                <input
+                  type="text"
+                  id="setName"
+                  required
+                  placeholder="e.g., 12A, 12B, Physics-Group1"
+                />
+                <small style="color: var(--text-secondary); font-size: 13px;">
+                  Will be created as: ${user.institution || 'institution'}-setname
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label>Students</label>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;" id="selectedStudentTags">
+                  <!-- Selected student tags will appear here -->
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="openStudentModal()">
+                  + Select Students from Institution
+                </button>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Create Student Set</button>
+            </form>
+          </div>
+        `;
+      }
+
+      // Load all students from institution
+      async function loadAllStudents() {
+        try {
+          const response = await fetch(`${API_URL}/users/institution-students`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            allStudents = data.students || [];
+          }
+        } catch (error) {
+          console.error("Error loading students:", error);
+        }
+      }
+
+      // Open student selection modal
+      function openStudentModal() {
+        const modal = document.getElementById('studentModal');
+        const modalBody = document.getElementById('studentModalBody');
+        
+        modalBody.innerHTML = allStudents.map(student => `
+          <div class="student-checkbox-item" onclick="toggleStudentSelection('${student.email}')">
+            <input 
+              type="checkbox" 
+              id="student-${student.email}" 
+              ${selectedStudents.includes(student.email) ? 'checked' : ''}
+              onclick="event.stopPropagation(); toggleStudentSelection('${student.email}')"
+            />
+            <div>
+              <div style="font-weight: 500;">${student.email}</div>
+              <div style="font-size: 12px; color: var(--text-secondary);">${student.institution || 'N/A'}</div>
+            </div>
+          </div>
+        `).join('');
+
+        document.getElementById('selectedCount').textContent = selectedStudents.length;
+        modal.classList.add('show');
+      }
+
+      function closeStudentModal() {
+        document.getElementById('studentModal').classList.remove('show');
+      }
+
+      function toggleStudentSelection(email) {
+        const checkbox = document.getElementById(`student-${email}`);
+        const index = selectedStudents.indexOf(email);
+
+        if (index > -1) {
+          selectedStudents.splice(index, 1);
+          checkbox.checked = false;
+        } else {
+          selectedStudents.push(email);
+          checkbox.checked = true;
+        }
+
+        document.getElementById('selectedCount').textContent = selectedStudents.length;
+      }
+
+      function confirmStudentSelection() {
+        updateSelectedStudentTags();
+        closeStudentModal();
+      }
+
+      function updateSelectedStudentTags() {
+        const container = document.getElementById('selectedStudentTags');
+        if (!container) return;
+
+        container.innerHTML = selectedStudents.map(email => `
+          <div style="
+            background: var(--accent-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+          ">
+            ${email}
+            <span onclick="removeStudent('${email}')" style="cursor: pointer; font-weight: bold;">×</span>
+          </div>
+        `).join('');
+      }
+
+      function removeStudent(email) {
+        selectedStudents = selectedStudents.filter(e => e !== email);
+        updateSelectedStudentTags();
+      }
+
+      async function createStudentSet(event) {
+        event.preventDefault();
+
+        const setName = document.getElementById("setName").value.trim();
+
+        if (selectedStudents.length === 0) {
+          showMessage("Please select at least one student", "error");
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/student-sets/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ setName, students: selectedStudents }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage("Student set created successfully!", "success");
+            document.getElementById("setName").value = "";
+            selectedStudents = [];
+            updateSelectedStudentTags();
+          } else {
+            showMessage(data.error || "Failed to create student set", "error");
+          }
+        } catch (error) {
+          showMessage("Error creating student set: " + error.message, "error");
+        }
+      }
+
+      // Manage Student Sets View
+      async function showManageView() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-header">
+            <div class="page-title">Manage Student Sets</div>
+            <div class="page-subtitle">View and manage all student sets</div>
+          </div>
+          <div id="studentSetsList">Loading...</div>
+        `;
+
+        await loadStudentSets();
+      }
+
+      async function loadStudentSets() {
+        try {
+          const response = await fetch(`${API_URL}/student-sets/my-sets`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            displayStudentSets(data.sets || []);
+          }
+        } catch (error) {
+          console.error("Error loading student sets:", error);
+        }
+      }
+
+      function displayStudentSets(sets) {
+        const container = document.getElementById("studentSetsList");
+        
+        if (sets.length === 0) {
+          container.innerHTML = `
+            <div class="card">
+              <p style="color: var(--text-secondary);">No student sets found</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = sets.map(set => `
+          <div class="set-item">
+            <div class="set-header">
+              <div>
+                <div class="set-name">${set.id}</div>
+                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
+                  ${set.students.length} students
+                </div>
+              </div>
+              <div class="set-actions">
+                <button class="btn btn-secondary" onclick="viewSetStudents('${set.id}')">View</button>
+                <button class="btn btn-danger" onclick="deleteSet('${set.id}')">Delete</button>
+              </div>
+            </div>
+            <div class="student-list" id="students-${set.id}" style="display: none;">
+              ${set.students.join(', ')}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function viewSetStudents(setId) {
+        const container = document.getElementById(`students-${setId}`);
+        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+      }
+
+      async function deleteSet(setId) {
+        if (!confirm(`Are you sure you want to delete set "${setId}"?`)) return;
+
+        try {
+          const response = await fetch(`${API_URL}/student-sets/${setId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` }
+          });
+
+          if (response.ok) {
+            showMessage("Student set deleted successfully", "success");
+            loadStudentSets();
+          } else {
+            showMessage("Failed to delete student set", "error");
+          }
+        } catch (error) {
+          showMessage("Error deleting student set: " + error.message, "error");
+        }
+      }
+
+      // Users View
+      async function showUsersView() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-header">
+            <div class="page-title">Manage Users</div>
+            <div class="page-subtitle">Create and manage user accounts</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Create New User</div>
+            <form onsubmit="createUser(event)">
+              <div class="form-group">
+                <label for="newUserEmail">Email</label>
+                <input type="email" id="newUserEmail" required placeholder="user@example.com" />
+              </div>
+
+              <div class="form-group">
+                <label for="newUserPassword">Password</label>
+                <input type="password" id="newUserPassword" required placeholder="Minimum 6 characters" />
+              </div>
+
+              <div class="form-group">
+                <label for="newUserRole">Role</label>
+                <select id="newUserRole" required>
+                  <option value="student">Student</option>
+                  <option value="staff">Staff</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Create User</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-title">All Users</div>
+            <div id="usersList">Loading...</div>
+          </div>
+        `;
+
+        await loadUsers();
+      }
+
+      async function loadUsers() {
+        try {
+          const response = await fetch(`${API_URL}/users`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            displayUsers(data.users || []);
+          }
+        } catch (error) {
+          console.error("Error loading users:", error);
+        }
+      }
+
+      function displayUsers(users) {
+        const container = document.getElementById("usersList");
+        
+        container.innerHTML = users.map(u => `
+          <div class="set-item">
+            <div class="set-header">
+              <div>
+                <div class="set-name">${u.email}</div>
+                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
+                  Role: ${u.role} | Institution: ${u.institution || 'N/A'}
+                </div>
+              </div>
+              <div class="set-actions">
+                <button class="btn btn-danger" onclick="deleteUser('${u.id}')">Delete</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      async function createUser(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("newUserEmail").value.trim();
+        const password = document.getElementById("newUserPassword").value;
+        const role = document.getElementById("newUserRole").value;
+
+        try {
+          const response = await fetch(`${API_URL}/users/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ email, password, role }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage("User created successfully!", "success");
+            document.getElementById("newUserEmail").value = "";
+            document.getElementById("newUserPassword").value = "";
+            loadUsers();
+          } else {
+            showMessage(data.error || "Failed to create user", "error");
+          }
+        } catch (error) {
+          showMessage("Error creating user: " + error.message, "error");
+        }
+      }
+
+      async function deleteUser(userId) {
+        if (!confirm("Are you sure you want to delete this user?")) return;
+
+        try {
+          const response = await fetch(`${API_URL}/users/${userId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` }
+          });
+
+          if (response.ok) {
+            showMessage("User deleted successfully", "success");
+            loadUsers();
+          } else {
+            showMessage("Failed to delete user", "error");
+          }
+        } catch (error) {
+          showMessage("Error deleting user: " + error.message, "error");
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-55",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2003",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<p>A cube has a side of length 1.2 ✕ 10<sup>-2</sup> m. Calculate its volume.</p>",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\"><b>1.7 ✕ 10<sup>-6</sup> m<sup>3</sup></b></div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\"><b>1.73 ✕ 10<sup>-6</sup> m<sup>3</sup></b></div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\"><b>1.70 ✕ 10<sup>-6</sup> m<sup>3</sup></b></div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\"><b>1.732 ✕ 10<sup>-6</sup> m<sup>3</sup></b></div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "a"
+  },
+  "explanation_html": "We have<br><br>V = l<sup>3</sup> = (1.2 $$\\times$$ 10<sup>$$-$$2</sup>)<sup>3</sup> = 1.728 $$\\times$$ 10<sup>$$-$$6</sup> m<sup>3</sup><br><br>Since l has two significant figures, V should also have two significant figures; hence,<br><br>V = 1.7 $$\\times$$ 10<sup>$$-$$6</sup> m<sup>3</sup><br><br>Answer (A)"
+}

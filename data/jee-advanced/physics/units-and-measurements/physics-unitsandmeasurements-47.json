@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-47",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2004",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->A wire of length $$l = 6 \\pm 0.06$$ cm and $$r = 0.5 \\pm 0.005$$ cm and mass $$m = 0.3 \\pm 0.003$$ gm. Maximum percentage error in density is<!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->4<!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->2<!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">1</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">6.8</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "a"
+  },
+  "explanation_html": "Currently no explanation available"
+}

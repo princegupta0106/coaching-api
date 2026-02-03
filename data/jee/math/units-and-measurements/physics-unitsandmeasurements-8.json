@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-8",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2024",
+    "mode": "online",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<p>A dimensionless quantity is constructed in terms of electronic charge $e$, permittivity of free space $\\varepsilon_0$, Planck's constant $h$, and speed of light $c$. If the dimensionless quantity is written as $e^\\alpha \\varepsilon_0{ }^\\beta h^\\gamma c^\\delta$ and $n$ is a non-zero integer, then $(\\alpha, \\beta, \\gamma, \\delta)$ is given by :</p>",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">$(2 n,-n,-n,-n)$</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">$(n,-n,-2 n,-n)$</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">$(n,-n,-n,-2 n)$</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">$(2 n,-n,-2 n,-2 n)$</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "a"
+  },
+  "explanation_html": "<p>To find the values of $(\\alpha, \\beta, \\gamma, \\delta)$ for which the expression $e^\\alpha \\varepsilon_0{ }^\\beta h^\\gamma c^\\delta$ is dimensionless, we need to ensure that the product of the quantities has no overall physical dimensions. This means the dimensions of charge ($e$), permittivity ($\\varepsilon_0$), Planck's constant ($h$), and speed of light ($c$) need to cancel each other out.</p>\n\n<p>Let's look at the dimensions of each of the physical quantities:</p>\n\n<p><strong>Electronic charge ($e$):</strong> The dimension of charge in terms of fundamental dimensions is:</p>\n\n<p>$$[e] = [A \\cdot T]$$</p>\n\n<p>where $A$ is the dimension of current and $T$ is the dimension of time.</p>\n\n<p><strong>Permittivity of free space ($\\varepsilon_0$):</strong> The dimension is given by:</p>\n\n<p>$$[\\varepsilon_0] = [\\text{M}^{-1} \\text{L}^{-3} \\text{T}^4 \\text{A}^2]$$</p>\n\n<p><strong>Planck's constant ($h$):</strong> The dimension is:</p>\n\n<p>$$[h] = [\\text{M} \\text{L}^2 \\text{T}^{-1}]$$</p>\n\n<p><strong>Speed of light ($c$):</strong> The dimension is:</p>\n\n<p>$$[c] = [\\text{L} \\text{T}^{-1}]$$</p>\n\n<p>Now, we write the expression for the dimensionless quantity and set its dimensions to zero:</p>\n\n<p>$$[e^\\alpha \\varepsilon_0{ }^\\beta h^\\gamma c^\\delta] = [A^\\alpha T^\\alpha] [\\text{M}^{-\\beta} \\text{L}^{-3\\beta} \\text{T}^{4\\beta} \\text{A}^{2\\beta}] [\\text{M}^\\gamma \\text{L}^{2\\gamma} \\text{T}^{-\\gamma}] [\\text{L}^\\delta \\text{T}^{-\\delta}]$$</p>\n\n<p>Combining the dimensions, we get:</p>\n\n<p>$$[e^\\alpha \\varepsilon_0{ }^\\beta h^\\gamma c^\\delta] = [\\text{M}^{-\\beta + \\gamma} \\text{L}^{-3\\beta + 2\\gamma + \\delta} \\text{T}^{\\alpha + 4\\beta - \\gamma - \\delta} \\text{A}^{\\alpha + 2\\beta}]$$</p>\n\n<p>For the quantity to be dimensionless, the exponents of $\\text{M}$, $\\text{L}$, $\\text{T}$, and $\\text{A}$ must all be zero:</p>\n\n<ul>\n\n<li>$$-\\beta + \\gamma = 0$$</li>\n\n<li>$$-3\\beta + 2\\gamma + \\delta = 0$$</li>\n\n<li>$$\\alpha + 4\\beta - \\gamma - \\delta = 0$$</li>\n\n<li>$$\\alpha + 2\\beta = 0$$</li>\n\n</ul>\n\n<p>Solving the above set of equations, we start with the fourth equation:</p>\n\n<p>$$\\alpha + 2\\beta = 0 \\Rightarrow \\alpha = -2\\beta$$</p>\n\n<p>Substituting $\\alpha = -2\\beta$ into the third equation, we get:</p>\n\n<p>$$-2\\beta + 4\\beta - \\gamma - \\delta = 0 \\Rightarrow 2\\beta - \\gamma - \\delta = 0 \\Rightarrow \\gamma + \\delta = 2\\beta$$</p>\n\n<p>From the first equation:</p>\n\n<p>$$-\\beta + \\gamma = 0 \\Rightarrow \\gamma = \\beta$$</p>\n\n<p>Then, substituting $\\gamma = \\beta$ into $\\gamma + \\delta = 2\\beta$:</p>\n\n<p>$$\\beta + \\delta = 2\\beta \\Rightarrow \\delta = \\beta$$</p>\n\n<p>Thus, we have:</p>\n\n<p>$$\\alpha = -2\\beta$$</p>\n\n<p>$$\\gamma = \\beta$$</p>\n\n<p>$$\\delta = \\beta$$</p>\n\n<p>Let $\\beta = -n$ where $n$ is a non-zero integer. Then, we can write the values as:</p>\n\n<p>$$\\alpha = -2(-n) = 2n$$</p>\n\n<p>$$\\beta = -n$$</p>\n\n<p>$$\\gamma = -n$$</p>\n\n<p>$$\\delta = -n$$</p>\n\n<p>Hence, the tuple $(\\alpha, \\beta, \\gamma, \\delta)$ is given by:</p>\n\n<p>$$ (2n, -n, -n, -n) $$</p>\n\n<p>So, the correct option is <strong>Option A:</strong> $(2n,-n,-n,-n)$</p>"
+}

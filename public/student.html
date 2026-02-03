@@ -1,0 +1,2139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Portal</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [["$", "$"]],
+          displayMath: [["$$", "$$"]],
+          processEscapes: true,
+          processEnvironments: true,
+        },
+        svg: {
+          fontCache: "global",
+        },
+        options: {
+          skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+        },
+      };
+    </script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+    ></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --text-primary: #333;
+        --text-secondary: #666;
+        --border-color: #e0e0e0;
+        --accent-color: #667eea;
+        --sidebar-bg: #1e293b;
+        --sidebar-text: #cbd5e1;
+        --sidebar-active: #3b82f6;
+        --sidebar-hover: #334155;
+        --sidebar-width: 260px;
+        --topbar-height: 60px;
+      }
+
+      body.dark-mode {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #2d2d2d;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --border-color: #404040;
+        --accent-color: #7c8adb;
+        --sidebar-bg: #0f172a;
+        --sidebar-text: #94a3b8;
+        --sidebar-active: #3b82f6;
+        --sidebar-hover: #1e293b;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0);
+        transition: background 0.3s;
+      }
+
+      *:hover::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      body.dark-mode ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0);
+      }
+
+      body.dark-mode *:hover::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Topbar */
+      .topbar {
+        display: none;
+      }
+
+      /* Offline Notification */
+      .offline-notification {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #e74c3c;
+        color: white;
+        padding: 8px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 10000;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .offline-notification.show {
+        transform: translateY(0);
+      }
+
+      .institution-name {
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--accent-color);
+      }
+
+      .topbar-title {
+        margin-left: auto;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: var(--sidebar-bg);
+        border-right: 1px solid var(--border-color);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        z-index: 99;
+      }
+
+      .sidebar.viewing-question {
+        width: 300px;
+      }
+
+      .question-nav-sidebar {
+        padding: 15px;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .question-nav-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+      }
+
+      .question-nav-box {
+        aspect-ratio: 1;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        font-size: 12px;
+        transition: transform 0.2s;
+      }
+
+      .question-nav-box:hover {
+        transform: scale(1.05);
+      }
+
+      .question-nav-box.active {
+        border-color: var(--sidebar-active);
+        background: var(--sidebar-active);
+        color: white;
+        transform: scale(1.15);
+        box-shadow:
+          0 0 0 4px rgba(59, 130, 246, 0.4),
+          0 4px 12px rgba(59, 130, 246, 0.6);
+        font-weight: 700;
+        z-index: 10;
+        position: relative;
+      }
+
+      .question-nav-box.unseen {
+        background: var(--bg-secondary);
+      }
+
+      .question-nav-box.seen {
+        background: #ffd700;
+        border-color: #ffd700;
+      }
+
+      .question-nav-box.correct {
+        background: #27ae60;
+        border-color: #27ae60;
+        color: white;
+      }
+
+      .question-nav-box.wrong {
+        background: #e74c3c;
+        border-color: #e74c3c;
+        color: white;
+      }
+
+      .sidebar-header {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .portal-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+
+      .dark-mode-toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: var(--sidebar-hover);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        transition: all 0.3s;
+      }
+
+      .dark-mode-toggle:hover {
+        background: var(--sidebar-active);
+        transform: scale(1.05);
+      }
+
+      .dark-mode-toggle .icon {
+        display: none;
+      }
+
+      .dark-mode-toggle .icon.active {
+        display: block;
+      }
+
+      .exam-list {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .exam-item {
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .exam-header {
+        padding: 15px 20px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        color: var(--sidebar-text);
+        transition: all 0.2s;
+      }
+
+      .exam-header:hover {
+        background: var(--sidebar-hover);
+      }
+
+      .subject-list {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+
+      .subject-list.expanded {
+        max-height: 500px;
+      }
+
+      .subject-item {
+        padding: 12px 20px 12px 40px;
+        cursor: pointer;
+        color: var(--sidebar-text);
+        transition: all 0.2s;
+        border-left: 3px solid transparent;
+      }
+
+      .subject-item:hover {
+        background: var(--sidebar-hover);
+        color: #ffffff;
+      }
+
+      .subject-item.active {
+        color: #ffffff;
+        background: var(--sidebar-active);
+        border-left-color: #60a5fa;
+      }
+
+      .user-profile {
+        padding: 15px 20px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--accent-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .user-info {
+        flex: 1;
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .user-email {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-left: var(--sidebar-width);
+        margin-top: 0;
+        padding: 15px;
+        min-height: 100vh;
+      }
+
+      .main-content.viewing-question {
+        margin-left: 300px;
+        padding: 20px;
+      }
+
+      .welcome-section {
+        margin-bottom: 40px;
+      }
+
+      .welcome-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .section-divider {
+        height: 1px;
+        background: var(--border-color);
+        margin: 30px 0;
+      }
+
+      .section-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 0;
+        padding: 20px;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .card-subtitle {
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
+      /* Chapter List View */
+      .chapter-list {
+        max-width: 800px;
+      }
+
+      .chapter-item-card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .chapter-item-card:hover {
+        border-color: var(--accent-color);
+      }
+
+      /* Question Grid */
+      .question-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 30px;
+      }
+
+      .question-box {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        cursor: pointer;
+        border: 2px solid var(--border-color);
+        background: var(--bg-primary);
+        transition: transform 0.2s;
+      }
+
+      .question-box:hover {
+        transform: scale(1.1);
+      }
+
+      .question-box.unseen {
+        border-color: var(--border-color);
+      }
+
+      .question-box.seen {
+        background: #ffd700;
+        border-color: #ffd700;
+      }
+
+      .question-box.correct {
+        background: #27ae60;
+        border-color: #27ae60;
+        color: white;
+      }
+
+      .question-box.wrong {
+        background: #e74c3c;
+        border-color: #e74c3c;
+        color: white;
+      }
+
+      /* Question Viewer */
+      .question-viewer {
+        max-width: 100%;
+      }
+
+      .question-content-box {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 40px;
+        margin-bottom: 20px;
+      }
+
+      .question-text {
+        font-size: 18px;
+        line-height: 1.8;
+        margin-bottom: 30px;
+        min-height: 100px;
+      }
+
+      .numerical-input {
+        width: 100%;
+        max-width: 300px;
+        padding: 15px;
+        font-size: 18px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        margin-bottom: 20px;
+      }
+
+      .subjective-input {
+        width: 100%;
+        padding: 15px;
+        font-size: 16px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        margin-bottom: 20px;
+        font-family: inherit;
+        resize: vertical;
+      }
+
+      .question-type-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        background: var(--accent-color);
+        color: white;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+
+      .question-metadata {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: var(--bg-secondary);
+        border-radius: 8px;
+        border-left: 4px solid var(--accent-color);
+      }
+
+      .metadata-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .metadata-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      .metadata-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .validation-message {
+        padding: 10px 15px;
+        background: #fef3c7;
+        color: #92400e;
+        border-left: 4px solid #fbbf24;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        display: none;
+      }
+
+      body.dark-mode .validation-message {
+        background: #451a03;
+        color: #fcd34d;
+      }
+
+      .options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .option-item {
+        padding: 15px 20px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .option-item > div {
+        display: inline;
+      }
+
+      .option-item:hover {
+        border-color: var(--accent-color);
+        background: rgba(102, 126, 234, 0.05);
+      }
+
+      .option-item.selected {
+        border-color: var(--accent-color);
+        background: rgba(102, 126, 234, 0.1);
+      }
+
+      .option-item.correct {
+        border-color: #27ae60;
+        background: rgba(39, 174, 96, 0.1);
+      }
+
+      .option-item.wrong {
+        border-color: #e74c3c;
+        background: rgba(231, 76, 60, 0.1);
+      }
+
+      /* MathJax inline rendering fix */
+      mjx-container[jax="SVG"][display="true"] {
+        display: inline-block !important;
+        margin: 0.5em 0 !important;
+      }
+
+      mjx-container[jax="SVG"] {
+        display: inline-block !important;
+        vertical-align: middle;
+      }
+
+      .option-item mjx-container {
+        max-width: 100%;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 0;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: #10b981;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #059669;
+      }
+
+      .btn-secondary {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+      }
+
+      .btn-secondary:hover {
+        background: var(--border-color);
+      }
+
+      .btn-solution {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-solution:hover {
+        background: #5568d3;
+      }
+
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        margin-bottom: 15px;
+        font-weight: 500;
+        font-size: 13px;
+        padding: 5px 10px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+      }
+
+      .back-button:hover {
+        background: var(--border-color);
+        color: var(--accent-color);
+      }
+
+      /* Mobile Styles */
+      @media (max-width: 720px) {
+        .sidebar {
+          display: none;
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 15px;
+          margin-bottom: 70px;
+        }
+
+        .main-content.viewing-question {
+          margin-left: 0;
+          padding: 15px;
+        }
+
+        .topbar {
+          padding: 0 15px;
+        }
+
+        .institution-name {
+          font-size: 16px;
+        }
+
+        .topbar-title {
+          font-size: 14px;
+        }
+
+        .bottom-nav {
+          display: flex !important;
+        }
+
+        .question-box {
+          width: 45px;
+          height: 45px;
+          font-size: 14px;
+        }
+
+        .welcome-title {
+          font-size: 24px;
+        }
+
+        .section-title {
+          font-size: 20px;
+        }
+
+        .card-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Bottom Navigation (Mobile) */
+      .bottom-nav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        background: var(--bg-primary);
+        border-top: 1px solid var(--border-color);
+        justify-content: space-around;
+        align-items: center;
+        z-index: 100;
+      }
+
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+
+      .nav-item.active {
+        color: var(--accent-color);
+      }
+
+      .nav-icon {
+        font-size: 24px;
+      }
+
+      .explanation-box {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .explanation-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--accent-color);
+      }
+
+      .mobile-question-nav {
+        display: none;
+        margin-top: 30px;
+        padding: 20px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+      }
+
+      @media (max-width: 720px) {
+        .mobile-question-nav {
+          display: block;
+        }
+
+        .question-nav-sidebar {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Offline Notification -->
+    <div class="offline-notification" id="offlineNotification">
+      ⚠️ No internet connection - Please check your network
+    </div>
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="institution-name" id="institutionName">Loading...</div>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="portal-title">Course Portal</div>
+        <button
+          class="dark-mode-toggle"
+          onclick="toggleDarkMode()"
+          id="darkModeToggle"
+        >
+          <span class="icon sun-icon active">☀️</span>
+          <span class="icon moon-icon">🌙</span>
+        </button>
+      </div>
+
+      <div class="exam-list" id="examList">
+        <!-- Exams will be loaded here -->
+      </div>
+
+      <div
+        class="question-nav-sidebar"
+        id="questionNavSidebar"
+        style="display: none"
+      >
+        <div
+          class="back-button"
+          onclick="exitQuestionViewer()"
+          style="margin-bottom: 15px"
+        >
+          ← Back to Questions
+        </div>
+        <div class="question-nav-grid" id="questionNavGrid">
+          <!-- Question navigation will appear here -->
+        </div>
+      </div>
+
+      <div
+        class="user-profile"
+        style="
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 15px;
+          border-top: 1px solid var(--border-color);
+        "
+      >
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-info" style="flex: 1">
+          <div class="user-name" id="userName">User</div>
+          <div class="user-email" id="userEmail">email@example.com</div>
+        </div>
+        <button
+          onclick="handleLogout()"
+          style="
+            padding: 8px 16px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+          "
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+      <!-- Content will be dynamically loaded here -->
+    </div>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="showHome()">
+        <div class="nav-icon">🏠</div>
+        <div>Home</div>
+      </div>
+      <div class="nav-item" onclick="showExams()">
+        <div class="nav-icon">📚</div>
+        <div>Exams</div>
+      </div>
+      <div class="nav-item" onclick="showDPPs()">
+        <div class="nav-icon">📝</div>
+        <div>DPPs</div>
+      </div>
+      <div class="nav-item" onclick="showProfile()">
+        <div class="nav-icon">👤</div>
+        <div>Profile</div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api";
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      let currentExams = [];
+      let currentSubjects = [];
+      let currentChapters = [];
+      let currentQuestions = [];
+      let currentQuestionIndex = 0;
+      let questionStatus = {};
+      let selectedAnswer = null;
+      let accessSets = []; // Store loaded access sets with full details
+
+      // Navigation history stack and current view state
+      let navigationHistory = JSON.parse(
+        localStorage.getItem("navigationHistory") || "[]",
+      );
+      let currentView = JSON.parse(
+        localStorage.getItem("currentView") || '{"type":"home"}',
+      );
+
+      // Offline detection
+      function updateOnlineStatus() {
+        const offlineNotification = document.getElementById(
+          "offlineNotification",
+        );
+        if (!navigator.onLine) {
+          offlineNotification.classList.add("show");
+        } else {
+          offlineNotification.classList.remove("show");
+        }
+      }
+
+      window.addEventListener("online", updateOnlineStatus);
+      window.addEventListener("offline", updateOnlineStatus);
+      updateOnlineStatus();
+
+      // Initialize
+      window.addEventListener("load", async () => {
+        if (!token || user.role !== "student") {
+          alert("Please login as a student");
+          window.location.href = "/";
+          return;
+        }
+
+        // Set user info
+        document.getElementById("userName").textContent =
+          user.email.split("@")[0];
+        document.getElementById("userEmail").textContent = user.email;
+        document.getElementById("userAvatar").textContent =
+          user.email[0].toUpperCase();
+        document.getElementById("institutionName").textContent =
+          user.institution || "Institution";
+
+        // Load dark mode preference
+        const isDark = localStorage.getItem("darkMode") === "true";
+        if (isDark) {
+          document.body.classList.add("dark-mode");
+          document.querySelector(".sun-icon").classList.remove("active");
+          document.querySelector(".moon-icon").classList.add("active");
+        }
+
+        await loadExams();
+        await loadQuestionStatus();
+        await loadAccessSets();
+
+        // Restore previous state if exists
+        if (
+          currentView.type === "subject" &&
+          currentView.examId &&
+          currentView.subjectId
+        ) {
+          await selectSubjectRestore(currentView.examId, currentView.subjectId);
+        } else if (
+          currentView.type === "chapter" &&
+          currentView.chapterId &&
+          currentView.chapterName
+        ) {
+          await loadChapterQuestionsRestore(
+            currentView.chapterId,
+            currentView.chapterName,
+          );
+        } else if (
+          currentView.type === "question" &&
+          currentView.chapterId &&
+          currentView.chapterName
+        ) {
+          await loadChapterQuestionsRestore(
+            currentView.chapterId,
+            currentView.chapterName,
+          );
+          setTimeout(() => {
+            if (
+              currentView.questionIndex !== undefined &&
+              currentQuestions.length > 0
+            ) {
+              currentQuestionIndex = parseInt(currentView.questionIndex);
+              displayQuestionViewer();
+            }
+          }, 100);
+        } else if (currentView.type === "dpp" && currentView.dppId) {
+          // Restore DPP question grid
+          await openDPPRestore(currentView.dppId, currentView.dppName);
+        } else if (currentView.type === "dpp-question" && currentView.dppId) {
+          // Restore DPP question viewer
+          await openDPPRestore(currentView.dppId, currentView.dppName);
+          setTimeout(() => {
+            if (
+              currentView.questionIndex !== undefined &&
+              currentQuestions.length > 0
+            ) {
+              currentQuestionIndex = parseInt(currentView.questionIndex);
+              displayQuestionViewer();
+            }
+          }, 100);
+        } else {
+          showHome();
+        }
+      });
+
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+        const isDark = document.body.classList.contains("dark-mode");
+
+        // Toggle icons
+        const sunIcon = document.querySelector(".sun-icon");
+        const moonIcon = document.querySelector(".moon-icon");
+
+        if (isDark) {
+          sunIcon.classList.remove("active");
+          moonIcon.classList.add("active");
+        } else {
+          sunIcon.classList.add("active");
+          moonIcon.classList.remove("active");
+        }
+
+        localStorage.setItem("darkMode", isDark);
+      }
+
+      // Save current view state
+      function saveViewState(type, data = {}) {
+        currentView = { type, ...data };
+        localStorage.setItem("currentView", JSON.stringify(currentView));
+
+        // Add to navigation history
+        navigationHistory.push({ type, ...data, timestamp: Date.now() });
+        localStorage.setItem(
+          "navigationHistory",
+          JSON.stringify(navigationHistory),
+        );
+      }
+
+      // Smart back button
+      function goBack() {
+        // Hardcoded back logic based on current view
+        if (currentView.type === "subject") {
+          // From chapter selection -> home
+          showHome();
+        } else if (currentView.type === "chapter") {
+          // From question selection -> chapter selection (subject view)
+          if (currentView.examId && currentView.subjectId) {
+            selectSubject(currentView.examId, currentView.subjectId);
+          } else {
+            showHome();
+          }
+        } else if (currentView.type === "question") {
+          // From question -> question selection
+          if (currentView.chapterId && currentView.chapterName) {
+            loadChapterQuestions(
+              currentView.chapterId,
+              currentView.chapterName,
+            );
+          } else {
+            showHome();
+          }
+        } else if (currentView.type === "dpp") {
+          // From DPP question grid -> home
+          showHome();
+        } else if (currentView.type === "dpp-question") {
+          // From DPP question -> DPP question grid
+          if (currentView.dppId && currentView.dppName) {
+            openDPP(currentView.dppId);
+          } else {
+            showHome();
+          }
+        } else {
+          showHome();
+        }
+      }
+
+      function handleLogout() {
+        if (confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          localStorage.removeItem("currentChapterId");
+          localStorage.removeItem("currentChapterName");
+          localStorage.removeItem("currentQuestionIndex");
+          localStorage.removeItem("navigationHistory");
+          localStorage.removeItem("currentView");
+          window.location.href = "/";
+        }
+      }
+
+      async function loadExams() {
+        try {
+          const response = await fetch(`${API_URL}/questions/exams`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            currentExams = data.exams || [];
+            displaySidebarExams();
+          }
+        } catch (error) {
+          console.error("Error loading exams:", error);
+        }
+      }
+
+      async function loadAccessSets() {
+        try {
+          const response = await fetch(`${API_URL}/questions/qs-loader`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            accessSets = data.sets || [];
+            console.log("Loaded question sets:", accessSets);
+          } else {
+            console.error("Failed to load question sets");
+            accessSets = [];
+          }
+        } catch (error) {
+          console.error("Error loading question sets:", error);
+          accessSets = [];
+        }
+      }
+
+      function displaySidebarExams() {
+        const container = document.getElementById("examList");
+
+        container.innerHTML = currentExams
+          .map(
+            (exam) => `
+        <div class="exam-item">
+          <div class="exam-header" onclick="toggleExam('${exam.id}')">
+            <span>${exam.id}</span>
+            <span>▼</span>
+          </div>
+          <div class="subject-list" id="subjects-${exam.id}">
+            <!-- Subjects will be loaded here -->
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      async function toggleExam(examId) {
+        const subjectList = document.getElementById(`subjects-${examId}`);
+
+        if (subjectList.classList.contains("expanded")) {
+          subjectList.classList.remove("expanded");
+          return;
+        }
+
+        // Load subjects for this exam
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/exams/${examId}/subjects`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            const subjects = data.subjects || [];
+
+            subjectList.innerHTML = subjects
+              .map(
+                (subject) => `
+            <div class="subject-item" onclick="selectSubject('${examId}', '${subject.id}')">
+              ${subject.id}
+            </div>
+          `,
+              )
+              .join("");
+
+            subjectList.classList.add("expanded");
+          }
+        } catch (error) {
+          console.error("Error loading subjects:", error);
+        }
+      }
+
+      async function selectSubjectRestore(examId, subjectId) {
+        document.getElementById("topbarTitle").textContent = subjectId;
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/subjects/${subjectId}/question-sets`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            currentChapters = data.questionSets || [];
+            displayChapterList(subjectId);
+          }
+        } catch (error) {
+          console.error("Error loading chapters:", error);
+        }
+      }
+
+      async function selectSubject(examId, subjectId) {
+        saveViewState("subject", { examId, subjectId });
+
+        document.getElementById("topbarTitle").textContent = subjectId;
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/subjects/${subjectId}/question-sets`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            currentChapters = data.questionSets || [];
+            displayChapterList(subjectId);
+          }
+        } catch (error) {
+          console.error("Error loading chapters:", error);
+        }
+      }
+
+      function displayChapterList(subjectName) {
+        const content = document.getElementById("mainContent");
+
+        content.innerHTML = `
+        <div class="back-button" onclick="goBack()">← Back</div>
+        <h2 class="section-title">${subjectName} - Chapters</h2>
+        <div class="chapter-list">
+          ${currentChapters
+            .map(
+              (chapter) => `
+            <div class="chapter-item-card" onclick="loadChapterQuestions('${chapter.id}', '${chapter.name}')">
+              <div>
+                <div style="font-weight: 600; margin-bottom: 5px;">${chapter.name}</div>
+                <div style="font-size: 14px; color: var(--text-secondary);">${chapter.id}</div>
+              </div>
+              <div>→</div>
+            </div>
+          `,
+            )
+            .join("")}
+        </div>
+      `;
+      }
+
+      async function loadChapterQuestionsRestore(chapterId, chapterName) {
+        document.getElementById("topbarTitle").textContent = chapterName;
+        localStorage.setItem("currentChapterId", chapterId);
+        localStorage.setItem("currentChapterName", chapterName);
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/load/${chapterId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            currentQuestions = data.questions || [];
+            displayQuestionGrid(chapterName);
+          }
+        } catch (error) {
+          console.error("Error loading questions:", error);
+        }
+      }
+
+      async function loadChapterQuestions(chapterId, chapterName) {
+        // Get examId and subjectId from currentView to enable back navigation
+        const examId = currentView.examId;
+        const subjectId = currentView.subjectId;
+        saveViewState("chapter", { chapterId, chapterName, examId, subjectId });
+
+        document.getElementById("topbarTitle").textContent = chapterName;
+
+        console.log("Loading questions for chapter:", chapterId);
+
+        // Save current chapter to localStorage
+        localStorage.setItem("currentChapterId", chapterId);
+        localStorage.setItem("currentChapterName", chapterName);
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/load/${chapterId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            currentQuestions = data.questions || [];
+            console.log("Loaded questions:", currentQuestions.length);
+            console.log("First question:", currentQuestions[0]);
+
+            if (currentQuestions.length === 0) {
+              alert("No questions found in this chapter");
+              return;
+            }
+
+            displayQuestionGrid(chapterName);
+          } else {
+            console.error("Failed to load questions:", response.status);
+            alert("Failed to load questions");
+          }
+        } catch (error) {
+          console.error("Error loading questions:", error);
+          alert("Error loading questions: " + error.message);
+        }
+      }
+
+      function displayQuestionGrid(chapterName) {
+        const content = document.getElementById("mainContent");
+
+        content.innerHTML = `
+        <div class="back-button" onclick="goBack()">← Back</div>
+        <h2 class="section-title">${chapterName}</h2>
+        <div class="question-grid">
+          ${currentQuestions
+            .map((q, index) => {
+              const status = questionStatus[q.id] || "unseen";
+              return `
+              <div class="question-box ${status}" onclick="openQuestion(${index})">
+                ${index + 1}
+              </div>
+            `;
+            })
+            .join("")}
+        </div>
+      `;
+      }
+
+      async function openQuestion(index) {
+        currentQuestionIndex = index;
+        const chapterId = localStorage.getItem("currentChapterId");
+        const chapterName = localStorage.getItem("currentChapterName");
+        const examId = currentView.examId;
+        const subjectId = currentView.subjectId;
+        saveViewState("question", {
+          chapterId,
+          chapterName,
+          questionIndex: index,
+          examId,
+          subjectId,
+        });
+
+        const question = currentQuestions[index];
+        selectedMultipleOptions = [];
+
+        // Mark as seen if not already
+        if (!questionStatus[question.id]) {
+          questionStatus[question.id] = "seen";
+          await updateQuestionStatus(question.id, "seen");
+        }
+
+        displayQuestionViewer();
+      }
+
+      function displayQuestionViewer() {
+        const question = currentQuestions[currentQuestionIndex];
+        console.log("Displaying question:", question);
+
+        const content = document.getElementById("mainContent");
+        const sidebar = document.getElementById("sidebar");
+        const examList = document.getElementById("examList");
+        const questionNavSidebar =
+          document.getElementById("questionNavSidebar");
+
+        // Switch to question viewing mode
+        sidebar.classList.add("viewing-question");
+        content.classList.add("viewing-question");
+        examList.style.display = "none";
+        questionNavSidebar.style.display = "block";
+
+        // Display navigation in sidebar
+        const navGrid = document.getElementById("questionNavGrid");
+        navGrid.innerHTML = currentQuestions
+          .map((q, i) => {
+            const status = questionStatus[q.id] || "unseen";
+            const isActive = i === currentQuestionIndex;
+            return `
+          <div class="question-nav-box ${status} ${isActive ? "active" : ""}" 
+               onclick="navigateToQuestion(${i})">
+            ${i + 1}
+          </div>
+        `;
+          })
+          .join("");
+
+        selectedAnswer = null;
+        const questionHTML =
+          question.question_html ||
+          question.content?.question_html ||
+          "Question not available";
+        const questionType = question.question_type || "mcq_single";
+        const options = question.options || [];
+        const correctAnswer = question.answer?.value || "";
+
+        console.log("Question type:", questionType);
+        console.log("Options:", options);
+        console.log("Correct answer:", correctAnswer);
+
+        let questionTypeLabel = "Single Correct MCQ";
+        let typeColor = "#667eea";
+        if (questionType === "numerical") {
+          questionTypeLabel = "Numerical";
+          typeColor = "#f59e0b";
+        } else if (questionType === "mcq_multiple") {
+          questionTypeLabel = "Multiple Correct MCQ";
+          typeColor = "#10b981";
+        } else if (questionType === "other" || questionType === "subjective") {
+          questionTypeLabel = "Subjective";
+          typeColor = "#8b5cf6";
+        }
+
+        // Build metadata tags from various sources
+        const year = question.year || question.metadata?.year;
+        const exam = question.exam_name || question.metadata?.exam;
+        const mode = question.mode || question.metadata?.mode;
+        const date = question.date || question.metadata?.date;
+        const shift = question.shift || question.metadata?.shift;
+        const chapter = question.chapter_name || question.chapter;
+
+        let metadataTags = `<div class="question-type-badge" style="background: ${typeColor}">${questionTypeLabel}</div>`;
+
+        if (year) {
+          metadataTags += `<div class="question-type-badge" style="background: #ec4899">${year}</div>`;
+        }
+        if (exam) {
+          metadataTags += `<div class="question-type-badge" style="background: #06b6d4">${exam.toUpperCase()}</div>`;
+        }
+        if (mode) {
+          metadataTags += `<div class="question-type-badge" style="background: #14b8a6">${mode}</div>`;
+        }
+        if (date) {
+          metadataTags += `<div class="question-type-badge" style="background: #f97316">${date}</div>`;
+        }
+        if (shift) {
+          metadataTags += `<div class="question-type-badge" style="background: #a855f7">Shift ${shift}</div>`;
+        }
+        if (chapter) {
+          metadataTags += `<div class="question-type-badge" style="background: #84cc16">${chapter}</div>`;
+        }
+
+        let answerSection = "";
+
+        if (questionType === "other" || questionType === "subjective") {
+          answerSection = `
+          <textarea 
+                 class="subjective-input" 
+                 id="subjectiveAnswer" 
+                 placeholder="Type your answer here..."
+                 rows="4"></textarea>
+        `;
+        } else if (questionType === "numerical") {
+          answerSection = `
+          <input type="number" 
+                 step="0.01" 
+                 class="numerical-input" 
+                 id="numericalAnswer" 
+                 placeholder="Enter your answer">
+        `;
+        } else if (questionType === "mcq_multiple") {
+          answerSection = `
+          <div class="options-list" id="optionsList">
+            ${options
+              .map(
+                (opt, i) => `
+              <div class="option-item" onclick="toggleMultipleOption('${opt.label}', ${i})">
+                <input type="checkbox" id="opt-${i}" style="margin-right: 10px;">
+                <div>${opt.html || opt.label}</div>
+              </div>
+            `,
+              )
+              .join("")}
+          </div>
+        `;
+        } else {
+          answerSection = `
+          <div class="options-list" id="optionsList">
+            ${options
+              .map(
+                (opt, i) => `
+              <div class="option-item" onclick="selectOption('${opt.label}', ${i})">
+                <div>${opt.html || opt.label}</div>
+              </div>
+            `,
+              )
+              .join("")}
+          </div>
+        `;
+        }
+
+        // Mobile navigation (below question)
+        const mobileNav = `
+        <div class="mobile-question-nav">
+          <div style="margin-bottom: 15px; font-weight: 600;">Questions</div>
+          <div class="question-nav-grid">
+            ${currentQuestions
+              .map((q, i) => {
+                const status = questionStatus[q.id] || "unseen";
+                const isActive = i === currentQuestionIndex;
+                return `
+                <div class="question-nav-box ${status} ${isActive ? "active" : ""}" 
+                     onclick="navigateToQuestion(${i})">
+                  ${i + 1}
+                </div>
+              `;
+              })
+              .join("")}
+          </div>
+        </div>
+      `;
+
+        content.innerHTML = `
+        <div class="question-viewer">
+          <div class="back-button" onclick="exitQuestionViewer()">
+            ← Back to Questions
+          </div>
+          <div class="question-content-box">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+              ${metadataTags}
+            </div>
+            <div class="validation-message" id="validationMessage"></div>
+            <div class="question-text">${questionHTML}</div>
+            
+            ${answerSection}
+            
+            <div class="action-buttons">
+              <button class="btn btn-primary" onclick="submitAnswer()">Submit</button>
+              <button class="btn btn-solution" onclick="showSolution()">Show Solution</button>
+              ${currentQuestionIndex > 0 ? '<button class="btn btn-secondary" onclick="previousQuestion()">Previous</button>' : ""}
+              ${currentQuestionIndex < currentQuestions.length - 1 ? '<button class="btn btn-secondary" onclick="nextQuestion()">Next</button>' : ""}
+            </div>
+            
+            <div id="explanationContainer"></div>
+          </div>
+          
+          ${mobileNav}
+        </div>
+      `;
+
+        // Render MathJax after content is inserted
+        if (window.MathJax) {
+          MathJax.typesetPromise([content]).catch((err) =>
+            console.log("MathJax render error:", err),
+          );
+        }
+      }
+
+      function exitQuestionViewer() {
+        const sidebar = document.getElementById("sidebar");
+        const content = document.getElementById("mainContent");
+        const examList = document.getElementById("examList");
+        const questionNavSidebar =
+          document.getElementById("questionNavSidebar");
+
+        sidebar.classList.remove("viewing-question");
+        content.classList.remove("viewing-question");
+        examList.style.display = "block";
+        questionNavSidebar.style.display = "none";
+
+        // Clear saved state
+        localStorage.removeItem("currentChapterId");
+        localStorage.removeItem("currentChapterName");
+        localStorage.removeItem("currentQuestionIndex");
+
+        goBack();
+      }
+
+      let selectedMultipleOptions = [];
+
+      function toggleMultipleOption(label, index) {
+        const checkbox = document.getElementById(`opt-${index}`);
+        checkbox.checked = !checkbox.checked;
+
+        if (checkbox.checked) {
+          if (!selectedMultipleOptions.includes(label)) {
+            selectedMultipleOptions.push(label);
+          }
+        } else {
+          selectedMultipleOptions = selectedMultipleOptions.filter(
+            (l) => l !== label,
+          );
+        }
+
+        document.querySelectorAll(".option-item").forEach((opt, i) => {
+          if (i === index) {
+            opt.classList.toggle("selected", checkbox.checked);
+          }
+        });
+      }
+
+      function selectOption(label, index) {
+        selectedAnswer = label;
+        document.querySelectorAll(".option-item").forEach((opt, i) => {
+          opt.classList.remove("selected");
+          if (i === index) {
+            opt.classList.add("selected");
+          }
+        });
+      }
+
+      async function submitAnswer() {
+        const question = currentQuestions[currentQuestionIndex];
+        const questionType = question.question_type || "mcq_single";
+        const correctAnswer = question.answer?.value || "";
+        let userAnswer = null;
+        let isCorrect = false;
+        const validationMsg = document.getElementById("validationMessage");
+
+        console.log("Submitting answer for type:", questionType);
+        console.log("Correct answer:", correctAnswer);
+
+        if (questionType === "other" || questionType === "subjective") {
+          const input = document.getElementById("subjectiveAnswer");
+          if (!input || !input.value.trim()) {
+            validationMsg.textContent = "Please enter an answer";
+            validationMsg.style.display = "block";
+            setTimeout(() => {
+              validationMsg.style.display = "none";
+            }, 3000);
+            return;
+          }
+          userAnswer = input.value.trim();
+          // For subjective, we just mark as seen, not correct/wrong
+          isCorrect = false; // Teacher will evaluate
+        } else if (questionType === "numerical") {
+          const input = document.getElementById("numericalAnswer");
+          if (!input || !input.value) {
+            validationMsg.textContent = "Please enter an answer";
+            validationMsg.style.display = "block";
+            setTimeout(() => {
+              validationMsg.style.display = "none";
+            }, 3000);
+            return;
+          }
+          userAnswer = parseFloat(input.value);
+          const correctNum = parseFloat(correctAnswer);
+          isCorrect = Math.abs(userAnswer - correctNum) < 0.01;
+        } else if (questionType === "mcq_multiple") {
+          if (selectedMultipleOptions.length === 0) {
+            validationMsg.textContent = "Please select at least one option";
+            validationMsg.style.display = "block";
+            setTimeout(() => {
+              validationMsg.style.display = "none";
+            }, 3000);
+            return;
+          }
+          userAnswer = selectedMultipleOptions.sort().join("");
+          isCorrect = userAnswer === correctAnswer;
+        } else {
+          if (!selectedAnswer) {
+            validationMsg.textContent = "Please select an answer";
+            validationMsg.style.display = "block";
+            setTimeout(() => {
+              validationMsg.style.display = "none";
+            }, 3000);
+            return;
+          }
+          userAnswer = selectedAnswer;
+          isCorrect = userAnswer === correctAnswer;
+        }
+
+        console.log("User answer:", userAnswer, "Is correct:", isCorrect);
+
+        // Update status
+        const newStatus =
+          questionType === "other" || questionType === "subjective"
+            ? "seen"
+            : isCorrect
+              ? "correct"
+              : "wrong";
+
+        questionStatus[question.id] = newStatus;
+        await updateQuestionStatus(question.id, newStatus);
+
+        // Update navigation in sidebar and mobile
+        updateQuestionNavigation();
+
+        // Show feedback
+        const options = question.options || [];
+        if (questionType === "mcq_single" || questionType === "mcq_multiple") {
+          document.querySelectorAll(".option-item").forEach((opt, i) => {
+            const optLabel = options[i]?.label;
+            if (questionType === "mcq_multiple") {
+              if (correctAnswer.includes(optLabel)) {
+                opt.classList.add("correct");
+              }
+            } else {
+              if (optLabel === correctAnswer) {
+                opt.classList.add("correct");
+              }
+              if (optLabel === selectedAnswer && !isCorrect) {
+                opt.classList.add("wrong");
+              }
+            }
+          });
+        }
+
+        // Show explanation if available
+        const explanation = question.explanation_html || "";
+        if (explanation) {
+          document.getElementById("explanationContainer").innerHTML = `
+          <div class="explanation-box">
+            <div class="explanation-title">${isCorrect ? "✓ Correct!" : "✗ Incorrect"}</div>
+            <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
+            <div style="margin-top: 15px;">${explanation}</div>
+          </div>
+        `;
+        } else {
+          document.getElementById("explanationContainer").innerHTML = `
+          <div class="explanation-box">
+            <div class="explanation-title">${isCorrect ? "✓ Correct!" : "✗ Incorrect"}</div>
+            <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
+          </div>
+        `;
+        }
+
+        // Render MathJax in explanation
+        if (window.MathJax) {
+          const container = document.getElementById("explanationContainer");
+          MathJax.typesetPromise([container]).catch((err) =>
+            console.log("MathJax render error:", err),
+          );
+        }
+      }
+
+      function updateQuestionNavigation() {
+        const navHTML = currentQuestions
+          .map((q, i) => {
+            const status = questionStatus[q.id] || "unseen";
+            const isActive = i === currentQuestionIndex;
+            return `
+          <div class="question-nav-box ${status} ${isActive ? "active" : ""}" 
+               onclick="navigateToQuestion(${i})">
+            ${i + 1}
+          </div>
+        `;
+          })
+          .join("");
+
+        // Update sidebar
+        const navGrid = document.getElementById("questionNavGrid");
+        if (navGrid) navGrid.innerHTML = navHTML;
+
+        // Update mobile navigation
+        const mobileNavGrids = document.querySelectorAll(
+          ".mobile-question-nav .question-nav-grid",
+        );
+        mobileNavGrids.forEach((grid) => (grid.innerHTML = navHTML));
+      }
+
+      function skipQuestion() {
+        if (currentQuestionIndex < currentQuestions.length - 1) {
+          nextQuestion();
+        }
+      }
+
+      function nextQuestion() {
+        if (currentQuestionIndex < currentQuestions.length - 1) {
+          currentQuestionIndex++;
+          localStorage.setItem("currentQuestionIndex", currentQuestionIndex);
+          openQuestion(currentQuestionIndex);
+        }
+      }
+
+      function previousQuestion() {
+        if (currentQuestionIndex > 0) {
+          currentQuestionIndex--;
+          localStorage.setItem("currentQuestionIndex", currentQuestionIndex);
+          openQuestion(currentQuestionIndex);
+        }
+      }
+
+      function navigateToQuestion(index) {
+        currentQuestionIndex = index;
+        localStorage.setItem("currentQuestionIndex", index);
+        openQuestion(index);
+      }
+
+      function showSolution() {
+        const question = currentQuestions[currentQuestionIndex];
+        const explanation = question.explanation_html || "";
+        const correctAnswer = question.answer?.value || "";
+
+        if (explanation) {
+          document.getElementById("explanationContainer").innerHTML = `
+          <div class="explanation-box">
+            <div class="explanation-title">💡 Solution</div>
+            <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
+            <div style="margin-top: 15px;">${explanation}</div>
+          </div>
+        `;
+        } else {
+          document.getElementById("explanationContainer").innerHTML = `
+          <div class="explanation-box">
+            <div class="explanation-title">💡 Solution</div>
+            <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
+            <div style="margin-top: 15px;">No detailed explanation available.</div>
+          </div>
+        `;
+        }
+
+        // Render MathJax in explanation
+        if (window.MathJax) {
+          const container = document.getElementById("explanationContainer");
+          MathJax.typesetPromise([container]).catch((err) =>
+            console.log("MathJax render error:", err),
+          );
+        }
+
+        // Scroll to explanation
+        document.getElementById("explanationContainer").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function goBackToGrid() {
+        displayQuestionGrid(document.getElementById("topbarTitle").textContent);
+      }
+
+      async function loadQuestionStatus() {
+        try {
+          const response = await fetch(`${API_URL}/auth/status`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            questionStatus = data.question_status || {};
+          }
+        } catch (error) {
+          console.error("Error loading question status:", error);
+          questionStatus = {};
+        }
+      }
+
+      async function updateQuestionStatus(questionId, status) {
+        try {
+          await fetch(`${API_URL}/auth/update-status`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ questionId, status }),
+          });
+        } catch (error) {
+          console.error("Error updating status:", error);
+        }
+      }
+
+      async function showHome() {
+        saveViewState("home");
+
+        document.getElementById("topbarTitle").textContent = "Dashboard";
+        const content = document.getElementById("mainContent");
+
+        // Exit question viewer mode if active
+        const sidebar = document.getElementById("sidebar");
+        const examList = document.getElementById("examList");
+        const questionNavSidebar =
+          document.getElementById("questionNavSidebar");
+        sidebar.classList.remove("viewing-question");
+        content.classList.remove("viewing-question");
+        examList.style.display = "block";
+        questionNavSidebar.style.display = "none";
+
+        content.innerHTML = `
+        <div class="welcome-section">
+          <h1 class="welcome-title">Welcome, ${user.email.split("@")[0]}! 👋</h1>
+        </div>
+        
+        ${currentExams
+          .map(
+            (exam) => `
+          <div>
+            <h2 class="section-title">${exam.id}</h2>
+            <div class="card-grid" id="subjects-home-${exam.id}">
+              <!-- Subjects will be loaded -->
+            </div>
+            <div class="section-divider"></div>
+          </div>
+        `,
+          )
+          .join("")}
+        
+        <h2 class="section-title">Shared Question Sets</h2>
+        <div class="card-grid">
+          ${
+            accessSets.length > 0
+              ? accessSets
+                  .map(
+                    (dpp) => `
+            <div class="card" onclick="openDPP('${dpp.id}')">
+              <div class="card-title">${dpp.name}</div>
+              <div class="card-subtitle">${(dpp.question_ids || []).length} Questions</div>
+            </div>
+          `,
+                  )
+                  .join("")
+              : '<p style="color: var(--text-secondary);">No shared sets available yet</p>'
+          }
+        </div>
+      `;
+
+        // Load subjects for each exam
+        for (const exam of currentExams) {
+          loadHomeSubjects(exam.id);
+        }
+      }
+
+      async function loadHomeSubjects(examId) {
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/exams/${examId}/subjects`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            const subjects = data.subjects || [];
+
+            const container = document.getElementById(
+              `subjects-home-${examId}`,
+            );
+            if (container) {
+              container.innerHTML = subjects
+                .map(
+                  (subject) => `
+              <div class="card" onclick="selectSubject('${examId}', '${subject.id}')">
+                <div class="card-title">${subject.id}</div>
+              </div>
+            `,
+                )
+                .join("");
+            }
+          }
+        } catch (error) {
+          console.error("Error loading subjects:", error);
+        }
+      }
+
+      async function openDPPRestore(dppId, dppName) {
+        try {
+          // Load questions for this DPP using the question loader API (without saving state)
+          const response = await fetch(`${API_URL}/questions/load/${dppId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            currentQuestions = data.questions || [];
+
+            if (currentQuestions.length === 0) {
+              return;
+            }
+
+            displayDPPQuestionGrid(dppName);
+          }
+        } catch (error) {
+          console.error("Error opening DPP:", error);
+        }
+      }
+
+      async function openDPP(dppId) {
+        try {
+          // Find the DPP from loaded accessSets
+          const dpp = accessSets.find((s) => s.id === dppId);
+
+          if (!dpp) {
+            alert("Question set not found");
+            return;
+          }
+
+          // Save view state
+          saveViewState("dpp", { dppId, dppName: dpp.name });
+
+          // Load questions for this DPP using the question loader API
+          const response = await fetch(`${API_URL}/questions/load/${dppId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            currentQuestions = data.questions || [];
+
+            if (currentQuestions.length === 0) {
+              alert("No questions found in this DPP");
+              return;
+            }
+
+            displayDPPQuestionGrid(dpp.name);
+          } else {
+            alert("Failed to load DPP questions");
+          }
+        } catch (error) {
+          console.error("Error opening DPP:", error);
+          alert("Error loading DPP: " + error.message);
+        }
+      }
+
+      function displayDPPQuestionGrid(dppName) {
+        const content = document.getElementById("mainContent");
+
+        content.innerHTML = `
+        <div class="back-button" onclick="goBack()">← Back</div>
+        <h2 class="section-title">${dppName}</h2>
+        <div class="question-grid">
+          ${currentQuestions
+            .map((q, index) => {
+              const status = questionStatus[q.id] || "unseen";
+              return `
+              <div class="question-box ${status}" onclick="openDPPQuestion(${index}, '${dppName}')">
+                ${index + 1}
+              </div>
+            `;
+            })
+            .join("")}
+        </div>
+      `;
+      }
+
+      async function openDPPQuestion(index, dppName) {
+        currentQuestionIndex = index;
+        const dppId = currentView.dppId;
+        saveViewState("dpp-question", { dppId, dppName, questionIndex: index });
+
+        const question = currentQuestions[index];
+        selectedMultipleOptions = [];
+
+        // Mark as seen if not already
+        if (!questionStatus[question.id]) {
+          questionStatus[question.id] = "seen";
+          await updateQuestionStatus(question.id, "seen");
+        }
+
+        displayQuestionViewer();
+      }
+
+      function showExams() {
+        showHome();
+      }
+
+      function showDPPs() {
+        // Scroll to DPPs section
+        showHome();
+        setTimeout(() => {
+          const dppsSection = document.querySelector(
+            ".section-title:last-of-type",
+          );
+          if (dppsSection) {
+            dppsSection.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 100);
+      }
+
+      function showProfile() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+        <h2 class="section-title">Profile</h2>
+        <div class="card" style="max-width: 500px;">
+          <div style="margin-bottom: 15px;"><strong>Email:</strong> ${user.email}</div>
+          <div style="margin-bottom: 15px;"><strong>Institution:</strong> ${user.institution}</div>
+          <div style="margin-bottom: 15px;"><strong>Role:</strong> ${user.role}</div>
+          <button class="btn btn-primary" onclick="logout()">Logout</button>
+        </div>
+      `;
+      }
+
+      function logout() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-42",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "other",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "Give the MKS units for each of the following quantities.\n<p>(i) Young's modulus</p>\n<p>(ii) Magnetic Induction</p>\n<p>(iii) Power of a lens</p>",
+  "options": [],
+  "answer": {
+    "type": "other",
+    "value": null
+  },
+  "explanation_html": "Currently no explanation available"
+}

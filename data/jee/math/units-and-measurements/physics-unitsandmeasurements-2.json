@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-2",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2017",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->A person measures the depth of a well by measuring the time interval between dropping a stone and receiving the sound of impact with the bottom of the well. The error in his measurement of time is $$\\delta T = 0.01$$ seconds and he measures the depth of the well to be $$L=20$$ meters. Take the acceleration due to gravity $$g = 10m{s^{ - 2}}$$ and the velocity of sound is $$300$$ $$m{s^{ - 1}}$$. Then the fractional error in the measurement, $$\\delta L/L,$$ is closest to <!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">$$0.2\\% $$</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">$$1\\% $$ </div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">3%</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">5%</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "b"
+  },
+  "explanation_html": "Let the time taken by stone to reach bottom of will be t<sub>1</sub> and time taken by sound to reach the observer be t<sub>2</sub> then<br><br>$${t_1} = \\sqrt {{{2L} \\over g}} $$ .... (1_)<br><br>and $${t_2} = {L \\over {{v_s}}}$$ .... (2)<br><br>Where L is depth of well<br><br>g is acceleration due to gravity<br><br>v<sub>s</sub> is velocity of sound<br><br>Total time taken, $$T = {t_1} + {t_2} = {{\\sqrt {2L} } \\over g} + {L \\over {{v_s}}}$$ ..... (3)<br><br>If $$\\delta$$L is error in depth of well measured and $$\\delta$$T is error is time measured then<br><br>$$T + \\delta T = \\sqrt {{{2(L + \\delta L)} \\over g}}  + {{(L + \\delta L)} \\over {{v_s}}}$$<br><br>$$T + \\delta T = \\sqrt {{{2L} \\over g}\\left( {1 + {{\\delta L} \\over L}} \\right)}  + {L \\over {{v_s}}}\\left( {1 + {{\\delta L} \\over L}} \\right)$$<br><br>expanding $${\\left( {1 + {{\\delta L} \\over L}} \\right)^{1/2}}$$ using binomial approximation<br><br>$$T + \\delta T = \\sqrt {{{2L} \\over g}} \\left( {1 + {1 \\over 2}{{\\delta L} \\over L}} \\right) + {L \\over {{V_s}}}\\left( {1 + {{\\delta L} \\over L}} \\right)$$<br><br>$$ = \\sqrt {{{2L} \\over g}}  + \\sqrt {{{2L} \\over g}} \\left( {{1 \\over 2}{{\\delta L} \\over L}} \\right) + {L \\over {{v_s}}} + {L \\over {{v_s}}}{{\\delta L} \\over L}$$<br><br>$$ = \\sqrt {{{2L} \\over g}}  + {L \\over {{v_s}}} + \\left( {{1 \\over 2}\\sqrt {{{2L} \\over g}}  + {L \\over {{v_s}}}} \\right){{\\delta L} \\over L}$$<br><br>given, L = 20 m, g = 10 m/s, v<sub>s</sub> = 300 m/s and using equation (3) : $$\\sqrt {{{2L} \\over g}}  + {L \\over {{v_s}}} = T$$, above equation becomes<br><br>$$T + \\delta T = T + \\left( {{1 \\over 2}\\sqrt {{{2 \\times 20} \\over {10}}}  + {{20} \\over {300}}} \\right){{\\delta L} \\over L}$$<br><br>$$ \\Rightarrow \\delta T = \\left( {{1 \\over 2}\\sqrt 4  + {1 \\over {15}}} \\right){{\\delta L} \\over L} = \\left( {1 + {1 \\over {15}}} \\right){{\\delta L} \\over L} = \\left( {{{16} \\over {15}}} \\right){{\\delta L} \\over L}$$<br><br>$$ \\Rightarrow {{\\delta L} \\over L} = \\delta T\\left( {{{15} \\over {16}}} \\right)$$<br><br>It is given that $$\\delta$$T = 0.01 sec, therefore,<br><br>$$\\left( {{{\\delta L} \\over L}} \\right) \\times 100\\%  = {{15} \\over {16}} \\times {1 \\over {100}} \\times 100\\%  = {{15} \\over {16}}\\% $$<br><br>error $$ \\simeq 1\\% $$<br><br>Answer (B)"
+}

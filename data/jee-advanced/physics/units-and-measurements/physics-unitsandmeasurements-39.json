@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-39",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "numerical",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2014",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "To find the distance d over which a signal can be seen clearly in foggy conditions, a railways engineer uses\ndimensional analysis and assumes that the distance depends on the mass density $$\\rho $$ of the fog, intensity\n(power/area) S of the light from the signal and its frequency f. The engineer finds that d is proportional to\nS<sup>1/n</sup>. The value of n is",
+  "options": [],
+  "answer": {
+    "type": "numerical",
+    "value": "3"
+  },
+  "explanation_html": "<p>Given $$d \\propto {\\rho ^a}{S^b}{b^c}$$</p>\n<p>$${M^0}L{T^0} \\propto {(M{L^{ - 3}})^a}{(M{T^{ - 3}})^b}{({T^{ - 1}})^c}$$</p>\n<p>$${M^0}L{T^0} \\propto {M^{(a + b)}}{L^{ - 3a}}{T^{ - 3b - c}}$$</p>\n<p>Equating the coefficients, we get</p>\n<p>$$a + b = 0 - 3a = 1 - 3b - c = 0$$</p>\n<p>$$b =  - a$$ $$a =  - {1 \\over 3} - c = 3b$$</p>\n<p>$$b = {1 \\over 3}c =  - 3b \\Rightarrow c = 1$$</p>\n<p>Therefore, $$b = {1 \\over n} = {1 \\over 3} \\Rightarrow n = 3$$.</p>"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-14",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2018",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->If the measurement errors in all the independent quantities are known, then it is possible to determine the error in any dependent quantity. This is done by the use of series expansion and truncating the expansion at the first power of the error. For example, consider the relation $$z = x/y.$$ If the errors in $$x,y$$ and $$z$$ are $$\\Delta x,\\Delta y$$ and $$\\Delta z,$$ respectively, then \n<br>$$$z \\pm \\Delta z = {{x \\pm \\Delta x} \\over {y \\pm \\Delta y}} = {x \\over y}\\left( {1 \\pm {{\\Delta x} \\over x}} \\right){\\left( {1 \\pm {{\\Delta y} \\over y}} \\right)^{ - 1}}.$$$\n<br><br>The series expansion for $${\\left( {1 \\pm {{\\Delta y} \\over y}} \\right)^{ - 1}},$$ to first power in $$\\Delta y/y.$$ is $$1 \\pm \\left( {\\Delta y/y} \\right).$$ The relative errors in independent variables are always added. So the error in $$z$$ will be \n<br>$$$\\Delta z = z\\left( {{{\\Delta x} \\over x} + {{\\Delta y} \\over y}} \\right).$$$\n<br><br>The above derivation makes the assumption that $$\\Delta x/x &lt;  &lt; 1,$$ $$\\Delta y/y &lt;  &lt; 1.$$ Therefore, the higher powers of these quantities are neglected.  \n<br><br>In an experiment the initial number of radioactive nuclei is $$3000.$$ It is found that $$1000 \\pm 40$$  nuclei decayed in the first $$1.0s.$$ For $$\\left| x \\right| &lt;  &lt; 1.$$ $$\\ln \\left( {1 + x} \\right) = x$$ up to first power in $$x.$$ The error $$\\Delta \\lambda ,$$ in the determination of the decay constant $$\\lambda ,$$ in $${s^{ - 1}},$$ is <!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">$$0.04$$ </div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">$$0.03$$ </div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">$$0.02$$ </div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">$$0.01$$ </div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "c"
+  },
+  "explanation_html": "<p>The law of radioactive decay gives number of undecayed nuclei N at time t as $$N = {N_0}{e^{ - \\lambda t}}$$, where N<sub>0</sub> is number of nuclei at t = 0 and $$\\lambda$$ is the decay constant. The number of nuclei decayed till time t is given by $${N_d} = {N_0} - N$$. Thus, the decay constant is given by</p>\n<p>$$\\lambda  = {1 \\over t}\\ln {{{N_0}} \\over N} = {1 \\over t}\\ln {{{N_0}} \\over {{N_0} - {N_d}}}$$.</p>\n<p>Since, N<sub>0</sub> = 3000 and t = 1 s are given without any error, we assume that error in $$\\lambda$$ is due to error in N<sub>d</sub> only. Hence, we can write above equation as</p>\n<p>$$\\lambda  + \\Delta \\lambda  = {1 \\over t}\\ln {{{N_0}} \\over {{N_0} - ({N_d} + \\Delta {N_d})}}$$</p>\n<p>$$ = {1 \\over t}\\ln {{{N_0}} \\over {({N_0} - {N_d})(1 - \\Delta {N_d}/({N_0} - {N_d}))}}$$</p>\n<p>$$ = {1 \\over t}\\ln {{{N_0}} \\over {{N_0} - {N_d}}} - {1 \\over t}\\ln \\left( {1 - {{\\Delta {N_d}} \\over {{N_0} - {N_d}}}} \\right)$$</p>\n<p>$$ \\approx \\lambda  + {1 \\over t}{{\\Delta {N_d}} \\over {{N_0} - {N_d}}}$$,</p>\n<p>which gives $$\\Delta \\lambda  = {{\\Delta {N_d}} \\over {t({N_0} - {N_d})}}$$. Substitute $$\\Delta$$N<sub>d</sub> = 40, t = 1 s, and N<sub>d</sub> = 1000 to get $$\\Delta$$$$\\lambda$$ = 0.02.</p>"
+}

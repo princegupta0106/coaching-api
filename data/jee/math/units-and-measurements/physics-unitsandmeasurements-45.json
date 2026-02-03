@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-45",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_multiple",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2010",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->A student uses a simple pendulum of exactly 1m length to determine g, the acceleration due to gravity. He\nuses a stop watch with the least count of 1 sec for this and records 40 seconds for 20 oscillations. For this\nobservation, which of the following statement(s) is (are) true?<!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->Error ΔT in measuring T, the time period, is 0.05 seconds<!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->Error ΔT in measuring T, the time period, is 1 second<!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">Percentage error in the determination of g is 5%</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">Percentage error in the determination of g is 2.5%</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_multiple",
+    "value": "ac"
+  },
+  "explanation_html": "<p>Relative error in measurement of time,</p>\n<p>$${{\\Delta t} \\over t} = {{1\\,s} \\over {40\\,s}} = {1 \\over {40}}$$</p>\n<p>Time period, $$T = {{40\\,s} \\over {20}} = 2\\,s$$</p>\n<p>Error in measurement of time period,</p>\n<p>$$\\Delta T = T \\times {{\\Delta t} \\over t} = 2\\,s \\times {1 \\over {40}} = 0.05\\,s$$</p>\n<p>The time period of simple pendulum is</p>\n<p>$$T = 2\\pi \\sqrt {{l \\over g}} $$</p>\n<p>or, $${T^2} = {{4{\\pi ^2}l} \\over g}$$</p>\n<p>or, $$g = {{4{\\pi ^2}l} \\over {{T^2}}}$$</p>\n<p>$$\\therefore$$ $${{\\Delta g} \\over g} = {{2\\Delta T} \\over T} = 2 \\times {1 \\over {40}} = {1 \\over {20}}$$ ($$\\because$$ $${{\\Delta T} \\over T} = {{\\Delta t} \\over t}$$)</p>\n<p>Percentage error in determination of g is</p>\n<p>$${{\\Delta g} \\over g} \\times 100 = {1 \\over {20}} \\times 100 = 5\\% $$</p>"
+}

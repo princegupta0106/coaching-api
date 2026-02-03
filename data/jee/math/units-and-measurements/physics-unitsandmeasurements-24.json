@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-24",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "other",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->Match the physical quantities given in column I with dimension expressed in terms of mass (M), length (L), time (T), and charge (Q) given in column II and write the correct answer against the matched quantity in a tabular form in your answer book.\n<style type=\"text/css\">\n.tg  {border-collapse:collapse;border-spacing:0;}\n.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}\n.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}\n.tg .tg-s6z2{text-align:center}\n.tg .tg-baqh{text-align:center;vertical-align:top}\n</style>\n<div style=\"overflow-x:auto;\">\n<table class=\"tg\">\n  <tbody><tr>\n    <th class=\"tg-s6z2\"><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">Column I</span></th>\n    <th class=\"tg-s6z2\"><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">Column II</span></th>\n  </tr>\n  <tr>\n    <td class=\"tg-s6z2\">Angular Momentum</td>\n    <td class=\"tg-s6z2\">ML<sup>2</sup>T<sup>-2</sup></td>\n  </tr>\n  <tr>\n    <td class=\"tg-s6z2\">Latent heat</td>\n    <td class=\"tg-s6z2\">ML<sup>2</sup>Q<sup>-2</sup></td>\n  </tr>\n  <tr>\n    <td class=\"tg-s6z2\">Torque</td>\n    <td class=\"tg-s6z2\">ML<sup>2</sup>T<sup>-1</sup></td>\n  </tr>\n  <tr>\n    <td class=\"tg-baqh\">Capacitance</td>\n    <td class=\"tg-baqh\">ML<sup>3</sup>T<sup>-1</sup>Q<sup>-2</sup></td>\n  </tr>\n  <tr>\n    <td class=\"tg-baqh\">Inductance</td>\n    <td class=\"tg-baqh\">M<sup>-1</sup>L<sup>-2</sup>T<sup>2</sup>Q<sup>2</sup></td>\n  </tr>\n  <tr>\n    <td class=\"tg-baqh\">Resistivity</td>\n    <td class=\"tg-baqh\">L<sup>2</sup>T<sup>-2</sup></td>\n  </tr>\n</tbody></table>\n</div><!-- HTML_TAG_END -->",
+  "options": [],
+  "answer": {
+    "type": "other",
+    "value": null
+  },
+  "explanation_html": ""
+}

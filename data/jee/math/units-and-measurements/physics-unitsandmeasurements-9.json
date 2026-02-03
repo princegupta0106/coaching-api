@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-9",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_multiple",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2025",
+    "mode": "online",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START --><p>Length, breadth and thickness of a strip having a uniform cross section are measured to be <b>10.5 cm</b>, <b>0.05 mm</b>, and <b>6.0 μm</b>, respectively. Which of the following option(s) give(s) the volume of the strip in cm<sup>3</sup> with correct significant figures:</p><!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\"><p>$3.2 \\times 10^{-5}$</p></div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\"><p>$32.0 \\times 10^{-6}$</p></div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\"><p>$3.0 \\times 10^{-5}$</p></div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\"><p>$3 \\times 10^{-5}$</p></div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_multiple",
+    "value": "d"
+  },
+  "explanation_html": "<p>$$ \\begin{aligned} &amp; l=10.5 \\mathrm{~cm} \\rightarrow 3 \\mathrm{SF} \\\\ &amp; b=0.05 \\mathrm{~mm}=5 \\times 10^{-3} \\mathrm{~cm} \\rightarrow 1 \\mathrm{SF} \\\\ &amp; h=6.0 \\mu \\mathrm{~m}=6.0 \\times 10^{-4} \\mathrm{~cm} \\rightarrow 2 \\mathrm{SF} \\end{aligned} $$</p>\n<p>we know, $V=$ lbh</p>\n<p></p>\n<p>$$ \\begin{aligned}So\\,\\,\\,\\, v &amp; =10.5 \\times 5 \\times 10^{-3} \\times 6.0 \\times 10^{-4} \\\\ &amp; =315 \\times 10^{-7} \\mathrm{~cm}^3 \\\\ &amp; =3.15 \\times 10^{-5} \\mathrm{~cm}^3 \\end{aligned} $$</p>\n<p>The final answer should have the same number of significant figures as the factor with the fewest significant figures.</p>\n<p>$$ \\text { So } V=3 \\times 10^{-5} \\mathrm{~cm}^3 \\quad \\rightarrow 1 \\mathrm{SF} $$</p>"
+}

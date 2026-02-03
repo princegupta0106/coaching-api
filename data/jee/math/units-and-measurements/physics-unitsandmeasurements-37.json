@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-37",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "other",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2004",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "In Searle's experiment, which is used to find Young's Modulus of elasticity, the diameter of experimental wire is D = 0.05 cm ( measured by a scale of least count 0.001 cm ) and length is L = 110 cm ( measured by a scale of least count 0.1 cm ). A weight of 50 N causes an extension of X = 0.125 cm (measured by a micrometer of least count 0.001 cm ). Find maximum possible error in the value of Young's modulus. Screw gauge and and meter scale are free from error.",
+  "options": [],
+  "answer": {
+    "type": "other",
+    "value": null
+  },
+  "explanation_html": "Currently no explanation available"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-10",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2013",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->Match <b>List I</b> with <b>List II</b> and select the correct answer using the codes given below the lists:\n<p><b>List I</b></p>\nP. Boltzmann Constant\n<br>Q. Coefficient of viscosity\n<br>R. Plank Constant\n<br>S. Thermal conductivity\n<p><b>List II</b></p>\n1. [ML<sup>2</sup>T<sup>-1</sup>]\n<br>2. [ML<sup>-1</sup>T<sup>-1</sup>]\n<br>3. [MLT<sup>-3</sup>K<sup>-1</sup>]\n<br>4. [ML<sup>2</sup>T<sup>-2</sup>K<sup>-1</sup>]<!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->$$\\eqalign{\n  &amp; P\\,\\,\\,\\,Q\\,\\,\\,\\,R\\,\\,\\,\\,S  \\cr \n  &amp; 3\\,\\,\\,\\,\\,\\,1\\,\\,\\,\\,\\,2\\,\\,\\,\\,\\,4 \\cr} $$<!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->$$\\eqalign{\n  &amp; P\\,\\,\\,\\,Q\\,\\,\\,\\,R\\,\\,\\,\\,S  \\cr \n  &amp; 3\\,\\,\\,\\,\\,\\,2\\,\\,\\,\\,\\,1\\,\\,\\,\\,\\,4 \\cr} $$<!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->$$\\eqalign{\n  &amp; P\\,\\,\\,\\,Q\\,\\,\\,\\,R\\,\\,\\,\\,S  \\cr \n  &amp; 4\\,\\,\\,\\,\\,\\,2\\,\\,\\,\\,\\,1\\,\\,\\,\\,\\,3 \\cr} $$<!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->$$\\eqalign{\n  &amp; P\\,\\,\\,\\,Q\\,\\,\\,\\,R\\,\\,\\,\\,S  \\cr \n  &amp; 4\\,\\,\\,\\,\\,\\,1\\,\\,\\,\\,\\,2\\,\\,\\,\\,\\,3 \\cr} $$<!-- HTML_TAG_END --></div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "c"
+  },
+  "explanation_html": "<p>Let's break down the dimensional analysis of each physical quantity:</p>\n\n<p><strong>P. Boltzmann Constant ($k_B$)</strong></p>\n\n<p>The Boltzmann constant relates energy to temperature. Its dimensional formula is derived from the relationship: $E = k_B T$.</p>\n\n<p>Energy ($E$) has dimensions of [ML<sup>2</sup>T<sup>-2</sup>]. Temperature ($T$) has dimensions of [K]. Therefore:</p>\n\n<p>$$[k_B] = \\frac{[E]}{[T]} = \\frac{[ML^2T^{-2}]}{[K]} = [ML^2T^{-2}K^{-1}]$$</p>\n\n<p><strong>Q. Coefficient of Viscosity ($\\eta$)</strong></p>\n\n<p>Viscosity is a measure of a fluid's resistance to flow. It is defined as the ratio of shear stress to shear rate. Shear stress has dimensions of [ML<sup>-1</sup>T<sup>-2</sup>] (force per unit area), and shear rate has dimensions of [T<sup>-1</sup>] (velocity gradient). Therefore:</p>\n\n<p>$$[\\eta] = \\frac{[ML^{-1}T^{-2}]}{[T^{-1}]} = [ML^{-1}T^{-1}]$$</p>\n\n<p><strong>R. Plank Constant ($h$)</strong></p>\n\n<p>Planck's constant relates energy to frequency. Its dimensional formula is derived from the relationship: $E = h\\nu$.</p>\n\n<p>Energy ($E$) has dimensions of [ML<sup>2</sup>T<sup>-2</sup>]. Frequency ($\\nu$) has dimensions of [T<sup>-1</sup>]. Therefore:</p>\n\n<p>$$[h] = \\frac{[E]}{[\\nu]} = \\frac{[ML^2T^{-2}]}{[T^{-1}]} = [ML^2T^{-1}]$$</p>\n\n<p><strong>S. Thermal Conductivity ($k$)</strong></p>\n\n<p>Thermal conductivity is a measure of a material's ability to conduct heat. It is defined as the rate of heat transfer per unit area per unit temperature gradient. Heat transfer rate has dimensions of [ML<sup>2</sup>T<sup>-3</sup>]. Area has dimensions of [L<sup>2</sup>], and temperature gradient has dimensions of [K/L]. Therefore:</p>\n\n<p>$$[k] = \\frac{[ML^2T^{-3}]}{[L^2][K/L]} = [MLT^{-3}K^{-1}]$$</p>\n\n<p><strong>Matching the Dimensions:</strong></p>\n\n<p>Based on the dimensional analysis, we can match the quantities in List I with the dimensions in List II as follows:</p>\n\n<style>\n\n<p>table {</p>\n\n<p>width: 100%;</p>\n\n<p>border-collapse: collapse;</p>\n\n<p>margin: 20px 0;</p>\n\n<p>}</p>\n\n<p>th {</p>\n\n<p>background-color: blue;</p>\n\n<p>color: white;</p>\n\n<p>border: 1px solid lightgrey;</p>\n\n<p>padding: 10px;</p>\n\n<p>}</p>\n\n<p>td {</p>\n\n<p>border: 1px solid lightgrey;</p>\n\n<p>padding: 10px;</p>\n\n<p>text-align: left;</p>\n\n<p>}</p>\n\n</style>\n\n<table>\n\n<tbody><tr>\n\n<th>List I</th>\n\n<th>List II</th>\n\n</tr>\n\n<tr>\n\n<td>P. Boltzmann Constant ($k_B$)</td>\n\n<td>4. [ML<sup>2</sup>T<sup>-2</sup>K<sup>-1</sup>]</td>\n\n</tr>\n\n<tr>\n\n<td>Q. Coefficient of Viscosity ($\\eta$)</td>\n\n<td>2. [ML<sup>-1</sup>T<sup>-1</sup>]</td>\n\n</tr>\n\n<tr>\n\n<td>R. Plank Constant ($h$)</td>\n\n<td>1. [ML<sup>2</sup>T<sup>-1</sup>]</td>\n\n</tr>\n\n<tr>\n\n<td>S. Thermal conductivity ($k$)</td>\n\n<td>3. [MLT<sup>-3</sup>K<sup>-1</sup>]</td>\n\n</tr>\n\n</tbody></table>\n\n<p>Therefore, the correct answer is <strong>Option C</strong>.</p>\n\n<p></p>"
+}

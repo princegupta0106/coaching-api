@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Institution View</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+      .institution-info {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+      }
+      .info-row {
+        margin-bottom: 15px;
+      }
+      .info-label {
+        font-weight: bold;
+        color: #555;
+        margin-bottom: 5px;
+      }
+      .info-value {
+        color: #333;
+        font-size: 18px;
+      }
+      .students-section {
+        margin-top: 30px;
+      }
+      .students-section h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 22px;
+      }
+      .students-list {
+        list-style: none;
+      }
+      .student-item {
+        background: #fff;
+        padding: 12px 20px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border-left: 4px solid #667eea;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .no-students {
+        color: #999;
+        font-style: italic;
+        text-align: center;
+        padding: 20px;
+      }
+      .back-btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 20px;
+        cursor: pointer;
+        border: none;
+        font-size: 16px;
+      }
+      .back-btn:hover {
+        background: #5568d3;
+      }
+      .error {
+        background: #fee;
+        color: #c33;
+        padding: 15px;
+        border-radius: 5px;
+        border: 1px solid #fcc;
+        margin-bottom: 20px;
+      }
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #667eea;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Institution Details</h1>
+
+      <div id="loading" class="loading">Loading...</div>
+      <div id="error" class="error" style="display: none"></div>
+
+      <div id="institutionContent" style="display: none">
+        <div class="institution-info">
+          <div class="info-row">
+            <div class="info-label">Institution Name</div>
+            <div class="info-value" id="institutionName"></div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Institution ID</div>
+            <div class="info-value" id="institutionId"></div>
+          </div>
+        </div>
+
+        <div class="students-section">
+          <h2>Students (<span id="studentCount">0</span>)</h2>
+          <ul class="students-list" id="studentsList"></ul>
+        </div>
+
+        <button class="back-btn" onclick="goBack()">Back to Dashboard</button>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api/institution";
+
+      function showError(message) {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("error").textContent = message;
+        document.getElementById("error").style.display = "block";
+      }
+
+      function goBack() {
+        window.location.href = "/";
+      }
+
+      async function loadInstitution() {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          showError("Not authenticated. Redirecting to login...");
+          setTimeout(() => (window.location.href = "/"), 2000);
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/view`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "Failed to load institution");
+          }
+
+          const data = await response.json();
+          displayInstitution(data.institution);
+        } catch (error) {
+          showError(error.message);
+        }
+      }
+
+      function displayInstitution(institution) {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("institutionContent").style.display = "block";
+
+        document.getElementById("institutionName").textContent =
+          institution.institution_name || "N/A";
+        document.getElementById("institutionId").textContent =
+          institution.institution_id || "N/A";
+
+        const studentsList = document.getElementById("studentsList");
+        // Safely handle all_students array
+        const students = Array.isArray(institution.all_students)
+          ? institution.all_students
+          : [];
+
+        document.getElementById("studentCount").textContent = students.length;
+
+        if (students.length === 0) {
+          studentsList.innerHTML =
+            '<div class="no-students">No students enrolled yet</div>';
+        } else {
+          studentsList.innerHTML = students
+            .map((email) => `<li class="student-item">${email}</li>`)
+            .join("");
+        }
+      }
+
+      window.addEventListener("load", loadInstitution);
+    </script>
+  </body>
+</html>

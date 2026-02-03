@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+      }
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #eee;
+      }
+      .tab {
+        padding: 12px 24px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #666;
+        border-bottom: 3px solid transparent;
+      }
+      .tab.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: bold;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      textarea {
+        min-height: 100px;
+        font-family: Arial, sans-serif;
+      }
+      button {
+        padding: 12px 30px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      button:hover {
+        background: #5568d3;
+      }
+      .back-btn {
+        background: #888;
+        margin-right: 10px;
+      }
+      .back-btn:hover {
+        background: #666;
+      }
+      .student-set-item {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border-left: 4px solid #667eea;
+      }
+      .student-set-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .student-set-id {
+        font-weight: bold;
+        color: #333;
+        font-size: 18px;
+      }
+      .student-list {
+        color: #666;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+      .set-actions {
+        display: flex;
+        gap: 10px;
+      }
+      .set-actions button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+      .message {
+        padding: 12px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .message.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .share-section {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Admin Panel</h1>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('create')">
+          Create Student Set
+        </button>
+        <button class="tab" onclick="switchTab('manage')">
+          Manage Student Sets
+        </button>
+        <button class="tab" onclick="switchTab('users')">Manage Users</button>
+      </div>
+
+      <div id="createTab" class="tab-content active">
+        <h2>Create New Student Set</h2>
+        <div id="createMessage" class="message" style="display: none"></div>
+        <form onsubmit="createStudentSet(event)">
+          <div class="form-group">
+            <label for="setName"
+              >Set Name (e.g., 12A, 12B, Physics-Group1)</label
+            >
+            <input
+              type="text"
+              id="setName"
+              required
+              placeholder="Enter set name"
+            />
+            <small style="color: #666"
+              >Will be created as: institution-id-setname</small
+            >
+          </div>
+          <div class="form-group">
+            <label for="students">Students (one email per line)</label>
+            <textarea
+              id="students"
+              placeholder="student1@example.com&#10;student2@example.com"
+            ></textarea>
+          </div>
+          <button type="submit">Create Student Set</button>
+        </form>
+      </div>
+
+      <div id="manageTab" class="tab-content">
+        <h2>Manage Student Sets</h2>
+        <div id="manageMessage" class="message" style="display: none"></div>
+        <div id="studentSetsList"></div>
+      </div>
+
+      <div id="usersTab" class="tab-content">
+        <h2>Manage Users</h2>
+        <div id="usersMessage" class="message" style="display: none"></div>
+
+        <div style="margin-bottom: 30px">
+          <h3>Create New User</h3>
+          <form onsubmit="createUser(event)">
+            <div class="form-group">
+              <label for="newUserEmail">Email</label>
+              <input type="email" id="newUserEmail" required />
+            </div>
+            <div class="form-group">
+              <label for="newUserPassword">Password</label>
+              <input type="password" id="newUserPassword" required />
+            </div>
+            <div class="form-group">
+              <label for="newUserRole">Role</label>
+              <select id="newUserRole" required>
+                <option value="student">Student</option>
+                <option value="staff">Staff</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <button type="submit">Create User</button>
+          </form>
+        </div>
+
+        <div>
+          <h3>All Users</h3>
+          <div id="usersList"></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 30px">
+        <button class="back-btn" onclick="goBack()">Back to Dashboard</button>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api/student-sets";
+      const USERS_API_URL = "http://localhost:3000/api/users";
+      const token = localStorage.getItem("token");
+
+      function switchTab(tab) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((c) => c.classList.remove("active"));
+
+        if (tab === "create") {
+          document.querySelector(".tab:nth-child(1)").classList.add("active");
+          document.getElementById("createTab").classList.add("active");
+        } else if (tab === "manage") {
+          document.querySelector(".tab:nth-child(2)").classList.add("active");
+          document.getElementById("manageTab").classList.add("active");
+          loadStudentSets();
+        } else if (tab === "users") {
+          document.querySelector(".tab:nth-child(3)").classList.add("active");
+          document.getElementById("usersTab").classList.add("active");
+          loadUsers();
+        }
+      }
+
+      function showMessage(elementId, message, type) {
+        const el = document.getElementById(elementId);
+        el.textContent = message;
+        el.className = `message ${type}`;
+        el.style.display = "block";
+        setTimeout(() => (el.style.display = "none"), 5000);
+      }
+
+      function goBack() {
+        window.location.href = "/";
+      }
+
+      async function createStudentSet(event) {
+        event.preventDefault();
+
+        const setName = document.getElementById("setName").value.trim();
+        const studentsText = document.getElementById("students").value.trim();
+        const students = studentsText
+          ? studentsText
+              .split("\n")
+              .map((s) => s.trim())
+              .filter((s) => s)
+          : [];
+
+        try {
+          const response = await fetch(`${API_URL}/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ setName, students }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage(
+              "createMessage",
+              "Student set created successfully!",
+              "success",
+            );
+            document.getElementById("setName").value = "";
+            document.getElementById("students").value = "";
+          } else {
+            showMessage(
+              "createMessage",
+              data.error || "Failed to create student set",
+              "error",
+            );
+          }
+        } catch (error) {
+          showMessage("createMessage", "Network error", "error");
+        }
+      }
+
+      async function loadStudentSets() {
+        try {
+          const response = await fetch(`${API_URL}/list`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            displayStudentSets(data.studentSets);
+          } else {
+            showMessage(
+              "manageMessage",
+              data.error || "Failed to load student sets",
+              "error",
+            );
+          }
+        } catch (error) {
+          showMessage("manageMessage", "Network error", "error");
+        }
+      }
+
+      async function displayStudentSets(sets) {
+        const container = document.getElementById("studentSetsList");
+
+        if (sets.length === 0) {
+          container.innerHTML =
+            '<p style="color: #999; text-align: center; padding: 40px;">No student sets created yet</p>';
+          return;
+        }
+
+        // Fetch shared staff for each set
+        const setsWithShares = await Promise.all(
+          sets.map(async (set) => {
+            try {
+              const response = await fetch(
+                `${API_URL}/shared-staff/${set.id}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                },
+              );
+              const data = await response.json();
+              return { ...set, sharedStaff: data.sharedStaff || [] };
+            } catch (error) {
+              return { ...set, sharedStaff: [] };
+            }
+          }),
+        );
+
+        container.innerHTML = setsWithShares
+          .map(
+            (set) => `
+        <div class="student-set-item">
+          <div class="student-set-header">
+            <div class="student-set-id">${set.id}</div>
+            <div class="set-actions">
+              <button onclick="editSet('${set.id}')">Edit</button>
+            </div>
+          </div>
+          <div class="student-list">
+            <strong>Students (${(set.students || []).length}):</strong>
+            ${(set.students || []).length > 0 ? (set.students || []).join(", ") : "No students added"}
+          </div>
+          <div class="share-section">
+            <strong>Shared with Staff:</strong>
+            <div style="margin-top: 10px;">
+              ${
+                set.sharedStaff.length > 0
+                  ? set.sharedStaff
+                      .map(
+                        (email) => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: white; margin-bottom: 5px; border-radius: 4px;">
+                      <span>${email}</span>
+                      <button onclick="unshareSet('${set.id}', '${email}')" style="padding: 6px 12px; font-size: 12px; background: #e74c3c;">Remove</button>
+                    </div>
+                  `,
+                      )
+                      .join("")
+                  : '<p style="color: #999; font-size: 14px;">Not shared with anyone</p>'
+              }
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+              <input type="email" id="share-${set.id}" placeholder="staff@example.com" style="flex: 1;">
+              <button onclick="shareSet('${set.id}')">Share</button>
+            </div>
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      async function shareSet(setId) {
+        const emailInput = document.getElementById(`share-${setId}`);
+        const staffEmail = emailInput.value.trim();
+
+        if (!staffEmail) {
+          alert("Please enter a staff email");
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/share`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ setId, staffEmail }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage("manageMessage", data.message, "success");
+            emailInput.value = "";
+          } else {
+            showMessage(
+              "manageMessage",
+              data.error || "Failed to share",
+              "error",
+            );
+          }
+        } catch (error) {
+          showMessage("manageMessage", "Network error", "error");
+        }
+      }
+
+      function editSet(setId) {
+        const studentsText = prompt("Enter student emails (one per line):");
+        if (studentsText === null) return;
+
+        const students = studentsText
+          .split("\n")
+          .map((s) => s.trim())
+          .filter((s) => s);
+
+        updateSet(setId, students);
+      }
+
+      async function updateSet(setId, students) {
+        try {
+          const response = await fetch(`${API_URL}/update/${setId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ students }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage(
+              "manageMessage",
+              "Student set updated successfully!",
+              "success",
+            );
+            loadStudentSets();
+          } else {
+            showMessage(
+              "manageMessage",
+              data.error || "Failed to update",
+              "error",
+            );
+          }
+        } catch (error) {
+          showMessage("manageMessage", "Network error", "error");
+        }
+      }
+
+      // User Management Functions
+      async function loadUsers() {
+        try {
+          const response = await fetch(`${USERS_API_URL}/list`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            displayUsers(data.users);
+          } else {
+            showMessage(
+              "usersMessage",
+              data.error || "Failed to load users",
+              "error",
+            );
+          }
+        } catch (error) {
+          showMessage("usersMessage", "Network error", "error");
+        }
+      }
+
+      function displayUsers(users) {
+        const container = document.getElementById("usersList");
+
+        if (users.length === 0) {
+          container.innerHTML =
+            '<p style="color: #999; text-align: center; padding: 40px;">No users found</p>';
+          return;
+        }
+
+        container.innerHTML = users
+          .map(
+            (user) => `
+        <div class="student-set-item">
+          <div class="student-set-header">
+            <div>
+              <div class="student-set-id">${user.email}</div>
+              <div style="color: #666; font-size: 14px; margin-top: 5px;">Role: ${user.role}</div>
+            </div>
+            <div class="set-actions">
+              <button onclick="editUser('${user.email}', '${user.role}')">Edit</button>
+              <button onclick="deleteUser('${user.email}')" style="background: #e74c3c;">Delete</button>
+            </div>
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      async function createUser(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("newUserEmail").value.trim();
+        const password = document.getElementById("newUserPassword").value;
+        const role = document.getElementById("newUserRole").value;
+
+        try {
+          const response = await fetch(`${USERS_API_URL}/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ email, password, role }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage(
+              "usersMessage",
+              "User created successfully!",
+              "success",
+            );
+            document.getElementById("newUserEmail").value = "";
+            document.getElementById("newUserPassword").value = "";
+            document.getElementById("newUserRole").value = "student";
+            loadUsers();
+          } else {
+            showMessage(
+              "usersMessage",
+              data.error || "Failed to create user",
+              "error",
+            );
+          }
+        } catch (error) {
+          showMessage("usersMessage", "Network error", "error");
+        }
+      }
+
+      function editUser(email, currentRole) {
+        const newPassword = prompt(
+          "Enter new password (leave empty to keep current):",
+        );
+        const newRole = prompt(
+          `Enter new role (current: ${currentRole})\nOptions: student, staff, admin:`,
+          currentRole,
+        );
+
+        if (newRole === null) return;
+
+        const updates = {};
+        if (newPassword && newPassword.trim())
+          updates.password = newPassword.trim();
+        if (newRole && newRole.trim()) updates.role = newRole.trim();
+
+        if (Object.keys(updates).length === 0) {
+          alert("No changes made");
+          return;
+        }
+
+        updateUser(email, updates);
+      }
+
+      async function updateUser(email, updates) {
+        try {
+          const response = await fetch(`${USERS_API_URL}/update/${email}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(updates),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage(
+              "usersMessage",
+              "User updated successfully!",
+              "success",
+            );
+            loadUsers();
+          } else {
+            showMessage(
+              "usersMessage",
+              data.error || "Failed to update user",
+              "error",
+            );
+          }
+        } catch (error) {
+          showMessage("usersMessage", "Network error", "error");
+        }
+      }
+
+      async function deleteUser(email) {
+        if (!confirm(`Are you sure you want to delete user: ${email}?`)) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${USERS_API_URL}/delete/${email}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage(
+              "usersMessage",
+              "User deleted successfully!",
+              "success",
+            );
+            loadUsers();
+          } else {
+            showMessage(
+              "usersMessage",
+              data.error || "Failed to delete user",
+              "error",
+            );
+          }
+        } catch (error) {
+          showMessage("usersMessage", "Network error", "error");
+        }
+      }
+
+      async function unshareSet(setId, staffEmail) {
+        if (!confirm(`Remove access for ${staffEmail}?`)) return;
+
+        try {
+          const response = await fetch(`${API_URL}/unshare`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ setId, staffEmail }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage("manageMessage", data.message, "success");
+            loadStudentSets();
+          } else {
+            showMessage(
+              "manageMessage",
+              data.error || "Failed to remove access",
+              "error",
+            );
+          }
+        } catch (error) {
+          showMessage("manageMessage", "Network error", "error");
+        }
+      }
+
+      // Check authentication
+      window.addEventListener("load", () => {
+        if (!token) {
+          alert("Not authenticated");
+          window.location.href = "/";
+        }
+      });
+    </script>
+  </body>
+</html>

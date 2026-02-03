@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Question Uploader</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+      }
+      select,
+      input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+      }
+      .upload-area {
+        border: 3px dashed #667eea;
+        border-radius: 12px;
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 20px;
+      }
+      .upload-area:hover {
+        background: #f0f4ff;
+        border-color: #5568d3;
+      }
+      .upload-area.dragover {
+        background: #e0e8ff;
+        border-color: #5568d3;
+      }
+      .file-list {
+        margin: 20px 0;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .file-item {
+        background: #f8f9fa;
+        padding: 12px;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .file-item.success {
+        background: #d4edda;
+        border-left: 4px solid #28a745;
+      }
+      .file-item.error {
+        background: #f8d7da;
+        border-left: 4px solid #dc3545;
+      }
+      button {
+        padding: 14px 30px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+      }
+      button:hover {
+        background: #5568d3;
+      }
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      .progress {
+        margin-top: 20px;
+        display: none;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 30px;
+        background: #f0f0f0;
+        border-radius: 15px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: #667eea;
+        transition: width 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+      }
+      .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 3000;
+        animation: slideIn 0.3s ease;
+      }
+      .toast.success {
+        background: #27ae60;
+      }
+      .toast.error {
+        background: #e74c3c;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      .back-btn {
+        background: #888;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
+
+      <h1>📚 Question Uploader</h1>
+
+      <div class="form-group">
+        <label>Select Exam:</label>
+        <select id="examSelect" onchange="loadSubjects()">
+          <option value="">-- Select Exam --</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Select Subject:</label>
+        <select id="subjectSelect" onchange="loadQuestionSets()" disabled>
+          <option value="">-- Select Subject --</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Select Chapter (Question Set):</label>
+        <select id="questionSetSelect" disabled>
+          <option value="">-- Select Chapter --</option>
+        </select>
+      </div>
+
+      <div
+        class="upload-area"
+        id="uploadArea"
+        onclick="document.getElementById('fileInput').click()"
+      >
+        <input
+          type="file"
+          id="fileInput"
+          multiple
+          accept=".json"
+          style="display: none"
+          onchange="handleFiles(this.files)"
+        />
+        <h3>📁 Drop JSON files here or click to browse</h3>
+        <p style="color: #888; margin-top: 10px">
+          Upload multiple question JSON files at once
+        </p>
+      </div>
+
+      <div class="file-list" id="fileList"></div>
+
+      <button id="uploadBtn" onclick="uploadQuestions()" disabled>
+        Upload Questions
+      </button>
+
+      <div class="progress" id="progress">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api";
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      let selectedFiles = [];
+      let exams = [];
+      let subjects = [];
+      let questionSets = [];
+
+      // Check authentication
+      window.addEventListener("load", async () => {
+        if (!token || (user.role !== "staff" && user.role !== "admin")) {
+          alert("Access denied. Only staff and admin can upload questions.");
+          window.location.href = "/";
+          return;
+        }
+
+        await loadExams();
+        setupDragAndDrop();
+      });
+
+      async function loadExams() {
+        try {
+          const response = await fetch(`${API_URL}/questions/exams`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            exams = data.exams || [];
+
+            const select = document.getElementById("examSelect");
+            select.innerHTML =
+              '<option value="">-- Select Exam --</option>' +
+              exams
+                .map((exam) => `<option value="${exam.id}">${exam.id}</option>`)
+                .join("");
+          }
+        } catch (error) {
+          showToast("Error loading exams", "error");
+        }
+      }
+
+      async function loadSubjects() {
+        const examId = document.getElementById("examSelect").value;
+        const subjectSelect = document.getElementById("subjectSelect");
+        const questionSetSelect = document.getElementById("questionSetSelect");
+
+        if (!examId) {
+          subjectSelect.disabled = true;
+          questionSetSelect.disabled = true;
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/exams/${examId}/subjects`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            subjects = data.subjects || [];
+
+            subjectSelect.innerHTML =
+              '<option value="">-- Select Subject --</option>' +
+              subjects
+                .map(
+                  (subject) =>
+                    `<option value="${subject.id}">${subject.id}</option>`,
+                )
+                .join("");
+            subjectSelect.disabled = false;
+            questionSetSelect.disabled = true;
+          }
+        } catch (error) {
+          showToast("Error loading subjects", "error");
+        }
+      }
+
+      async function loadQuestionSets() {
+        const subjectId = document.getElementById("subjectSelect").value;
+        const questionSetSelect = document.getElementById("questionSetSelect");
+
+        if (!subjectId) {
+          questionSetSelect.disabled = true;
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/subjects/${subjectId}/question-sets`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            questionSets = data.questionSets || [];
+
+            questionSetSelect.innerHTML =
+              '<option value="">-- Select Chapter --</option>' +
+              questionSets
+                .map(
+                  (qs) =>
+                    `<option value="${qs.id}">${qs.name} (${qs.id})</option>`,
+                )
+                .join("");
+            questionSetSelect.disabled = false;
+            updateUploadButton();
+          }
+        } catch (error) {
+          showToast("Error loading question sets", "error");
+        }
+      }
+
+      function setupDragAndDrop() {
+        const uploadArea = document.getElementById("uploadArea");
+
+        uploadArea.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          uploadArea.classList.add("dragover");
+        });
+
+        uploadArea.addEventListener("dragleave", () => {
+          uploadArea.classList.remove("dragover");
+        });
+
+        uploadArea.addEventListener("drop", (e) => {
+          e.preventDefault();
+          uploadArea.classList.remove("dragover");
+          handleFiles(e.dataTransfer.files);
+        });
+      }
+
+      function handleFiles(files) {
+        selectedFiles = Array.from(files).filter((f) =>
+          f.name.endsWith(".json"),
+        );
+
+        if (selectedFiles.length === 0) {
+          showToast("Please select valid JSON files", "error");
+          return;
+        }
+
+        displayFileList();
+        updateUploadButton();
+      }
+
+      function displayFileList() {
+        const fileList = document.getElementById("fileList");
+
+        fileList.innerHTML = selectedFiles
+          .map(
+            (file, index) => `
+        <div class="file-item" id="file-${index}">
+          <span>${file.name}</span>
+          <span>${(file.size / 1024).toFixed(2)} KB</span>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      function updateUploadButton() {
+        const questionSetId =
+          document.getElementById("questionSetSelect").value;
+        const uploadBtn = document.getElementById("uploadBtn");
+        uploadBtn.disabled = !questionSetId || selectedFiles.length === 0;
+      }
+
+      async function uploadQuestions() {
+        const questionSetId =
+          document.getElementById("questionSetSelect").value;
+
+        if (!questionSetId || selectedFiles.length === 0) {
+          showToast("Please select a chapter and files", "error");
+          return;
+        }
+
+        document.getElementById("uploadBtn").disabled = true;
+        document.getElementById("progress").style.display = "block";
+
+        let successCount = 0;
+        let errorCount = 0;
+
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const file = selectedFiles[i];
+          const progress = ((i + 1) / selectedFiles.length) * 100;
+
+          document.getElementById("progressFill").style.width = progress + "%";
+          document.getElementById("progressFill").textContent =
+            Math.round(progress) + "%";
+
+          try {
+            // Read and parse JSON file
+            const fileContent = await file.text();
+            const questionData = JSON.parse(fileContent);
+
+            // Extract question ID from JSON or filename
+            const questionId =
+              questionData.id || file.name.replace(".json", "");
+
+            console.log("Uploading question:", questionId, questionData);
+
+            // Send parsed JSON content in request body
+            const response = await fetch(`${API_URL}/questions/upload`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                questionSetId,
+                questionId,
+                questionData,
+              }),
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              console.log("Upload success:", result);
+              document.getElementById(`file-${i}`).classList.add("success");
+              successCount++;
+            } else {
+              const error = await response.json();
+              console.error("Upload error:", error);
+              document.getElementById(`file-${i}`).classList.add("error");
+              document.getElementById(`file-${i}`).innerHTML +=
+                `<span style="color: red; font-size: 12px;">${error.error || "Upload failed"}</span>`;
+              errorCount++;
+            }
+          } catch (error) {
+            console.error("File processing error:", error);
+            document.getElementById(`file-${i}`).classList.add("error");
+            document.getElementById(`file-${i}`).innerHTML +=
+              `<span style="color: red; font-size: 12px;">${error.message}</span>`;
+            errorCount++;
+          }
+        }
+
+        document.getElementById("uploadBtn").disabled = false;
+        showToast(
+          `Upload complete! Success: ${successCount}, Failed: ${errorCount}`,
+          successCount > 0 ? "success" : "error",
+        );
+
+        // Clear files after upload
+        setTimeout(() => {
+          selectedFiles = [];
+          document.getElementById("fileInput").value = "";
+          displayFileList();
+          updateUploadButton();
+          document.getElementById("progress").style.display = "none";
+        }, 2000);
+      }
+
+      function showToast(message, type = "success") {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.remove(), 3000);
+      }
+
+      function goBack() {
+        window.history.back();
+      }
+
+      document
+        .getElementById("questionSetSelect")
+        .addEventListener("change", updateUploadButton);
+    </script>
+  </body>
+</html>

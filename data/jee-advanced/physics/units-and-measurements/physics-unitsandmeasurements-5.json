@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-5",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2018",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "If the measurement errors in all the independent quantities are known, then it is possible to determine the error in any dependent quantity. This is done by the use of series expansion and truncating the expansion at the first power of the error. For example, consider the relation $$z = x/y.$$ If the errors in $$x,y$$ and $$z$$ are $$\\Delta x,\\Delta y$$ and $$\\Delta z,$$ respectively, then \n<br>$$$z \\pm \\Delta z = {{x \\pm \\Delta x} \\over {y \\pm \\Delta y}} = {x \\over y}\\left( {1 \\pm {{\\Delta x} \\over x}} \\right){\\left( {1 \\pm {{\\Delta y} \\over y}} \\right)^{ - 1}}.$$$\n<br><br>The series expansion for $${\\left( {1 \\pm {{\\Delta y} \\over y}} \\right)^{ - 1}},$$ to first power in $$\\Delta y/y.$$ is $$1 \\pm \\left( {\\Delta y/y} \\right).$$ The relative errors in independent variables are always added. So the error in $$z$$ will be \n<br>$$$\\Delta z = z\\left( {{{\\Delta x} \\over x} + {{\\Delta y} \\over y}} \\right).$$$\n<br><br>The above derivation makes the assumption that $$\\Delta x/x &lt;  &lt; 1,$$ $$\\Delta y/y &lt;  &lt; 1.$$ Therefore, the higher powers of these quantities are neglected. \n<br><br>Consider the ratio $$r = {{\\left( {1 - a} \\right)} \\over {1 + a}}$$ to be determined by measuring a dimensionless quantity $$a.$$ If the error in the measurement of $$a$$ is $$\\Delta a\\left( {\\Delta a/a &lt;  &lt; 1.} \\right.$$ then what is the error  $$\\Delta r$$ in determining $$r$$?",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">$${{\\Delta a} \\over {{{\\left( {1 + a} \\right)}^2}}}$$ </div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">$${{2\\Delta a} \\over {{{\\left( {1 + a} \\right)}^2}}}$$ </div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">$${{2\\Delta a} \\over {\\left( {1 - {a^2}} \\right)}}$$ </div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">$${{2a\\Delta a} \\over {\\left( {1 - {a^2}} \\right)}}$$ </div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "b"
+  },
+  "explanation_html": "<p>Given, ratio $$r = {{1 - a} \\over {1 + a}}$$ ..... (1)</p>\n<p>Given, error in measurement of a is $$\\Delta$$a ($$\\Delta$$a/a &lt;&lt; 1)</p>\n<p>Taking natural log of Eq. (1), we get</p>\n<p>$$\\ln r = \\ln \\left( {{{1 - a} \\over {1 + a}}} \\right)$$</p>\n<p>$$ \\Rightarrow \\ln r = \\ln (1 - a) - \\ln (1 + a)$$</p>\n<p>$${{\\Delta r} \\over r} = {{\\Delta a} \\over {1 - a}} + {{\\Delta a} \\over {1 + a}} = {{(1 + a)\\Delta a + (1 - a)\\Delta a} \\over {(1 - a)(1 + a)}}$$</p>\n<p>$$ \\Rightarrow {{\\Delta r} \\over r} = {{2\\Delta a} \\over {(1 - a)(1 + a)}}$$</p>\n<p>$$ \\Rightarrow \\Delta r = r\\,.\\,{{2\\Delta a} \\over {(1 - a)(1 + a)}}$$</p>\n<p>Substituting value of r, we get</p>\n<p>$$\\Delta r = {{1 - a} \\over {1 + a}}{{2\\Delta a} \\over {(1 - a)(1 + a)}} = {{2\\Delta a} \\over {{{(1 + a)}^2}}}$$</p>\n<p>Therefore, error $$\\Delta$$r in determining r is $${{2\\Delta a} \\over {{{(1 + a)}^2}}}$$</p>"
+}

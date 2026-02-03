@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-56",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2005",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "Which of the following set have different dimensions?",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">Pressure, Young's modulus, Stress</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">EMF, Potential difference, Electric potential</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">Heat, Work done, Energy</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">Dipole moment, Electric flux, Electric field</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "d"
+  },
+  "explanation_html": "<h3>Option A</h3>\n<p><strong>Pressure</strong>, <strong>Young’s modulus</strong>, and <strong>Stress</strong></p>\n<p>All three have the same dimensional formula:</p>\n<p>$ M L^{-1} T^{-2} $</p>\n<p>✅ <strong>All same dimensions.</strong></p>\n\n<h3>Option B</h3>\n<p><strong>EMF</strong>, <strong>Potential difference</strong>, and <strong>Electric potential</strong></p>\n<p>All represent <strong>potential difference</strong> (energy per unit charge):</p>\n<p>$ M L^{2} T^{-3} I^{-1} $</p>\n<p>✅ <strong>All same dimensions.</strong></p>\n\n<h3>Option C</h3>\n<p><strong>Heat</strong>, <strong>Work done</strong>, and <strong>Energy</strong></p>\n<p>All represent forms of energy:</p>\n<p>$ M L^{2} T^{-2} $</p>\n<p>✅ <strong>All same dimensions.</strong></p>\n\n<h3>Option D</h3>\n<p><strong>Dipole moment</strong>, <strong>Electric flux</strong>, <strong>Electric field</strong></p>\n<p>Let’s write the dimensional formulas:</p>\n<ul>\n<li><p><strong>Electric dipole moment (p)</strong> = charge × distance  </p>\n<p>$   [p] = Q L = I T L   $</p></li>\n<li><p><strong>Electric flux (Φ)</strong> = $ E \\times A $  </p>\n<p>Electric field $ E $ has $ M L T^{-3} I^{-1} $, so  </p>\n<p>$   [Φ] = M L^{3} T^{-3} I^{-1}   $</p></li>\n<li><p><strong>Electric field (E)</strong>  </p>\n<p>$   M L T^{-3} I^{-1}   $</p></li>\n</ul>\n<p>⛔ These three clearly have <strong>different dimensions</strong>.</p>\n\n<p>✅ <strong>Answer: Option D</strong></p>\n<p><strong>Explanation:</strong>  </p>\n<p>Only <strong>Dipole moment</strong>, <strong>Electric flux</strong>, and <strong>Electric field</strong> have different dimensional formulas; all other sets have same dimensions.</p>"
+}

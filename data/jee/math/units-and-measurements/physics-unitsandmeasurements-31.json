@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-31",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2011",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "The density of a solid ball is to be determined in an experiment. The diameter of the ball is measured with\na screw gauge, whose pitch is 0.5 mm and there are 50 divisions on the circular scale. The reading on the\nmain scale is 2.5 mm and that on the circular scale is 20 divisions. If the measured mass of the ball has a\nrelative error of 2 %, the relative percentage error in the density is",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">0.9 %</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">2.4 %</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">3.1 %</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">4.2 %</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "c"
+  },
+  "explanation_html": "<p>Least count of screw gauge</p>\n<p>$$ = {{Pitch} \\over {No.\\,of\\,divisions\\,on\\,the\\,circular\\,scale}}$$</p>\n<p>$$ = {{0.5\\,mm} \\over {50}}$$ = 0.01 mm</p>\n<p>Diameter of ball, $$D = MSR + CSR \\times LC$$</p>\n<p>= 2.5 mm + (20)(0.01 mm) = 2.7 mm</p>\n<p>Density, $$\\rho  = {{Mass} \\over {Volume}} = {M \\over {{{4\\pi } \\over 3}{{\\left( {{D \\over 2}} \\right)}^3}}}$$</p>\n<p>The relative error in the density is</p>\n<p>$${{\\Delta \\rho } \\over \\rho } = {{\\Delta M} \\over M} + {{3\\Delta D} \\over D}$$</p>\n<p>The relative percentage in the density is</p>\n<p>$${{\\Delta \\rho } \\over \\rho } \\times 100 = \\left[ {{{\\Delta M} \\over M} + {{3\\Delta D} \\over D}} \\right] \\times 100$$</p>\n<p>$$ = 2\\%  + {{3 \\times 0.01} \\over {2.7}} \\times 100 = 2\\%  + 1.11\\%  = 3.11\\% $$</p>"
+}

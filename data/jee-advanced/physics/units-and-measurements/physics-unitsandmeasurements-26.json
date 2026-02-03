@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-26",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2006",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<p>In a screw gauge, the zero of main scale coincides with the fifth division of circular scale in figure (i).The circular division of screw gauge is 50. It moves 0.5 mm on main scale in one rotation.The diameter of the ball in figure (ii) is</p>\n<img src=\"https://app-content.cdn.examgoal.net/fly/@width/image/jaoe38c1mgs1mh52/a78b2624-a7d8-4691-b106-83a8d4d97690/2a03fe60-a9cd-11f0-a597-61fa577d33f6/file-jaoe38c1mgs1mh53.png?format=png\" data-orsrc=\"https://app-content.cdn.examgoal.net/image/jaoe38c1mgs1mh52/a78b2624-a7d8-4691-b106-83a8d4d97690/2a03fe60-a9cd-11f0-a597-61fa577d33f6/file-jaoe38c1mgs1mh53.png\" loading=\"lazy\" style=\"max-width:100%;height:auto;display:block;margin:0 auto;max-height:40vh;vertical-align:baseline\" alt=\"IIT-JEE 2006 Physics - Units &amp; Measurements Question 52 English\">",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">2.25 mm</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">2.20 mm</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">1.20 mm</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">1.25 mm</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "c"
+  },
+  "explanation_html": "<p>One division on main scale is $p=0.5 \\mathrm{~mm}$ (pitch) and one division on circular scale (Least Count) is</p>\n<p>$$ \\mathrm{LC}=p / N=0.5 / 50=0.01 \\mathrm{~mm} . $$</p>\n<p>From the figure (i), zero error corresponding to five circular scale divisions is</p>\n<p>$$ e=5 \\times \\mathrm{LC}=5 \\times 0.01=0.05 \\mathrm{~mm} $$</p>\n<p>From the figure (ii), measurement by screw gauge corresponding to two main scale divisions and 25 circular scale divisions is</p>\n<p>$$ \\begin{aligned} D_{\\text {measured }} &amp; =2 \\times p+25 \\times \\mathrm{LC} \\\\ &amp; =2 \\times 0.5+25 \\times 0.01=1.25 \\mathrm{~mm} . \\end{aligned} $$</p>\n<p>The diameter of the ball is equal to its measured value minus zero error of the screw gauge i.e.,</p>\n<p>$$ D_{\\text {actual }}=D_{\\text {measured }}-e=1.25-0.05=1.20 \\mathrm{~mm} . $$</p>"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-40",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2001",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "A quantity X is given by $${\\varepsilon _0}L{{\\Delta V} \\over {\\Delta t}}$$ where $${\\varepsilon _0}$$ is the permittivity of the free space, L is a length, $${\\Delta V}$$ is a potential difference and $${\\Delta t}$$ is a time interval. The dimentional formula for X is the same as that of",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">resistance</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">charge</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">voltage</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">current</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "d"
+  },
+  "explanation_html": "Given that $$X = {\\varepsilon _0}L\\left( {{{\\Delta V} \\over {\\Delta t}}} \\right)$$<br><br>Therefore, dimensional formula for X is <br><br>$$[{M^{ - 1}}{L^{ - 3}}{T^4}{I^2}][L]{{[M{L^2}{T^{ - 3}}{I^{ - 1}}]} \\over {[T]}} = [I]$$<br><br>Thus, dimensional formula for X is same as that of current.<br><br>Answer (D)"
+}

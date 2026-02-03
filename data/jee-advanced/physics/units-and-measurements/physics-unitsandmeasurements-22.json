@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-22",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_multiple",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2016",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->In an experiment to determine the acceleration due to gravity g, the formula used for the time period of a\nperiodic motion is $$T = 2\\pi \\sqrt {{{7\\left( {R - r} \\right)} \\over {5g}}} $$. The values of R and r are measured to be (60 $$ \\pm $$ 1) mm and (10 $$ \\pm $$ 1)\nmm, respectively. In five successive measurements, the time period is found to be 0.52 s, 0.56 s, 0.57 s,\n0.54 s and 0.59 s. The least count of the watch used for the measurement of time period is 0.01 s. Which of\nthe following statement(s) is(are) true?<!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->The error in the measurement of r is 10 % <!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->The error in the measurement of T is 3.57 %<!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->The error in the measurement of T is 2 %<!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">The error in the determined value of g is 11 %</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_multiple",
+    "value": "abd"
+  },
+  "explanation_html": "The time period is measured for five successive measurements as follows :<br><br><style type=\"text/css\">\n.tg  {border-collapse:collapse;border-spacing:0;}\n.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;\n  overflow:hidden;padding:10px 5px;word-break:normal;}\n.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;\n  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}\n.tg .tg-baqh{text-align:center;vertical-align:top}\n</style>\n<table class=\"tg\">\n<thead>\n  <tr>\n    <th class=\"tg-baqh\">T(s)</th>\n    <th class=\"tg-baqh\">0.52</th>\n    <th class=\"tg-baqh\">0.56</th>\n    <th class=\"tg-baqh\">0.57</th>\n    <th class=\"tg-baqh\">0.54</th>\n    <th class=\"tg-baqh\">0.59</th>\n  </tr>\n</thead>\n<tbody>\n  <tr>\n    <td class=\"tg-baqh\">$$\\Delta $$T</td>\n    <td class=\"tg-baqh\">0.04</td>\n    <td class=\"tg-baqh\">0</td>\n    <td class=\"tg-baqh\">0.01</td>\n    <td class=\"tg-baqh\">0.02</td>\n    <td class=\"tg-baqh\">0.03</td>\n  </tr>\n</tbody>\n</table><br><br>Therefore, <br><br>$${T_{mean}} = {{0.52 + 0.56 + 0.57 + 0.54 + 0.59} \\over 5}$$<br><br>$$ = {{2.78} \\over 5} = 0.556 \\approx 0.56$$<br><br>and we know $$\\Delta$$T(absolute error) = $$\\left| {{T_{mean}} - T} \\right|$$<br><br>Error in reading = $$|{T_{mean}} - {T_1}| = 0.04$$<br>$$|{T_{mean}} - {T_2}| = 0.00$$<br>$$|{T_{mean}} - {T_3}| = 0.01$$<br>$$|{T_{mean}} - {T_4}| = 0.02$$<br>$$|{T_{mean}} - {T_5}| = 0.03$$ <br><br>$$ \\Rightarrow \\Delta {T_{mean}} = {{0.04 + 0 + 0.01 + 0.02 + 0.03} \\over 5} = 0.02$$<br><br>Thus, the error in the measurement of T is <br><br>$${{\\Delta T} \\over T} \\times 100 = {{0.02} \\over {0.56}} \\times 100 = 3.57\\% $$ .... (1)<br><br>Hence, option (B) is correct.<br><br>The error in the measurement of r is <br><br>$${{\\Delta r} \\over r} \\times 100 = {1 \\over {10}} \\times 100 = 10\\% $$ ..... (2)<br><br>Hence, option (A) is correct.<br><br>Now, it is given that<br><br>$$T = 2\\pi \\sqrt {{{7(R - r)} \\over {5g}}} $$<br><br>$$ \\Rightarrow {T^2} = 4{\\pi ^2}\\left( {{{7(R - r)} \\over {5g}}} \\right)$$<br><br>$$ \\Rightarrow g = {{28{\\pi ^2}} \\over 5}\\left( {{{R - r} \\over {{T^2}}}} \\right)$$<br><br>Taking log and differentiating on both the sides of this equation, we get<br><br>$$\\ln g = \\ln \\left( {{{28{\\pi ^2}} \\over 5}} \\right) + \\ln (R - r) - 2\\ln T$$<br><br>$$ \\Rightarrow {{\\Delta g} \\over g} = \\left( {{{\\Delta R + \\Delta r} \\over {R - r}}} \\right) + {{2\\Delta T} \\over T}$$<br><br>$$ = \\left( {{{1 + 1} \\over {50}}} \\right) + 2 \\times 0.0357$$<br><br>$$ \\Rightarrow {{\\Delta g} \\over g} \\times 100 = \\left( {{1 \\over {25}} + 2 \\times 0.0357} \\right) \\times 100$$<br><br>$$ = (4 + 7.14)\\%  = 11.14\\%  = 11\\% $$<br><br>Therefore, the error in the determined value g is 11%.<br><br>Answer (A), (B), (D)"
+}

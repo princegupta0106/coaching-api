@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-28",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2000",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "The dimension of $$\\left( {{1 \\over 2}} \\right){\\varepsilon _0}{E^2}$$\n<br>( $${\\varepsilon _0}$$ : permittivity of free space, E electric field )",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">MLT<sup>-1</sup></div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">ML<sup>2</sup>T<sup>-2</sup></div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">ML<sup>-1</sup>T<sup>-2</sup></div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">ML<sup>2</sup>T<sup>-1</sup></div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "c"
+  },
+  "explanation_html": "Dimension of $$\\varepsilon $$<sub>0</sub> = M<sup>$$-$$1</sup>L<sup>$$-$$3</sup>T<sup>4</sup>A<sup>2</sup><br><br>Dimension of electric field E = MLT<sup>$$-$$3</sup>A<sup>$$-$$1</sup><br><br>Now, dimension of <br><br>$${1 \\over 2}$$$$\\varepsilon $$<sub>0</sub>E<sup>2</sup> = (M<sup>$$-$$1</sup>L<sup>$$-$$3</sup>T<sup>4</sup>A<sup>2</sup>)(MLT<sup>$$-$$3</sup>A<sup>$$-$$1</sup>)<sup>2</sup><br><br>= M<sup>$$-$$1</sup>L<sup>$$-$$3</sup>T<sup>4</sup>A<sup>2</sup>M<sup>2</sup>L<sup>2</sup>T<sup>$$-$$6</sup>A<sup>$$-$$2</sup> = ML<sup>$$-$$1</sup>T<sup>$$-$$2</sup><br><br>Answer (C)"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-48",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2013",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "The diameter of a cylinder is measured using a Vernier callipers with no zero error. It is found that the zero\nof the Vernier scale lies between 5.10 cm and 5.15 cm of the main scale. The Vernier scale has 50 divisions\nequivalent to 2.45 cm. The 24<sup>th</sup> division of the Vernier scale exactly coincides with one of the main scale\ndivisions. The diameter of the cylinder is",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">5.112 cm</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">5.124 cm</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">5.136 cm</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">5.148 cm</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "b"
+  },
+  "explanation_html": "<p>From the given data :</p>\n\n<ul>\n<li>One main scale division (MSD) is $ 5.15 \\text{ cm} - 5.10 \\text{ cm} = 0.05 \\text{ cm} $.</li><br>\n<li>One Vernier scale division (VSD) is $ \\frac{2.45 \\text{ cm}}{50} = 0.049 \\text{ cm} $.</li>\n</ul>\n<p>The least count (LC) of the Vernier calipers is:</p>\n\n<p>$$ \\text{LC} = 1 \\text{ MSD} - 1 \\text{ VSD} = 0.05 \\text{ cm} - 0.049 \\text{ cm} = 0.001 \\text{ cm} $$</p>\n\n<p>Given the main scale reading (MSR) is 5.10 cm and the Vernier scale reading (VSR) is 24. The diameter $ D $ of the cylinder is calculated as:</p>\n\n<p>$$ \\begin{aligned} D &amp; = \\text{MSR} + \\text{VSR} \\times \\text{LC} \\\\\\\\   &amp; = 5.10 \\text{ cm} + 24 \\times 0.001 \\text{ cm} \\\\\\\\   &amp; = 5.124 \\text{ cm} \\end{aligned} $$</p>"
+}

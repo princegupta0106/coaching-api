@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-35",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2007",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "Some physical quantities are given in <b>Column I</b> and some possible SI units in which these quantities may be expressed\nare given in <b>Column II</b>. Match the physical quantities in <b>Column I</b> with the units in <b>Column II</b>.\n<p><b>Column I</b></p>\n<p>(A) GM<sub>e</sub>M<sub>s</sub> ,\n<br>G $$ \\to $$ universal gravitational constant, M<sub>e</sub> $$ \\to $$ mass of the earth,\nM<sub>s</sub> $$ \\to $$ mass of the Sun</p>\n<p>(B) $${{3RT} \\over M}$$, \n<br> R $$ \\to $$ universal gas constant, T $$ \\to $$ absolute temperature,\nM $$ \\to $$ molar mass</p>\n<p>(C) $${{{F^2}} \\over {{q^2}{B^2}}}$$  ,\n<br>F $$ \\to $$ force, q $$ \\to $$ charge, B $$ \\to $$ magnetic field</p>\n<p>(D) $${{G{M_e}} \\over {{R_e}}}$$,\n<br> G $$ \\to $$ universal gravitational constant,\nM<sub>e</sub> $$ \\to $$ mass of the earth, R<sub>e</sub> $$ \\to $$ radius of the earth</p>\n<p><b>Column II</b></p>\n<p>(p) (volt) (coulomb) (metre)</p>\n<p>(q) (kilogram) (metre)<sup>3</sup> (second)<sup>−2</sup></p>\n<p>(r) (meter)<sup>2</sup>(second)<sup>−2</sup></p>\n<p>(s) (farad) (volt)<sup>2</sup> (kg)<sup>−1</sup></p>",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">A $$ \\to $$ (p) &amp; (q), B $$ \\to $$ (r) &amp; (s), C $$ \\to $$ (r) &amp; (s), D $$ \\to $$ (r) &amp; (s)</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">A $$ \\to $$ (p), B $$ \\to $$ (r) &amp; (s), C $$ \\to $$ (r) &amp; (s), D $$ \\to $$ (r) &amp; (s)</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">A $$ \\to $$ (p) &amp; (q), B $$ \\to $$ (r) &amp; (s), C $$ \\to $$ (r) &amp; (s), D $$ \\to $$ (r)</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">A $$ \\to $$ (p) &amp; (q), B $$ \\to $$ (r), C $$ \\to $$ (r) &amp; (s), D $$ \\to $$ (r) &amp; (s)</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "a"
+  },
+  "explanation_html": "Currently no explanation available"
+}

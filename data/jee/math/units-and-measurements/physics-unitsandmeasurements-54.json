@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-54",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_multiple",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2015",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "Planck's constant h, speed of light c and gravitational constant G are used to form a unit of length L and a\nunit of mass M. Then the correct option(s) is(are)",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">$$M \\propto \\sqrt c $$</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">$$M \\propto \\sqrt G $$</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">$$L \\propto \\sqrt h $$</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">$$L \\propto \\sqrt G $$</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_multiple",
+    "value": "acd"
+  },
+  "explanation_html": "<p>The dimensions of Planck's constant is $$h = [{M^1}{L^3}{T^{ - 2}}]$$</p>\n<p>Speed of light is $$c = [{L^1}{T^{ - 1}}]$$</p>\n<p>Gravitational constant is $$G = [{M^{ - 1}}{L^3}{T^{ - 2}}]$$</p>\n<p>Let $$L \\propto {h^x}{c^y}{G^z}$$.</p>\n<p>$$[L] = {[{M^1}{L^2}{T^{ - 1}}]^x}{[{L^1}{T^{ - 1}}]^y}{[{M^{ - 1}}{L^3}{T^{ - 2}}]^z}$$</p>\n<p>Comparing, we get</p>\n<p>$$\\left. {\\matrix{\n   \\hfill {x - z = 0} \\cr \n   \\hfill {2x + y + 3z = 1} \\cr \n   \\hfill { - x - y - 2z = 0} \\cr \n\n } } \\right\\}$$</p>\n<p>Solving, we get</p>\n<p>$$x = z$$</p>\n<p>$$y + 5x = 1$$</p>\n<p>$$ - y - 3x = 0$$</p>\n<p>or, $$2x = 1$$</p>\n<p>$$x = {1 \\over 2} = z$$</p>\n<p>$$y =  - {3 \\over 2}$$</p>\n<p>Therefore,</p>\n<p>$$L \\propto {h^{1/2}}{C^{ - 3/2}}{G^{1/2}}$$</p>\n<p>$$L \\propto \\sqrt h $$</p>\n<p>$$L \\propto \\sqrt G $$</p>\n<p>Let $$M \\propto {h^a}{C^b}{G^c}$$</p>\n<p>$$[M] = {[{M^1}{L^2}{T^{ - 1}}]^a}{[{L^1}{T^{ - 1}}]^b}{[{M^{ - 1}}{L^3}{T^{ - 2}}]^c}$$</p>\n<p>Comparing, we get $$a - c = 1$$.</p>\n<p>$$\\left. \\matrix{\n  2a + b + 3c = 0 \\hfill \\cr \n   - a - b - 2c = 0 \\hfill \\cr}  \\right\\}a + c = 0$$</p>\n<p>Therefore,</p>\n<p>$$2a = 1$$</p>\n<p>$$a = {1 \\over 2}$$</p>\n<p>$$c =  - {1 \\over 2}$$</p>\n<p>$$b = {1 \\over 2}$$</p>\n<p>Therefore,</p>\n<p>$$M \\propto {h^{1/2}}{c^{1/2}}{G^{ - 1/2}}$$</p>\n<p>$$M \\propto \\sqrt c $$</p>"
+}

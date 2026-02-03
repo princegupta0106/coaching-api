@@ -1,0 +1,1346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Question Sets Manager</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+      }
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #eee;
+      }
+      .tab {
+        padding: 12px 24px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #666;
+        border-bottom: 3px solid transparent;
+      }
+      .tab.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .breadcrumb {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 5px;
+      }
+      .breadcrumb-item {
+        color: #667eea;
+        cursor: pointer;
+      }
+      .breadcrumb-item:hover {
+        text-decoration: underline;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .card {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .card-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+      }
+      .question-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        border: 2px solid #eee;
+        margin-bottom: 15px;
+      }
+      .question-card.selected {
+        border-color: #667eea;
+        background: #f0f4ff;
+      }
+      .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .question-content {
+        color: #555;
+        margin-bottom: 10px;
+      }
+      .add-btn {
+        padding: 8px 16px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .add-btn:hover {
+        background: #5568d3;
+      }
+      .add-btn.added {
+        background: #27ae60;
+      }
+      .remove-btn {
+        background: #e74c3c;
+        padding: 6px 12px;
+        font-size: 14px;
+      }
+      .remove-btn:hover {
+        background: #c0392b;
+      }
+      .cart-indicator {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #667eea;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 50px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        z-index: 1000;
+      }
+      .cart-indicator:hover {
+        background: #5568d3;
+      }
+      .cart-count {
+        background: #e74c3c;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        margin-left: 10px;
+      }
+      .set-card {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #667eea;
+      }
+      .set-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .set-actions {
+        display: flex;
+        gap: 10px;
+      }
+      button {
+        padding: 12px 24px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background: #5568d3;
+      }
+      .back-btn {
+        background: #888;
+      }
+      .back-btn:hover {
+        background: #666;
+      }
+      .delete-btn {
+        background: #e74c3c;
+      }
+      .delete-btn:hover {
+        background: #c0392b;
+      }
+      input,
+      select {
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 2000;
+      }
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        width: 90%;
+      }
+      .toast {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 3000;
+        animation: slideIn 0.3s ease;
+        min-width: 250px;
+      }
+      .toast.success {
+        background: #27ae60;
+      }
+      .toast.error {
+        background: #e74c3c;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      .cart-item {
+        background: white;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-left: 3px solid #667eea;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+      }
+      .question-list {
+        max-height: 300px;
+        overflow-y: auto;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+      .question-item {
+        background: white;
+        padding: 10px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .subject-section {
+        background: white;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: 2px solid #eee;
+        overflow: hidden;
+      }
+      .subject-header {
+        background: #667eea;
+        color: white;
+        padding: 15px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+      }
+      .subject-header:hover {
+        background: #5568d3;
+      }
+      .chapter-list {
+        padding: 15px;
+        display: block;
+      }
+      .chapter-item {
+        padding: 10px;
+        margin: 5px 0;
+        background: #f8f9fa;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .chapter-item input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+      .chapter-item label {
+        cursor: pointer;
+        flex: 1;
+      }
+      .subject-header input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      .subject-name {
+        flex: 1;
+      }
+      .random-form {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cart-indicator" onclick="openCart()">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </div>
+
+    <div class="container">
+      <h1>Question Sets Manager</h1>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('browse')">
+          Browse Questions
+        </button>
+        <button class="tab" onclick="switchTab('my-sets')">
+          My Question Sets
+        </button>
+        <button class="tab" onclick="switchTab('random')">
+          Random Set Maker
+        </button>
+      </div>
+
+      <div id="browseTab" class="tab-content active">
+        <div class="breadcrumb" id="breadcrumb"></div>
+        <div id="browseContent"></div>
+      </div>
+
+      <div id="mySetsTab" class="tab-content">
+        <h2>My Created Question Sets</h2>
+        <button onclick="createNewSet()" style="margin-bottom: 20px">
+          + Create New Set
+        </button>
+        <div id="mySetsList"></div>
+      </div>
+
+      <div id="randomTab" class="tab-content">
+        <h2>Random Set Maker</h2>
+        <div class="random-form">
+          <div class="form-group">
+            <label>Select Exam:</label>
+            <select id="randomExamSelect" onchange="loadSubjectsForRandom()">
+              <option value="">-- Select an Exam --</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="subjectChapterList" style="display: none">
+          <h3 style="margin-bottom: 15px">Select Chapters:</h3>
+          <div id="subjectsList"></div>
+
+          <div class="random-form" style="margin-top: 20px">
+            <div class="form-group">
+              <label>Number of Questions:</label>
+              <input
+                type="number"
+                id="randomQuestionCount"
+                placeholder="e.g., 50"
+                min="1"
+              />
+            </div>
+            <div class="form-group">
+              <label>Set Name:</label>
+              <input
+                type="text"
+                id="randomSetName"
+                placeholder="e.g., Random Practice Set"
+              />
+            </div>
+            <button onclick="generateRandomSet()">Generate Random Set</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 30px">
+        <button class="back-btn" onclick="goBack()">Back to Dashboard</button>
+      </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal" id="cartModal">
+      <div class="modal-content">
+        <h2>Your Cart</h2>
+        <div id="cartItems" style="margin: 20px 0"></div>
+        <div class="form-group">
+          <label>Set Name:</label>
+          <input type="text" id="cartSetName" placeholder="Enter set name" />
+        </div>
+        <div style="display: flex; gap: 10px">
+          <button onclick="saveCart()">Save as New Set</button>
+          <button class="back-btn" onclick="closeCart()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+      <div class="modal-content">
+        <h2>Share Question Set</h2>
+        <div class="form-group" style="margin: 20px 0">
+          <label>Select Student Set:</label>
+          <select id="studentSetSelect"></select>
+        </div>
+        <div style="display: flex; gap: 10px">
+          <button onclick="confirmShare()">Share</button>
+          <button class="back-btn" onclick="closeShareModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Set Modal -->
+    <div class="modal" id="editModal">
+      <div class="modal-content">
+        <h2>Edit Question Set</h2>
+        <div id="editSetInfo" style="margin: 20px 0"></div>
+        <div class="question-list" id="editQuestionList"></div>
+        <div style="display: flex; gap: 10px; margin-top: 20px">
+          <button onclick="saveEdit()">Save Changes</button>
+          <button class="back-btn" onclick="closeEditModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api/questions";
+      const STUDENT_SETS_URL = "http://localhost:3000/api/student-sets";
+      const token = localStorage.getItem("token");
+
+      let currentView = "exams";
+      let selectedExam = null;
+      let selectedSubject = null;
+      let selectedQuestionSet = null;
+      let cart = [];
+      let myQuestionSets = [];
+      let studentSets = [];
+      let currentSetId = null;
+      let currentEditSet = null;
+      let allAvailableQuestions = [];
+
+      // Toast Notifications
+      function showToast(message, type = "success") {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      }
+
+      function switchTab(tab) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((c) => c.classList.remove("active"));
+
+        if (tab === "browse") {
+          document.querySelector(".tab:nth-child(1)").classList.add("active");
+          document.getElementById("browseTab").classList.add("active");
+          loadExams();
+        } else if (tab === "my-sets") {
+          document.querySelector(".tab:nth-child(2)").classList.add("active");
+          document.getElementById("mySetsTab").classList.add("active");
+          loadMySets();
+          loadStudentSets();
+        } else if (tab === "random") {
+          document.querySelector(".tab:nth-child(3)").classList.add("active");
+          document.getElementById("randomTab").classList.add("active");
+          loadExamsForRandom();
+        }
+      }
+
+      function updateBreadcrumb() {
+        const breadcrumb = document.getElementById("breadcrumb");
+        const items = [];
+
+        items.push(
+          '<span class="breadcrumb-item" onclick="loadExams()">Exams</span>',
+        );
+
+        if (selectedExam) {
+          items.push("<span>></span>");
+          items.push(
+            `<span class="breadcrumb-item" onclick="loadSubjects('${selectedExam}')">${selectedExam}</span>`,
+          );
+        }
+
+        if (selectedSubject) {
+          items.push("<span>></span>");
+          items.push(
+            `<span class="breadcrumb-item" onclick="loadQuestionSets('${selectedSubject}')">${selectedSubject}</span>`,
+          );
+        }
+
+        if (selectedQuestionSet) {
+          items.push("<span>></span>");
+          items.push(
+            `<span class="breadcrumb-item">${selectedQuestionSet}</span>`,
+          );
+        }
+
+        breadcrumb.innerHTML = items.join(" ");
+      }
+
+      async function loadExams() {
+        selectedExam = null;
+        selectedSubject = null;
+        selectedQuestionSet = null;
+        updateBreadcrumb();
+
+        try {
+          const response = await fetch(`${API_URL}/exams`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch exams");
+          }
+
+          const data = await response.json();
+          displayExams(data.exams || []);
+        } catch (error) {
+          console.error("Error loading exams:", error);
+          showToast("Error loading exams", "error");
+        }
+      }
+
+      function displayExams(exams) {
+        const content = document.getElementById("browseContent");
+
+        if (exams.length === 0) {
+          content.innerHTML =
+            '<p style="text-align: center; color: #999; padding: 40px;">No exams available</p>';
+          return;
+        }
+
+        content.innerHTML = `
+        <div class="grid">
+          ${exams
+            .map(
+              (exam) => `
+            <div class="card" onclick="loadSubjects('${exam.id}')">
+              <div class="card-title">${exam.id}</div>
+            </div>
+          `,
+            )
+            .join("")}
+        </div>
+      `;
+      }
+
+      async function loadSubjects(examId) {
+        selectedExam = examId;
+        selectedSubject = null;
+        selectedQuestionSet = null;
+        updateBreadcrumb();
+
+        try {
+          const response = await fetch(`${API_URL}/exams/${examId}/subjects`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch subjects");
+          }
+
+          const data = await response.json();
+          displaySubjects(data.subjects || []);
+        } catch (error) {
+          console.error("Error loading subjects:", error);
+          showToast("Error loading subjects", "error");
+        }
+      }
+
+      function displaySubjects(subjects) {
+        const content = document.getElementById("browseContent");
+
+        if (subjects.length === 0) {
+          content.innerHTML =
+            '<p style="text-align: center; color: #999; padding: 40px;">No subjects available</p>';
+          return;
+        }
+
+        content.innerHTML = `
+        <div class="grid">
+          ${subjects
+            .map(
+              (subject) => `
+            <div class="card" onclick="loadQuestionSets('${subject.id}')">
+              <div class="card-title">${subject.id}</div>
+            </div>
+          `,
+            )
+            .join("")}
+        </div>
+      `;
+      }
+
+      async function loadQuestionSets(subjectId) {
+        selectedSubject = subjectId;
+        selectedQuestionSet = null;
+        updateBreadcrumb();
+
+        try {
+          const response = await fetch(
+            `${API_URL}/subjects/${subjectId}/question-sets`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch question sets");
+          }
+
+          const data = await response.json();
+          displayQuestionSetsList(data.questionSets || []);
+        } catch (error) {
+          console.error("Error loading question sets:", error);
+          showToast("Error loading question sets", "error");
+        }
+      }
+
+      function displayQuestionSetsList(sets) {
+        const content = document.getElementById("browseContent");
+
+        if (sets.length === 0) {
+          content.innerHTML =
+            '<p style="text-align: center; color: #999; padding: 40px;">No question sets available</p>';
+          return;
+        }
+
+        content.innerHTML = `
+        <div class="grid">
+          ${sets
+            .map(
+              (set) => `
+            <div class="card" onclick="loadQuestions('${set.id}', '${set.name}')">
+              <div class="card-title">${set.name}</div>
+              <div style="color: #666; font-size: 14px;">${set.id}</div>
+            </div>
+          `,
+            )
+            .join("")}
+        </div>
+      `;
+      }
+
+      async function loadQuestions(setId, setName) {
+        selectedQuestionSet = setName;
+        updateBreadcrumb();
+
+        try {
+          const response = await fetch(
+            `${API_URL}/question-sets/${setId}/questions`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch questions");
+          }
+
+          const data = await response.json();
+          displayQuestions(data.questions || []);
+        } catch (error) {
+          console.error("Error loading questions:", error);
+          showToast("Error loading questions", "error");
+        }
+      }
+
+      function displayQuestions(questions) {
+        const content = document.getElementById("browseContent");
+
+        if (!questions || questions.length === 0) {
+          content.innerHTML =
+            '<p style="text-align: center; color: #999; padding: 40px;">No questions available</p>';
+          return;
+        }
+
+        content.innerHTML = questions
+          .map((q) => {
+            const isInCart = cart.some((cq) => cq.id === q.id);
+            const questionText =
+              q.content && q.content.question_html
+                ? q.content.question_html
+                : "No question text";
+
+            return `
+          <div class="question-card ${isInCart ? "selected" : ""}">
+            <div class="question-header">
+              <strong>${q.id}</strong>
+              <button class="add-btn ${isInCart ? "added" : ""}" onclick='toggleCart(${JSON.stringify(q).replace(/'/g, "&apos;")})'>
+                ${isInCart ? "✓ Added" : "+ Add to Cart"}
+              </button>
+            </div>
+            <div class="question-content">
+              ${questionText}
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      function toggleCart(question) {
+        const index = cart.findIndex((q) => q.id === question.id);
+        if (index > -1) {
+          cart.splice(index, 1);
+          showToast("Removed from cart", "success");
+        } else {
+          cart.push(question);
+          showToast("Added to cart", "success");
+        }
+        updateCartCount();
+
+        // Reload current view to update UI
+        if (selectedQuestionSet && selectedSubject) {
+          const currentSetId = selectedSubject.split("-")[1]; // Simplified
+          loadQuestions(currentSetId, selectedQuestionSet);
+        }
+      }
+
+      function updateCartCount() {
+        document.getElementById("cartCount").textContent = cart.length;
+      }
+
+      function openCart() {
+        if (cart.length === 0) {
+          showToast("Cart is empty! Browse and add questions first.", "error");
+          return;
+        }
+
+        displayCartItems();
+        document.getElementById("cartModal").classList.add("active");
+      }
+
+      function displayCartItems() {
+        const container = document.getElementById("cartItems");
+        container.innerHTML = `
+        <div style="margin-bottom: 15px;">
+          <strong>Questions in Cart (${cart.length})</strong>
+        </div>
+        ${cart
+          .map(
+            (q, index) => `
+          <div class="cart-item">
+            <span>${q.id}</span>
+            <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+          </div>
+        `,
+          )
+          .join("")}
+      `;
+      }
+
+      function removeFromCart(index) {
+        const removed = cart.splice(index, 1);
+        updateCartCount();
+        displayCartItems();
+        showToast("Removed from cart", "success");
+      }
+
+      function closeCart() {
+        document.getElementById("cartModal").classList.remove("active");
+        document.getElementById("cartSetName").value = "";
+      }
+
+      async function saveCart() {
+        const setName = document.getElementById("cartSetName").value.trim();
+
+        if (!setName) {
+          showToast("Please enter a set name", "error");
+          return;
+        }
+
+        const questionIds = cart.map((q) => q.id);
+
+        try {
+          const response = await fetch(`${API_URL}/my-sets/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ name: setName, questionIds }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showToast("Question set created successfully!", "success");
+            cart = [];
+            updateCartCount();
+            closeCart();
+            switchTab("my-sets");
+          } else {
+            showToast(data.error || "Failed to create set", "error");
+          }
+        } catch (error) {
+          showToast("Network error", "error");
+        }
+      }
+
+      async function loadStudentSets() {
+        try {
+          const response = await fetch(`${STUDENT_SETS_URL}/my-sets`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            studentSets = data.studentSets || [];
+          }
+        } catch (error) {
+          console.error("Error loading student sets:", error);
+        }
+      }
+
+      async function loadMySets() {
+        try {
+          const response = await fetch(`${API_URL}/my-sets`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch sets");
+          }
+
+          const data = await response.json();
+          myQuestionSets = data.sets || [];
+          displayMySets(data.sets || []);
+        } catch (error) {
+          console.error("Error loading my sets:", error);
+          showToast("Error loading sets", "error");
+        }
+      }
+
+      function displayMySets(sets) {
+        const container = document.getElementById("mySetsList");
+
+        if (sets.length === 0) {
+          container.innerHTML =
+            '<p style="text-align: center; color: #999; padding: 40px;">No question sets created yet</p>';
+          return;
+        }
+
+        container.innerHTML = sets
+          .map(
+            (set) => `
+        <div class="set-card">
+          <div class="set-header">
+            <div>
+              <div class="card-title">${set.name}</div>
+              <div style="color: #666; font-size: 14px;">${set.id}</div>
+              <div style="color: #666; font-size: 14px; margin-top: 5px;">Questions: ${(set.question_ids || []).length}</div>
+            </div>
+            <div class="set-actions">
+              <button onclick="viewSetQuestions('${set.id}')">View/Edit</button>
+              <button onclick="openShareModal('${set.id}')">Share</button>
+              <button class="delete-btn" onclick="deleteSet('${set.id}')">Delete</button>
+            </div>
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      async function viewSetQuestions(setId) {
+        const set = myQuestionSets.find((s) => s.id === setId);
+        if (!set) return;
+
+        currentEditSet = set;
+
+        const setInfo = document.getElementById("editSetInfo");
+        setInfo.innerHTML = `
+        <strong>Set Name:</strong> ${set.name}<br>
+        <strong>Questions:</strong> ${(set.question_ids || []).length}
+      `;
+
+        const questionList = document.getElementById("editQuestionList");
+        questionList.innerHTML = (set.question_ids || [])
+          .map(
+            (qId, index) => `
+        <div class="question-item">
+          <span>${qId}</span>
+          <button class="remove-btn" onclick="removeQuestionFromSet(${index})">Remove</button>
+        </div>
+      `,
+          )
+          .join("");
+
+        if ((set.question_ids || []).length === 0) {
+          questionList.innerHTML =
+            '<p style="text-align: center; color: #999; padding: 20px;">No questions in this set</p>';
+        }
+
+        document.getElementById("editModal").classList.add("active");
+      }
+
+      function removeQuestionFromSet(index) {
+        if (currentEditSet && currentEditSet.question_ids) {
+          currentEditSet.question_ids.splice(index, 1);
+          viewSetQuestions(currentEditSet.id);
+        }
+      }
+
+      async function saveEdit() {
+        if (!currentEditSet) return;
+
+        try {
+          const response = await fetch(
+            `${API_URL}/my-sets/${currentEditSet.id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                questionIds: currentEditSet.question_ids,
+              }),
+            },
+          );
+
+          if (response.ok) {
+            showToast("Question set updated successfully!", "success");
+            closeEditModal();
+            loadMySets();
+          } else {
+            const data = await response.json();
+            showToast(data.error || "Failed to update set", "error");
+          }
+        } catch (error) {
+          showToast("Network error", "error");
+        }
+      }
+
+      function closeEditModal() {
+        document.getElementById("editModal").classList.remove("active");
+        currentEditSet = null;
+      }
+
+      function openShareModal(setId) {
+        currentSetId = setId;
+
+        const select = document.getElementById("studentSetSelect");
+        select.innerHTML = studentSets
+          .map(
+            (set) =>
+              `<option value="${set.id}">${set.id} (${(set.students || []).length} students)</option>`,
+          )
+          .join("");
+
+        if (studentSets.length === 0) {
+          select.innerHTML =
+            '<option value="">No student sets available</option>';
+        }
+
+        document.getElementById("shareModal").classList.add("active");
+      }
+
+      async function confirmShare() {
+        const studentSetId = document.getElementById("studentSetSelect").value;
+
+        if (!studentSetId || !currentSetId) {
+          showToast("Please select a student set", "error");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/my-sets/${currentSetId}/share`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ studentSetId }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showToast(`Shared with ${data.sharedWith} students!`, "success");
+            closeShareModal();
+          } else {
+            showToast(data.error || "Failed to share", "error");
+          }
+        } catch (error) {
+          showToast("Network error", "error");
+        }
+      }
+
+      function closeShareModal() {
+        document.getElementById("shareModal").classList.remove("active");
+        currentSetId = null;
+      }
+
+      async function deleteSet(setId) {
+        if (!confirm("Are you sure you want to delete this question set?"))
+          return;
+
+        try {
+          const response = await fetch(`${API_URL}/my-sets/${setId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showToast("Question set deleted successfully", "success");
+            loadMySets();
+          } else {
+            showToast(data.error || "Failed to delete", "error");
+          }
+        } catch (error) {
+          showToast("Network error", "error");
+        }
+      }
+
+      function createNewSet() {
+        switchTab("browse");
+        showToast("Browse questions and add them to cart!", "success");
+      }
+
+      function goBack() {
+        window.location.href = "/staff.html";
+      }
+
+      // ===== RANDOM SET MAKER FUNCTIONS =====
+      let randomExams = [];
+      let randomSubjectsData = {};
+      let selectedChapters = [];
+
+      async function loadExamsForRandom() {
+        try {
+          const response = await fetch(`${API_URL}/exams`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) throw new Error("Failed to fetch exams");
+
+          const data = await response.json();
+          randomExams = data.exams || [];
+
+          const select = document.getElementById("randomExamSelect");
+          select.innerHTML =
+            '<option value="">-- Select an Exam --</option>' +
+            randomExams
+              .map((exam) => `<option value="${exam.id}">${exam.id}</option>`)
+              .join("");
+        } catch (error) {
+          console.error("Error loading exams:", error);
+          showToast("Error loading exams", "error");
+        }
+      }
+
+      async function loadSubjectsForRandom() {
+        const examId = document.getElementById("randomExamSelect").value;
+
+        if (!examId) {
+          document.getElementById("subjectChapterList").style.display = "none";
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/exams/${examId}/subjects`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) throw new Error("Failed to fetch subjects");
+
+          const data = await response.json();
+          const subjects = data.subjects || [];
+
+          // Load question sets for each subject
+          randomSubjectsData = {};
+          for (const subject of subjects) {
+            const qsResponse = await fetch(
+              `${API_URL}/subjects/${subject.id}/question-sets`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              },
+            );
+
+            if (qsResponse.ok) {
+              const qsData = await qsResponse.json();
+              randomSubjectsData[subject.id] = {
+                name: subject.id,
+                questionSets: qsData.questionSets || [],
+              };
+            }
+          }
+
+          displaySubjectsAndChapters();
+          document.getElementById("subjectChapterList").style.display = "block";
+        } catch (error) {
+          console.error("Error loading subjects:", error);
+          showToast("Error loading subjects", "error");
+        }
+      }
+
+      function displaySubjectsAndChapters() {
+        const container = document.getElementById("subjectsList");
+        selectedChapters = [];
+
+        container.innerHTML = Object.keys(randomSubjectsData)
+          .map((subjectId) => {
+            const subject = randomSubjectsData[subjectId];
+            const questionSets = subject.questionSets || [];
+
+            return `
+          <div class="subject-section">
+            <div class="subject-header">
+              <input type="checkbox" id="selectAll-${subjectId}" 
+                onchange="toggleSelectAll('${subjectId}')" 
+                onclick="event.stopPropagation()">
+              <span class="subject-name">${subject.name}</span>
+            </div>
+            <div class="chapter-list" id="chapters-${subjectId}">
+              ${questionSets
+                .map(
+                  (qs) => `
+                <div class="chapter-item">
+                  <input type="checkbox" id="chapter-${qs.id}" value="${qs.id}" 
+                    data-subject="${subjectId}" onchange="updateChapterSelection()">
+                  <label for="chapter-${qs.id}">${qs.name}</label>
+                </div>
+              `,
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      function toggleSelectAll(subjectId) {
+        const selectAllCheckbox = document.getElementById(
+          `selectAll-${subjectId}`,
+        );
+        const chapterCheckboxes = document.querySelectorAll(
+          `input[data-subject="${subjectId}"]`,
+        );
+
+        chapterCheckboxes.forEach((cb) => {
+          cb.checked = selectAllCheckbox.checked;
+        });
+
+        updateChapterSelection();
+      }
+
+      function updateChapterSelection() {
+        selectedChapters = Array.from(
+          document.querySelectorAll('input[id^="chapter-"]:checked'),
+        ).map((cb) => cb.value);
+
+        // Update select-all checkboxes
+        Object.keys(randomSubjectsData).forEach((subjectId) => {
+          const subjectCheckboxes = document.querySelectorAll(
+            `input[data-subject="${subjectId}"]`,
+          );
+          const checkedCount = Array.from(subjectCheckboxes).filter(
+            (cb) => cb.checked,
+          ).length;
+          const selectAllCheckbox = document.getElementById(
+            `selectAll-${subjectId}`,
+          );
+
+          if (selectAllCheckbox) {
+            selectAllCheckbox.checked =
+              checkedCount === subjectCheckboxes.length &&
+              subjectCheckboxes.length > 0;
+          }
+        });
+      }
+
+      async function generateRandomSet() {
+        const questionCount = parseInt(
+          document.getElementById("randomQuestionCount").value,
+        );
+        const setName = document.getElementById("randomSetName").value.trim();
+
+        if (!setName) {
+          showToast("Please enter a set name", "error");
+          return;
+        }
+
+        if (!questionCount || questionCount < 1) {
+          showToast("Please enter a valid number of questions", "error");
+          return;
+        }
+
+        if (selectedChapters.length === 0) {
+          showToast("Please select at least one chapter", "error");
+          return;
+        }
+
+        try {
+          showToast("Generating random set...", "success");
+
+          // Fetch all questions from selected chapters
+          let allQuestions = [];
+
+          for (const chapterId of selectedChapters) {
+            const response = await fetch(
+              `${API_URL}/question-sets/${chapterId}/questions`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              },
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              allQuestions = allQuestions.concat(data.questions || []);
+            }
+          }
+
+          if (allQuestions.length === 0) {
+            showToast("No questions found in selected chapters", "error");
+            return;
+          }
+
+          // Remove duplicates based on question ID
+          const uniqueQuestions = Array.from(
+            new Map(allQuestions.map((q) => [q.id, q])).values(),
+          );
+
+          // Randomly select questions
+          const actualCount = Math.min(questionCount, uniqueQuestions.length);
+          const shuffled = uniqueQuestions.sort(() => 0.5 - Math.random());
+          const selectedQuestions = shuffled.slice(0, actualCount);
+          const questionIds = selectedQuestions.map((q) => q.id);
+
+          // Create the question set
+          const createResponse = await fetch(`${API_URL}/my-sets/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ name: setName, questionIds }),
+          });
+
+          const result = await createResponse.json();
+
+          if (createResponse.ok) {
+            showToast(
+              `Random set created with ${actualCount} questions!`,
+              "success",
+            );
+
+            // Reset form
+            document.getElementById("randomQuestionCount").value = "";
+            document.getElementById("randomSetName").value = "";
+            document.getElementById("randomExamSelect").value = "";
+            document.getElementById("subjectChapterList").style.display =
+              "none";
+
+            // Switch to My Sets tab
+            setTimeout(() => switchTab("my-sets"), 1500);
+          } else {
+            showToast(result.error || "Failed to create set", "error");
+          }
+        } catch (error) {
+          console.error("Error generating random set:", error);
+          showToast("Error generating random set", "error");
+        }
+      }
+
+      // Initialize
+      window.addEventListener("load", () => {
+        if (!token) {
+          showToast("Not authenticated", "error");
+          setTimeout(() => (window.location.href = "/"), 2000);
+          return;
+        }
+        loadExams();
+        loadStudentSets();
+      });
+    </script>
+  </body>
+</html>

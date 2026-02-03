@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-19",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "numerical",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2015",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "The energy of a system as a function of time t is given as E(t) = $${A^2}\\exp \\left( { - \\alpha t} \\right)$$, where $$\\alpha  = 0.2\\,{s^{ - 1}}$$. The\nmeasurement of A has an error of 1.25 %. If the error in the measurement of time is 1.50 %, the percentage\nerror in the value of E(t) at t = 5 s is",
+  "options": [],
+  "answer": {
+    "type": "numerical",
+    "value": "4"
+  },
+  "explanation_html": "<p>$$E(t) = {A^2}{e^{ - \\alpha t}}$$ ...... (i)</p>\n<p>$$\\alpha$$ = 0.2 s<sup>$$-$$1</sup></p>\n<p>$$\\left( {{{dA} \\over A}} \\right) \\times 100 = 1.25\\% $$</p>\n<p>$$\\left( {{{dt} \\over t}} \\right) \\times 100 = 1.50$$</p>\n<p>$$ \\Rightarrow (dt \\times 100) = 1.5t = 1.5 \\times 5 = 7.5$$</p>\n<p>Differentiating on both sides of equation (i), we get\n<br><br>$$\nd \\mathrm{E}=(2 \\mathrm{~A} d \\mathrm{~A}) e^{-\\alpha t}+\\mathrm{A}^2 e^{-\\alpha t}(-\\alpha d t)\n$$\n<br><br>Dividing throughout by $\\mathrm{E}=\\mathrm{A}^2 e^{-\\alpha t}$\n<br><br>$$\n\\frac{d \\mathrm{E}}{\\mathrm{E}}=\\frac{2}{\\mathrm{~A}} d \\mathrm{~A}+\\alpha d t\n$$\n<br><br>(Considering worst possible case)</p>\n\n<p>$$\\therefore$$ $$\\left( {{{dE} \\over E}} \\right) \\times 100 =   2\\left( {{{dA} \\over A}} \\right) \\times 100 + \\alpha (dt \\times 100)$$</p>\n<p>$$ =  2(1.25) + 0.2(7.5)$$</p>\n<p>$$ =  2.5 + 1.5$$</p>\n<p>$$ =  4\\% $$</p>"
+}

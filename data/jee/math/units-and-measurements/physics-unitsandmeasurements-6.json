@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-6",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2007",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START --><p>A student performs an experiment to determine the Young's modulus of a wire, exactly 2 m long,\nby Searle's method. In a particular reading, the student measures the extension in the length of\nthe wire to be 0.8 mm with an uncertainty of $$\\pm0.05\\;\\mathrm{mm}$$ at a load of exactly 1.0 kg. The student\nalso measures the diameter of the wire to be 0.4 mm with an uncertainty of $$\\pm0.01\\;\\mathrm{mm}$$. Take\ng = 9.8 m/s<sup>2</sup>\n (exact). The Young's modulus obtained from the reading is</p><!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\"><!-- HTML_TAG_START -->$$\\left(2.0\\;\\pm\\;0.3\\right)\\times10^{11}\\;\\mathrm N/\\mathrm m^2$$ <!-- HTML_TAG_END --></div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">$$\\left(2.0\\;\\pm\\;0.2\\right)\\times10^{11}\\;\\mathrm N/\\mathrm m^2$$</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">$$\\left(2.0\\;\\pm\\;0.1\\right)\\times10^{11}\\;\\mathrm N/\\mathrm m^2$$</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">$$\\left(2.0\\;\\pm\\;0.05\\right)\\times10^{11}\\;\\mathrm N/\\mathrm m^2$$</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "b"
+  },
+  "explanation_html": "<p>Young's modulus $$(Y)=\\frac{\\text { Stress }}{\\text { Strain }}=\\frac{4 m g l}{\\pi d^{2} \\Delta l}$$</p>\n<p>$$\\begin{gathered}\n\\mathrm{Y}=\\frac{4 m g l}{\\pi d^{2} l} \\\\\\\\\n=\\frac{4 \\times 1 \\times 9.8 \\times 2}{3.14 \\times(0.4)^{2} \\times(0.8) \\times 10^{-6} \\times 10^{-3}} \\\\\\\\\n=2 \\times 10^{11} \\mathrm{~N} / \\mathrm{m}^{2}\n\\end{gathered}\n$$</p>\n<p>Where, $$\\quad$$ Mass $$(m)=1 \\mathrm{~kg}$$</p>\n<p>$$\\begin{aligned}g &amp; =9.8 \\mathrm{~m} / \\mathrm{s}^{2} \\\\\\\\\n\\text { Length of wire } &amp; =2 \\mathrm{~m} \\\\\\\\\n\\pi &amp; =3.14 \\\\\\\\\n\\text { Diameter }(d) &amp; =0.4 \\mathrm{~mm} \\times 10^{-3} \\mathrm{~m}\n\\end{aligned}$$</p>\n<p>Extension in the length of wire</p>\n<p>$$\\begin{aligned}(\\Delta l) &amp; =0.8 \\mathrm{~mm} \\\\\\\\\n&amp; =0.8 \\times 10^{-3} \\mathrm{~m} \\\\\\\\\n\\frac{\\Delta y}{y} &amp; =\\frac{2 \\Delta d}{d}+\\frac{\\Delta l}{l} \\\\\\\\\n&amp; =\\frac{2 \\times(0.01)}{0.4}+\\frac{(0.05)}{0.8} \\\\\\\\\n&amp; =0.1125\\end{aligned}$$</p>\n<p>$$\\begin{aligned}\\Rightarrow \\Delta \\mathrm{Y} &amp; =(\\mathrm{Y}) \\times 0.1125 \\\\\\\\\n&amp; =2 \\times 10^{11} \\times 0.1125 \\\\\\\\\n&amp; =0.225 \\times 10^{11} \\\\\\\\\n&amp; \\simeq 0.2 \\times 10^{11} \\\\\\\\\n\\text { (b) }\\left(2 \\pm 0.2 \\times 10^{11} \\mathrm{~N/}\\right. &amp; \\left.\\mathrm{m}^{2}\\right)\n\\end{aligned}$$</p>"
+}

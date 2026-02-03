@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-27",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "other",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->Write the dimensions of the followings in terms of mass, time, length and charge\n<br>(i) magnetic flux\n<br>(ii) rigidity modulus<!-- HTML_TAG_END -->",
+  "options": [],
+  "answer": {
+    "type": "other",
+    "value": null
+  },
+  "explanation_html": ""
+}

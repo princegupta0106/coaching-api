@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-20",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "numerical",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2014",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "During Searle's experiment, zero of the Vernier scale lies between 3.20 $$ \\times $$ 10<sup>-2</sup> m and 3.25 $$ \\times $$ 10<sup>-2</sup> m of the\nmain scale. The 20<sup>th</sup> division of the Vernier scale exactly coincides with one of the main scale divisions.\nWhen an additional load of 2 kg is applied to the wire, the zero of the Vernier scale still lies between 3.20 $$ \\times $$ 10<sup>-2</sup> m and 3.25 $$ \\times $$ 10<sup>-2</sup> m of the main scale but now the 45<sup>th</sup> division of Vernier scale coincides with one of\nthe main scale divisions. The length of the thin metallic wire is 2 m and its cross-sectional area is 8 $$ \\times $$ 10<sup>-7</sup>\nm<sup>2</sup>. The least count of the Vernier scale is 1.0 $$ \\times $$ 10<sup>-5</sup> m. The maximum percentage error in the Young's\nmodulus of the wire is",
+  "options": [],
+  "answer": {
+    "type": "numerical",
+    "value": "4"
+  },
+  "explanation_html": "<p>The difference between the two measurements by Vernier scale gives elongation of the wire caused by the additional load of 2 kg. In the first measurement, main scale reading is MSR = 3.20 $$\\times$$ 10<sup>$$-$$2</sup> m and Vernier scale reading is VSR = 20. The least count of Vernier scale is LC = 1 $$\\times$$ 10<sup>$$-$$5</sup> m. Thus, the first measurement by Vernier scale is</p>\n<p>L<sub>1</sub> = MSR + VSR $$\\times$$ LC</p>\n<p>= 3.20 $$\\times$$ 10<sup>$$-$$2</sup> + 20(1 $$\\times$$ 10<sup>$$-$$5</sup>)</p>\n<p>= 3.220 $$\\times$$ 10<sup>$$-$$2</sup> m.</p>\n<p>In the second measurement, MSR = 3.20 $$\\times$$ 10<sup>$$-$$2</sup> m and VSR = 45. Thus, the second measurement by Vernier scale is</p>\n<p>L<sub>2</sub> = 3.20 $$\\times$$ 10<sup>$$-$$2</sup> + 45(1 $$\\times$$ 10<sup>$$-$$5</sup>)</p>\n<p>= 3.245 $$\\times$$ 10<sup>$$-$$2</sup> m.</p>\n<p>The elongation of the wire due to force F = 2g is</p>\n<p>l = L<sub>2</sub> $$-$$ L<sub>1</sub> = 0.025 $$\\times$$ 10<sup>$$-$$2</sup> m.</p>\n<p>The maximum error in the measurement of l is $$\\Delta$$l = LC = 1 $$\\times$$ 10<sup>$$-$$5</sup> m. Young's modulus is given by Y = $${{FL} \\over {lA}}$$. The maximum percentage error in the measurement of Y is</p>\n<p>$${{\\Delta Y} \\over Y} \\times 100 = {{\\Delta l} \\over l} \\times 100 = {{1 \\times {{10}^{ - 5}}} \\over {0.025 \\times {{10}^{ - 2}}}} \\times 100 = 4\\% $$.</p>"
+}

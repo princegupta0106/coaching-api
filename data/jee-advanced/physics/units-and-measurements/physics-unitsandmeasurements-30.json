@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-30",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_single",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2011",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->A dense collection of equal number of electrons and positive ions is called neutral plasma. Certain solids containing\nfixed positive ions surrounded by free electrons can be treated as neutral plasma. Let 'N' be the number density of\nfree electrons, each of mass 'm'. When the electrons are subjected to an electric field, they are displaced relatively\naway from the heavy positive ions. If the electric field becomes zero, the electrons begin to oscillate about the\npositive ions with a natural angular frequency '$${\\omega _p}$$' which is called the plasma frequency. To sustain the oscillations,\na time varying electric field needs to be applied that has an angular frequency $$\\omega $$, where a part of the energy is\nabsorbed and a part of it is reflected. As $$\\omega $$ approaches $${\\omega _p}$$ all the free electrons are set to resonance together and all\nthe energy is reflected. This is the explanation of high reflectivity of metals.\n<p>Taking the electronic charge as 'e' and the permittivity as $$'{\\varepsilon _0}'$$. Use dimensional analysis to determine the\ncorrect expression for $${\\omega _p}$$.</p><!-- HTML_TAG_END -->",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">$$\\sqrt {{{Ne} \\over {m{\\varepsilon _0}}}} $$</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">$$\\sqrt {{{m{\\varepsilon _0}} \\over {Ne}}} $$</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">$$\\sqrt {{{N{e^2}} \\over {m{\\varepsilon _0}}}} $$</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">$$\\sqrt {{{m{\\varepsilon _0}} \\over {N{e^2}}}} $$</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_single",
+    "value": "c"
+  },
+  "explanation_html": "<p>We have $$[\\omega ] = {T^{ - 1}}$$ and</p>\n<p>$$[{\\varepsilon _0}] = {{{{[QT]}^2}} \\over {M{L^3}}}$$</p>\n<p>Therefore,</p>\n<p>$$\\left[ {{1 \\over {m{\\varepsilon _0}}}} \\right] = {{{L^3}} \\over {{{[QT]}^2}}}$$</p>\n<p>Now, $$\\left[ {{{{e^2}} \\over {m{\\varepsilon _0}}}} \\right] = {{{L^3}} \\over {{{[T]}^2}}}$$</p>\n<p>Also, the number N is defined as number of particle in unit volume, that is, N = n/V.</p>\n<p>$$[N] = {1 \\over {[V]}} = {1 \\over {{L^3}}}$$</p>\n<p>Therefore,</p>\n<p>$$\\left[ {{{N{e^2}} \\over {m{\\varepsilon _0}}}} \\right] = {1 \\over {{{[T]}^2}}}$$</p>\n<p>Therefore, the quantity $$\\sqrt {{{N{e^2}} \\over {m{\\varepsilon _0}}}} $$ has the dimension of $$\\omega$$.</p>"
+}

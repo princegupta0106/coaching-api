@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Staff Dashboard</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+      }
+      h2 {
+        color: #555;
+        margin: 30px 0 20px 0;
+        font-size: 22px;
+      }
+      .user-info {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+      }
+      .user-info p {
+        margin: 8px 0;
+        color: #555;
+      }
+      .student-set-card {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #667eea;
+      }
+      .set-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .set-title {
+        font-weight: bold;
+        color: #333;
+        font-size: 20px;
+      }
+      .students-list {
+        margin-top: 15px;
+      }
+      .students-list h3 {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 10px;
+      }
+      .student-item {
+        background: white;
+        padding: 10px 15px;
+        margin: 5px 0;
+        border-radius: 5px;
+        color: #666;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+      }
+      .empty-state svg {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+      }
+      .back-btn {
+        padding: 12px 30px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .back-btn:hover {
+        background: #5568d3;
+      }
+      .logout-btn {
+        background: #e74c3c;
+        margin-left: 10px;
+      }
+      .logout-btn:hover {
+        background: #c0392b;
+      }
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #667eea;
+        font-size: 18px;
+      }
+      .error {
+        background: #fee;
+        color: #c33;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Staff Dashboard</h1>
+
+      <div class="user-info">
+        <p><strong>Email:</strong> <span id="userEmail"></span></p>
+        <p><strong>Institution:</strong> <span id="userInstitution"></span></p>
+        <p><strong>Role:</strong> Staff</p>
+      </div>
+
+      <div id="loading" class="loading">Loading your student sets...</div>
+      <div id="error" class="error" style="display: none"></div>
+
+      <div id="setsContent" style="display: none">
+        <h2>Your Student Sets (<span id="setsCount">0</span>)</h2>
+        <div id="studentSetsList"></div>
+      </div>
+
+      <div style="margin-top: 30px">
+        <button class="back-btn" onclick="manageQuestions()">
+          Manage Question Sets
+        </button>
+        <button class="back-btn" onclick="uploadQuestions()">
+          📤 Upload Questions
+        </button>
+        <button class="back-btn" onclick="bulkUpload()">
+          📦 Bulk Upload (Folders)
+        </button>
+        <button class="back-btn" onclick="goHome()">Back to Home</button>
+        <button class="back-btn logout-btn" onclick="handleLogout()">
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api/student-sets";
+      const token = localStorage.getItem("token");
+
+      function showError(message) {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("error").textContent = message;
+        document.getElementById("error").style.display = "block";
+      }
+
+      function goHome() {
+        window.location.href = "/";
+      }
+
+      function handleLogout() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/";
+      }
+
+      function manageQuestions() {
+        window.location.href = "/questions.html";
+      }
+
+      function uploadQuestions() {
+        window.location.href = "/uploader.html";
+      }
+
+      function bulkUpload() {
+        window.location.href = "/bulk-uploader.html";
+      }
+
+      async function loadStaffSets() {
+        if (!token) {
+          showError("Not authenticated. Redirecting...");
+          setTimeout(() => (window.location.href = "/"), 2000);
+          return;
+        }
+
+        const userStr = localStorage.getItem("user");
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            document.getElementById("userEmail").textContent = user.email;
+            document.getElementById("userInstitution").textContent =
+              user.institution;
+          } catch (error) {
+            console.error("Failed to parse user:", error);
+          }
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/my-sets`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "Failed to load student sets");
+          }
+
+          const data = await response.json();
+          displaySets(data.studentSets);
+        } catch (error) {
+          showError(error.message);
+        }
+      }
+
+      function displaySets(sets) {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("setsContent").style.display = "block";
+        document.getElementById("setsCount").textContent = sets.length;
+
+        const container = document.getElementById("studentSetsList");
+
+        if (sets.length === 0) {
+          container.innerHTML = `
+          <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3>No Student Sets Available</h3>
+            <p>You don't have access to any student sets yet. Contact your admin to get access.</p>
+          </div>
+        `;
+          return;
+        }
+
+        container.innerHTML = sets
+          .map(
+            (set) => `
+        <div class="student-set-card">
+          <div class="set-header">
+            <div class="set-title">${set.id}</div>
+          </div>
+          <div class="students-list">
+            <h3>Students (${(set.students || []).length})</h3>
+            ${
+              (set.students || []).length > 0
+                ? (set.students || [])
+                    .map(
+                      (email) => `
+                  <div class="student-item">${email}</div>
+                `,
+                    )
+                    .join("")
+                : '<p style="color: #999; font-style: italic;">No students in this set</p>'
+            }
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      window.addEventListener("load", loadStaffSets);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-12",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "other",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->In the formula X = 3YZ<sup>2</sup>, X and Z have dimensions of capacitance and magnetic induction respectively. The dimensions of Y in MKSQ system are _____________<!-- HTML_TAG_END -->",
+  "options": [],
+  "answer": {
+    "type": "other",
+    "value": null
+  },
+  "explanation_html": "$$\\begin{array}{l}\\begin{array}{l}\\left[X\\right]\\;=\\;\\left[C\\right]\\;=\\;\\left[M^{-1}L^{-2}T^2Q^2\\right]\\\\\\left[Z\\right]\\;=\\;\\left[B\\right]\\;=\\;\\left[MT^{-1}Q^{-1}\\right]\\\\\\\\\\Rightarrow\\;\\left[Y\\right]\\;=\\;\\frac{\\;\\left[M^{-1}L^{-2}T^2Q^2\\right]}{\\;\\left[MT^{-1}Q^{-1}\\right]^2}\\;\\end{array}\\\\\\\\=\\;\\left[M^{-3}L^{-2}T^4Q^4\\right]\\\\\\\\\\\\\\\\\\\\\\end{array}$$"
+}

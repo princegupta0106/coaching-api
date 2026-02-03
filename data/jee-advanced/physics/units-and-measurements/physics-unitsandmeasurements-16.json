@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-16",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "other",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<p>Column - I gives the three physical quantities. Select the appropriate units for the choices given in Column - II. Some of the physical quantities may have more than one choice correct:</p>\n<style type=\"text/css\">\n.tg  {border-collapse:collapse;border-spacing:0;border:none;}\n.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}\n.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}\n.tg .tg-baqh{text-align:center;vertical-align:top}\n.tg .tg-yw4l{vertical-align:top}\n</style>\n<table class=\"tg\">\n  <tbody><tr>\n    <th class=\"tg-031e\"><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">Column I</span></th>\n    <th class=\"tg-031e\"><span style=\"font-weight:bold;color:rgb(254, 0, 0)\">Column II</span></th>\n  </tr>\n  <tr>\n    <td class=\"tg-031e\">Capacitance</td>\n    <td class=\"tg-031e\">(i) ohm-second</td>\n  </tr>\n  <tr>\n    <td class=\"tg-031e\">Inductance</td>\n    <td class=\"tg-031e\">(ii) coulomb<sup>2</sup> - joule<sup>-1</sup></td>\n  </tr>\n  <tr>\n    <td class=\"tg-031e\">Magnetic Induction</td>\n    <td class=\"tg-031e\">(iii) coulomb (volt)<sup>-1</sup></td>\n  </tr>\n  <tr>\n    <td class=\"tg-baqh\"></td>\n    <td class=\"tg-yw4l\">(iv) newton (amp-meter)<sup>-1</sup></td>\n  </tr>\n  <tr>\n    <td class=\"tg-baqh\"></td>\n    <td class=\"tg-yw4l\">(v) volt-second (ampere)<sup>-1</sup></td>\n  </tr>\n  <tr>\n    <td class=\"tg-baqh\"></td>\n    <td class=\"tg-baqh\"></td>\n  </tr>\n</tbody></table>",
+  "options": [],
+  "answer": {
+    "type": "other",
+    "value": null
+  },
+  "explanation_html": "Currently no explanation available"
+}

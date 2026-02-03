@@ -1,0 +1,42 @@
+{
+  "id": "physics-unitsandmeasurements-4",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "mcq_multiple",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2020",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "Sometimes it is convenient to construct a system of units so that all quantities can be expressed in\nterms of only one physical quantity. In one such system, dimensions of different quantities are given\nin terms of a quantity X as follows: [position] = [X<sup>$$\\alpha $$</sup>]; [speed] = [X<sup>$$\\beta $$</sup>\n]; [acceleration] = [X<sup>p</sup>]; [linear\nmomentum] = [X<sup>q</sup>]; [force] = [X<sup>r</sup>]. Then",
+  "options": [
+    {
+      "label": "a",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">A</div>  <div class=\"grow question xl:text-lg\">$$\\alpha $$ + p = 2$$\\beta $$</div> "
+    },
+    {
+      "label": "b",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">B</div>  <div class=\"grow question xl:text-lg\">p + q - r = $$\\beta $$</div> "
+    },
+    {
+      "label": "c",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">C</div>  <div class=\"grow question xl:text-lg\">p - q + r = $$\\alpha $$</div> "
+    },
+    {
+      "label": "d",
+      "html": "<div class=\"shrink-0 flex items-center justify-center text-white text-sm rounded-[50%] w-[25px] h-[25px] bg-blue-600  \">D</div>  <div class=\"grow question xl:text-lg\">p + q + r = $$\\beta $$</div> "
+    }
+  ],
+  "answer": {
+    "type": "mcq_multiple",
+    "value": "ab"
+  },
+  "explanation_html": "$$[x] = {x^\\alpha } \\Rightarrow {p \\over v} = time$$<br><br>$$[v] = {x^\\beta }$$<br><br>$$[a] = {x^p} \\Rightarrow {v \\over a} = time$$<br><br>$$[p] = {x^q}$$<br><br>$$[F] = {x^r}$$<br><br>$$ \\Rightarrow \\left( {{{position} \\over {speed}}} \\right) = \\left( {{{speed} \\over {acceleration}}} \\right) = \\left( {{p \\over F}} \\right)$$<br><br>$$ \\Rightarrow {{{x^\\alpha }} \\over {{x^\\beta }}} = {{{x^\\beta }} \\over {{x^\\alpha }}} = {{{x^q}} \\over {{x^r}}}$$<br><br>$$ \\Rightarrow {x^{\\alpha  - \\beta }} = {x^{\\beta  - p}} = {x^{q - r}}$$<br><br>$$ \\therefore $$ $$\\alpha  - \\beta  = \\beta  - p = q - r$$<br><br>$$\\alpha  + p = 2\\beta $$<br><br>$$q + p = \\beta  + r$$<br><br>$$p + q - r = \\beta $$"
+}

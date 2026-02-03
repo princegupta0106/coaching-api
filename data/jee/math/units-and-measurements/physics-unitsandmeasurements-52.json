@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-52",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "numerical",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "2018",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "A steel wire of diameter $$0.5$$ $$mm$$ and Young's modulus $$2 \\times {10^{11}}\\,\\,N{m^{ - 2}}$$ carries a load of mass $$M.$$ The length of the wire with the load is $$1.0$$ $$m.A$$ vernier scale with $$10$$ divisions is attached to the end of this wire. Next to the steel wire is a reference wire to which a main scale, of least count $$1.0$$ $$mm$$ , is attached. The $$10$$ divisions of the vernier scale correspond to $$9$$ divisions of the main scale. Initially, the zero of vernier scale coincides with the zero of main scale. If the load on the steel wire is increased by  $$1.2$$ $$kg,$$ the vernier scale division which coincides with a main scale division is _____________. Take $$g = 10\\,m\\,{s^{ - 2}}.$$  and $$\\pi  = 3.2.$$",
+  "options": [],
+  "answer": {
+    "type": "numerical",
+    "value": "3"
+  },
+  "explanation_html": "<p>We know that $$\\Delta L = {W \\over {(YA/L)}}$$</p>\n<p>where W is weight or load = mg = 1.2 $$\\times$$ 10 = 12 kg m s<sup>$$-$$2</sup>, Y is Young's modulus = 2 $$\\times$$ 10<sup>11</sup> N m<sup>$$-$$2</sup>, L is length of wire with load = 1.0 m, A is area of steel wire = $$ = \\pi {r^2} = {\\pi  \\over 4}{d^2} = {\\pi  \\over 4} \\times {(0.5 \\times {10^{ - 3}})^2}$$</p>\n<p>Therefore,</p>\n<p>$$\\Delta L = {{1.2 \\times 10} \\over {2 \\times {{10}^{11}} \\times {\\pi  \\over 4}{{(0.5 \\times {{10}^{ - 3}})}^2} \\times {1 \\over {1.0\\,m}}}}$$</p>\n<p>$$ = {{1.2 \\times 10 \\times 4} \\over {2 \\times {{10}^{11}} \\times \\pi  \\times {{(0.5)}^2} \\times {{10}^{ - 6}}}}$$</p>\n<p>$$ \\Rightarrow \\Delta L = 0.3 \\times {10^{ - 3}}$$ m = 0.3 mm</p>\n<p>Now, least count of vernier scale $$ = \\left( {1 - {9 \\over {10}}} \\right)$$ mm = 0.1 mm</p>\n<p>Therefore, Vernier reading $$ = {{\\Delta L} \\over {least\\,count}}$$</p>\n<p>Vernier reading $$ = {{0.3\\,mm} \\over {0.1\\,mm}} = 3$$</p>\n<p>Therefore, 3<sup>rd</sup> vernier scale division coincides with the main scale division.</p>"
+}

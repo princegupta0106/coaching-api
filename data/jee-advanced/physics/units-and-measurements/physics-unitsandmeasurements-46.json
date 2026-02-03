@@ -1,0 +1,25 @@
+{
+  "id": "physics-unitsandmeasurements-46",
+  "source": "examgoal",
+  "subject": "physics",
+  "chapter": "units and measurements",
+  "question_type": "other",
+  "metadata": {
+    "exam": "jee advanced",
+    "year": "",
+    "mode": "",
+    "date": "",
+    "shift": "",
+    "marks": {
+      "positive": null,
+      "negative": null
+    }
+  },
+  "question_html": "<!-- HTML_TAG_START -->Plank' constant has dimension __________.<!-- HTML_TAG_END -->",
+  "options": [],
+  "answer": {
+    "type": "other",
+    "value": null
+  },
+  "explanation_html": "We know E = hv\n<br>So $$h = {E \\over v} = {{\\left[ {M{L^2}{T^{ - 2}}} \\right]} \\over {\\left[ {{T^{ - 1}}} \\right]}} = \\left[ {M{L^2}{T^{ - 1}}} \\right]$$"
+}
