@@ -11,11 +11,52 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY,
 );
 
-// Load questions from JSON files
-router.get("/load/:setId", verifyToken, async (req, res) => {
+// Cache for question file paths (built on first request)
+let questionFileIndex = null;
+
+// Build index of all question files (runs once on startup or first request)
+function buildQuestionIndex() {
+  console.log("[INDEX] Building question file index...");
+  const startTime = Date.now();
+  const index = new Map();
+  const dataDir = path.join(__dirname, "..", "data");
+
+  function scanDirectory(dir) {
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+      const filePath = path.join(dir, file);
+      const stat = fs.statSync(filePath);
+
+      if (stat.isDirectory()) {
+        scanDirectory(filePath);
+      } else if (file.endsWith(".json")) {
+        const questionId = file.replace(".json", "");
+        index.set(questionId, filePath);
+      }
+    }
+  }
+
+  scanDirectory(dataDir);
+  const duration = Date.now() - startTime;
+  console.log(
+    `[INDEX] Index built with ${index.size} questions in ${duration}ms`,
+  );
+  return index;
+}
+
+// Get question file path from index (fast lookup)
+function getQuestionFile(questionId) {
+  if (!questionFileIndex) {
+    questionFileIndex = buildQuestionIndex();
+  }
+  return questionFileIndex.get(questionId);
+}
+
+// Get only question IDs/metadata (fast - no file loading)
+router.get("/metadata/:setId", verifyToken, async (req, res) => {
   try {
     const { setId } = req.params;
-    console.log("Loading questions for set:", setId);
+    console.log("Loading question metadata for set:", setId);
 
     // Get question set from database to get question_ids
     const { data: questionSet, error } = await supabase
@@ -26,64 +67,107 @@ router.get("/load/:setId", verifyToken, async (req, res) => {
 
     if (error) {
       console.error("Error fetching question set:", error);
+      return res.json({ questionIds: [] });
+    }
+
+    const questionIds = questionSet.question_ids || [];
+    console.log(`Metadata loaded: ${questionIds.length} question IDs`);
+
+    res.json({ questionIds });
+  } catch (error) {
+    console.error("Load metadata error:", error);
+    res.status(500).json({ error: "Failed to load metadata" });
+  }
+});
+
+// Get a single question by ID (on-demand loading)
+router.get("/single/:questionId", verifyToken, async (req, res) => {
+  try {
+    const { questionId } = req.params;
+    console.log(`[SINGLE] Loading question: ${questionId}`);
+
+    const questionFile = getQuestionFile(questionId);
+
+    if (questionFile) {
+      const questionData = JSON.parse(fs.readFileSync(questionFile, "utf8"));
+      console.log(`[SINGLE] Found: ${questionId}`);
+      res.json({ question: questionData });
+    } else {
+      console.log(`[SINGLE] Not found: ${questionId}`);
+      res.status(404).json({ error: "Question not found" });
+    }
+  } catch (error) {
+    console.error("[SINGLE] Error:", error);
+    res.status(500).json({ error: "Failed to load question" });
+  }
+});
+
+// Load ALL questions from a set in one request (FAST - uses index)
+router.get("/load/:setId", verifyToken, async (req, res) => {
+  try {
+    const { setId } = req.params;
+    const startTime = Date.now();
+    console.log(`[LOAD] Loading all questions for set: ${setId}`);
+
+    // Get question set from database to get question_ids
+    const { data: questionSet, error } = await supabase
+      .from("question_sets")
+      .select("question_ids")
+      .eq("id", setId)
+      .single();
+
+    if (error) {
+      console.error("[LOAD] Error fetching question set:", error);
       return res.json({ questions: [] });
     }
 
     const questionIds = questionSet.question_ids || [];
-    console.log("Question IDs:", questionIds);
+    console.log(`[LOAD] Found ${questionIds.length} question IDs`);
 
     if (questionIds.length === 0) {
       return res.json({ questions: [] });
     }
 
-    // Load questions from JSON files
+    // Build index if not already built
+    if (!questionFileIndex) {
+      questionFileIndex = buildQuestionIndex();
+    }
+
+    // Load all questions using the index (FAST!)
     const questions = [];
-    const dataDir = path.join(__dirname, "..", "data");
+    let foundCount = 0;
+    let notFoundCount = 0;
 
     for (const questionId of questionIds) {
       try {
-        // Find the JSON file - search recursively
-        const questionFile = findQuestionFile(dataDir, questionId);
+        const questionFile = questionFileIndex.get(questionId);
 
         if (questionFile) {
           const questionData = JSON.parse(
             fs.readFileSync(questionFile, "utf8"),
           );
           questions.push(questionData);
-          console.log("Loaded question:", questionId);
+          foundCount++;
         } else {
-          console.log("Question file not found for:", questionId);
+          console.log(`[LOAD] Not found: ${questionId}`);
+          notFoundCount++;
         }
       } catch (err) {
-        console.error(`Error loading question ${questionId}:`, err.message);
+        console.error(`[LOAD] Error loading ${questionId}:`, err.message);
+        notFoundCount++;
       }
     }
 
-    console.log("Total questions loaded:", questions.length);
+    const duration = Date.now() - startTime;
+    console.log(
+      `[LOAD] Complete: ${foundCount} loaded, ${notFoundCount} missing in ${duration}ms`,
+    );
+
     res.json({ questions });
   } catch (error) {
-    console.error("Load questions error:", error);
+    console.error("[LOAD] Error:", error);
     res.status(500).json({ error: "Failed to load questions" });
   }
 });
-
-// Recursively find a question JSON file
-function findQuestionFile(dir, questionId) {
-  const files = fs.readdirSync(dir);
-
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    const stat = fs.statSync(filePath);
-
-    if (stat.isDirectory()) {
-      const found = findQuestionFile(filePath, questionId);
-      if (found) return found;
-    } else if (file === `${questionId}.json`) {
-      return filePath;
-    }
-  }
-
-  return null;
-}
 
 module.exports = router;

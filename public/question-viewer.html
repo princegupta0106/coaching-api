@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Question Viewer</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [["$", "$"]],
+          displayMath: [["$$", "$$"]],
+          processEscapes: true,
+          processEnvironments: true,
+        },
+        svg: { fontCache: "global" },
+        options: {
+          skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+        },
+      };
+    </script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+    ></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      .header {
+        background: white;
+        border-bottom: 1px solid #ddd;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .back-btn {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        padding: 8px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .question-counter {
+        font-size: 16px;
+        font-weight: 600;
+        color: #666;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+
+      .question-card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 40px;
+        margin-bottom: 20px;
+      }
+
+      .badges {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: white;
+      }
+
+      .badge-type {
+        background: #667eea;
+      }
+      .badge-subject {
+        background: #10b981;
+      }
+      .badge-chapter {
+        background: #f59e0b;
+      }
+
+      .question-text {
+        font-size: 18px;
+        line-height: 1.8;
+        margin-bottom: 30px;
+        min-height: 100px;
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .option {
+        padding: 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .option:hover {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.05);
+      }
+
+      .option.selected {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+      }
+
+      .option.correct {
+        border-color: #27ae60;
+        background: rgba(39, 174, 96, 0.1);
+      }
+
+      .option.wrong {
+        border-color: #e74c3c;
+        background: rgba(231, 76, 60, 0.1);
+      }
+
+      .option-label {
+        font-weight: 700;
+        min-width: 24px;
+        color: #667eea;
+      }
+
+      .input-box {
+        width: 100%;
+        max-width: 400px;
+        padding: 15px;
+        font-size: 18px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        margin-bottom: 20px;
+      }
+
+      textarea.input-box {
+        min-height: 120px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: #10b981;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #059669;
+      }
+      .btn-secondary {
+        background: #f5f5f5;
+        color: #333;
+        border: 1px solid #ddd;
+      }
+      .btn-info {
+        background: #667eea;
+        color: white;
+      }
+
+      .nav-sidebar {
+        position: fixed;
+        right: 20px;
+        top: 100px;
+        width: 240px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+      }
+
+      .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+      }
+
+      .nav-box {
+        aspect-ratio: 1;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        background: #f5f5f5;
+        transition: all 0.2s;
+      }
+
+      .nav-box:hover {
+        transform: scale(1.1);
+      }
+      .nav-box.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+      }
+      .nav-box.correct {
+        background: #27ae60;
+        color: white;
+      }
+      .nav-box.wrong {
+        background: #e74c3c;
+        color: white;
+      }
+      .nav-box.seen {
+        background: #ffd700;
+      }
+
+      .alert {
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        background: #fef3c7;
+        color: #92400e;
+        border-left: 4px solid #fbbf24;
+        display: none;
+      }
+
+      .explanation {
+        background: #f5f5f5;
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 6px;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        font-size: 16px;
+        color: #666;
+      }
+
+      @media (max-width: 768px) {
+        .nav-sidebar {
+          display: none;
+        }
+        .question-card {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <button class="back-btn" onclick="goBack()">← Back to Portal</button>
+      <div class="question-counter" id="counter"></div>
+    </div>
+
+    <div class="container" id="app">
+      <div class="loading">Loading question set...</div>
+    </div>
+
+    <div class="nav-sidebar" id="navSidebar">
+      <div class="nav-grid" id="navGrid"></div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api";
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      console.log("[VIEWER] Initializing Question Viewer");
+      console.log("[VIEWER] User:", user);
+
+      // Auth check
+      if (!token || user.role !== "student") {
+        console.error("[VIEWER] Authentication failed - redirecting to login");
+        alert("Please login as a student");
+        window.location.href = "/";
+      }
+
+      // Get URL parameters
+      const params = new URLSearchParams(window.location.search);
+      const setId = params.get("setId");
+      const setName = params.get("setName");
+
+      console.log("[VIEWER] Question Set ID:", setId);
+      console.log("[VIEWER] Question Set Name:", setName);
+
+      if (!setId) {
+        console.error("[VIEWER] No setId provided - redirecting to portal");
+        alert("No question set specified");
+        window.location.href = "/student.html";
+      }
+
+      let state = {
+        questionIds: [],
+        questionCache: {},
+        questionStatus: {},
+        currentIndex: 0,
+        selectedAnswer: null,
+        selectedMultiple: [],
+      };
+
+      async function api(endpoint) {
+        console.log(`[VIEWER] API Call: ${endpoint}`);
+        try {
+          const res = await fetch(`${API_URL}${endpoint}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (!res.ok) {
+            console.error(`[VIEWER] API Error: ${res.status}`);
+            throw new Error(`HTTP ${res.status}`);
+          }
+          const data = await res.json();
+          console.log(`[VIEWER] API Response:`, data);
+          return data;
+        } catch (err) {
+          console.error("[VIEWER] API Error:", err);
+          return null;
+        }
+      }
+
+      async function init() {
+        console.log("[VIEWER] Loading question set metadata...");
+
+        // Load question IDs
+        const metaData = await api(`/questions/metadata/${setId}`);
+        if (!metaData || !metaData.questionIds) {
+          console.error("[VIEWER] Failed to load question metadata");
+          alert("Failed to load question set");
+          window.location.href = "/student.html";
+          return;
+        }
+
+        state.questionIds = metaData.questionIds;
+        console.log(`[VIEWER] Loaded ${state.questionIds.length} question IDs`);
+
+        // Load question status
+        const statusData = await api(`/student-status/${user.email}`);
+        if (statusData && statusData.status) {
+          state.questionStatus = statusData.status.question_status || {};
+          console.log("[VIEWER] Loaded question status:", state.questionStatus);
+        }
+
+        // Find first unseen or default to index 0
+        let startIndex = 0;
+        for (let i = 0; i < state.questionIds.length; i++) {
+          const qId = state.questionIds[i];
+          if (
+            !state.questionStatus[qId] ||
+            state.questionStatus[qId] === "unseen"
+          ) {
+            startIndex = i;
+            console.log(
+              `[VIEWER] Starting at first unseen question: index ${i}`,
+            );
+            break;
+          }
+        }
+
+        state.currentIndex = startIndex;
+        await loadAndShowQuestion(state.currentIndex);
+        renderNav();
+      }
+
+      async function loadAndShowQuestion(index) {
+        console.log(`[VIEWER] Loading question at index ${index}`);
+
+        state.currentIndex = index;
+        const questionId = state.questionIds[index];
+
+        console.log(`[VIEWER] Question ID: ${questionId}`);
+
+        // Load question if not cached
+        if (!state.questionCache[questionId]) {
+          console.log(`[VIEWER] Question not in cache, loading from API...`);
+          const data = await api(`/questions/single/${questionId}`);
+          if (!data || !data.question) {
+            console.error("[VIEWER] Failed to load question");
+            alert("Failed to load question");
+            return;
+          }
+          state.questionCache[questionId] = data.question;
+          console.log(`[VIEWER] Question loaded and cached:`, data.question);
+        } else {
+          console.log(`[VIEWER] Question loaded from cache`);
+        }
+
+        const question = state.questionCache[questionId];
+
+        // Mark as seen
+        if (!state.questionStatus[questionId]) {
+          console.log(`[VIEWER] Marking question as seen: ${questionId}`);
+          state.questionStatus[questionId] = "seen";
+          await updateStatus(questionId, "seen");
+        }
+
+        // Reset selections
+        state.selectedAnswer = null;
+        state.selectedMultiple = [];
+
+        // Render question
+        renderQuestion(question);
+        renderNav();
+      }
+
+      function renderQuestion(question) {
+        console.log("[VIEWER] Rendering question:", question.id);
+
+        const questionType = question.question_type || "mcq_single";
+        const options = question.options || [];
+
+        let answerInput = "";
+        if (questionType === "numerical") {
+          answerInput = `<input type="number" step="0.01" class="input-box" id="answerInput" placeholder="Enter your answer">`;
+        } else if (questionType === "subjective" || questionType === "other") {
+          answerInput = `<textarea class="input-box" id="answerInput" placeholder="Type your answer here..."></textarea>`;
+        } else if (questionType === "mcq_multiple") {
+          answerInput = `
+          <div class="options">
+            ${options
+              .map(
+                (opt, i) => `
+              <div class="option" onclick="toggleMultiple('${opt.label}', ${i})">
+                <input type="checkbox" id="opt-${i}">
+                <div class="option-label">${opt.label}</div>
+                <div>${opt.html || opt.label}</div>
+              </div>
+            `,
+              )
+              .join("")}
+          </div>
+        `;
+        } else {
+          answerInput = `
+          <div class="options">
+            ${options
+              .map(
+                (opt, i) => `
+              <div class="option" onclick="selectOption('${opt.label}', ${i})">
+                <div class="option-label">${opt.label}</div>
+                <div>${opt.html || opt.label}</div>
+              </div>
+            `,
+              )
+              .join("")}
+          </div>
+        `;
+        }
+
+        const html = `
+        <div class="question-card">
+          <div class="badges">
+            <span class="badge badge-type">${questionType.replace(/_/g, " ").toUpperCase()}</span>
+            ${question.subject ? `<span class="badge badge-subject">${question.subject}</span>` : ""}
+            ${question.chapter ? `<span class="badge badge-chapter">${question.chapter}</span>` : ""}
+          </div>
+
+          <div id="alert" class="alert"></div>
+
+          <div class="question-text" id="questionText"></div>
+
+          ${answerInput}
+
+          <div class="actions">
+            <button class="btn btn-primary" onclick="submitAnswer()">Submit Answer</button>
+            <button class="btn btn-info" onclick="showSolution()">Show Solution</button>
+            ${state.currentIndex > 0 ? '<button class="btn btn-secondary" onclick="prevQuestion()">← Previous</button>' : ""}
+            ${state.currentIndex < state.questionIds.length - 1 ? '<button class="btn btn-secondary" onclick="nextQuestion()">Next →</button>' : ""}
+          </div>
+
+          <div id="explanation"></div>
+        </div>
+      `;
+
+        document.getElementById("app").innerHTML = html;
+        document.getElementById("counter").textContent =
+          `Question ${state.currentIndex + 1} of ${state.questionIds.length}`;
+
+        // Inject question HTML safely
+        document.getElementById("questionText").innerHTML =
+          question.question_html ||
+          question.content?.question_html ||
+          "Question not available";
+
+        // Render MathJax
+        if (window.MathJax) {
+          MathJax.typesetPromise([document.getElementById("app")]).catch(
+            (err) => console.error("[VIEWER] MathJax error:", err),
+          );
+        }
+      }
+
+      function renderNav() {
+        const navHtml = state.questionIds
+          .map((qId, i) => {
+            const status = state.questionStatus[qId] || "unseen";
+            const isActive = i === state.currentIndex;
+            return `<div class="nav-box ${status} ${isActive ? "active" : ""}" onclick="loadAndShowQuestion(${i})">${i + 1}</div>`;
+          })
+          .join("");
+
+        document.getElementById("navGrid").innerHTML = navHtml;
+      }
+
+      function selectOption(label, index) {
+        console.log(`[VIEWER] Selected option: ${label}`);
+        state.selectedAnswer = label;
+        document.querySelectorAll(".option").forEach((opt, i) => {
+          opt.classList.remove("selected");
+          if (i === index) opt.classList.add("selected");
+        });
+      }
+
+      function toggleMultiple(label, index) {
+        const checkbox = document.getElementById(`opt-${index}`);
+        checkbox.checked = !checkbox.checked;
+
+        if (checkbox.checked) {
+          if (!state.selectedMultiple.includes(label)) {
+            state.selectedMultiple.push(label);
+          }
+        } else {
+          state.selectedMultiple = state.selectedMultiple.filter(
+            (l) => l !== label,
+          );
+        }
+
+        console.log(
+          `[VIEWER] Selected multiple options:`,
+          state.selectedMultiple,
+        );
+        document
+          .querySelectorAll(".option")
+          [index].classList.toggle("selected", checkbox.checked);
+      }
+
+      async function submitAnswer() {
+        console.log("[VIEWER] Submitting answer...");
+
+        const questionId = state.questionIds[state.currentIndex];
+        const question = state.questionCache[questionId];
+        const questionType = question.question_type || "mcq_single";
+        const correctAnswer = question.answer?.value || "";
+
+        let userAnswer = null;
+        let isCorrect = false;
+        const alert = document.getElementById("alert");
+
+        if (questionType === "numerical") {
+          const input = document.getElementById("answerInput");
+          if (!input || !input.value) {
+            alert.textContent = "Please enter an answer";
+            alert.style.display = "block";
+            setTimeout(() => (alert.style.display = "none"), 3000);
+            return;
+          }
+          userAnswer = parseFloat(input.value);
+          isCorrect = Math.abs(userAnswer - parseFloat(correctAnswer)) < 0.01;
+        } else if (questionType === "subjective" || questionType === "other") {
+          const input = document.getElementById("answerInput");
+          if (!input || !input.value.trim()) {
+            alert.textContent = "Please enter an answer";
+            alert.style.display = "block";
+            setTimeout(() => (alert.style.display = "none"), 3000);
+            return;
+          }
+          userAnswer = input.value.trim();
+          isCorrect = false;
+        } else if (questionType === "mcq_multiple") {
+          if (state.selectedMultiple.length === 0) {
+            alert.textContent = "Please select at least one option";
+            alert.style.display = "block";
+            setTimeout(() => (alert.style.display = "none"), 3000);
+            return;
+          }
+          userAnswer = state.selectedMultiple.sort().join("");
+          isCorrect = userAnswer === correctAnswer;
+        } else {
+          if (!state.selectedAnswer) {
+            alert.textContent = "Please select an answer";
+            alert.style.display = "block";
+            setTimeout(() => (alert.style.display = "none"), 3000);
+            return;
+          }
+          userAnswer = state.selectedAnswer;
+          isCorrect = userAnswer === correctAnswer;
+        }
+
+        console.log(
+          `[VIEWER] User answer: ${userAnswer}, Correct: ${correctAnswer}, Is Correct: ${isCorrect}`,
+        );
+
+        const newStatus =
+          questionType === "subjective" || questionType === "other"
+            ? "seen"
+            : isCorrect
+              ? "correct"
+              : "wrong";
+        state.questionStatus[questionId] = newStatus;
+        await updateStatus(questionId, newStatus);
+
+        alert.textContent = isCorrect
+          ? "✓ Correct!"
+          : questionType === "subjective" || questionType === "other"
+            ? "Submitted"
+            : "✗ Incorrect";
+        alert.style.display = "block";
+        setTimeout(() => (alert.style.display = "none"), 3000);
+
+        renderNav();
+
+        // Highlight correct/wrong
+        if (questionType === "mcq_single" || questionType === "mcq_multiple") {
+          document.querySelectorAll(".option").forEach((opt) => {
+            const label = opt.querySelector(".option-label").textContent.trim();
+            if (questionType === "mcq_multiple") {
+              if (correctAnswer.includes(label)) opt.classList.add("correct");
+              else if (state.selectedMultiple.includes(label))
+                opt.classList.add("wrong");
+            } else {
+              if (label === correctAnswer) opt.classList.add("correct");
+              else if (label === state.selectedAnswer)
+                opt.classList.add("wrong");
+            }
+          });
+        }
+      }
+
+      function showSolution() {
+        console.log("[VIEWER] Showing solution");
+
+        const questionId = state.questionIds[state.currentIndex];
+        const question = state.questionCache[questionId];
+        const explanation = question.explanation_html || "";
+        const correctAnswer = question.answer?.value || "";
+
+        const html = `
+        <div class="explanation">
+          <div style="font-weight: 600; margin-bottom: 10px; color: #667eea; font-size: 16px;">💡 Solution</div>
+          <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
+          ${explanation ? `<div style="margin-top: 15px;">${explanation}</div>` : '<div style="margin-top: 15px;">No explanation available.</div>'}
+        </div>
+      `;
+
+        document.getElementById("explanation").innerHTML = html;
+
+        if (window.MathJax) {
+          MathJax.typesetPromise([
+            document.getElementById("explanation"),
+          ]).catch((err) => console.error("[VIEWER] MathJax error:", err));
+        }
+      }
+
+      async function updateStatus(questionId, status) {
+        console.log(`[VIEWER] Updating status: ${questionId} = ${status}`);
+
+        await fetch(`${API_URL}/student-status/${user.email}`, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            question_id: questionId,
+            status: status,
+          }),
+        });
+      }
+
+      function nextQuestion() {
+        if (state.currentIndex < state.questionIds.length - 1) {
+          loadAndShowQuestion(state.currentIndex + 1);
+        }
+      }
+
+      function prevQuestion() {
+        if (state.currentIndex > 0) {
+          loadAndShowQuestion(state.currentIndex - 1);
+        }
+      }
+
+      function goBack() {
+        console.log("[VIEWER] Going back to portal");
+        window.location.href = "/student.html";
+      }
+
+      // Initialize
+      init();
+    </script>
+  </body>
+</html>

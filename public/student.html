@@ -152,6 +152,7 @@
         display: flex;
         flex-direction: column;
         z-index: 99;
+        transition: width 0.3s ease;
       }
 
       .sidebar.viewing-question {
@@ -234,6 +235,12 @@
         font-size: 20px;
         font-weight: 700;
         color: #ffffff;
+        cursor: pointer;
+        transition: opacity 0.3s ease;
+      }
+
+      .portal-title:hover {
+        opacity: 0.8;
       }
 
       .dark-mode-toggle {
@@ -356,11 +363,30 @@
         margin-top: 0;
         padding: 15px;
         min-height: 100vh;
+        transition:
+          margin-left 0.3s ease,
+          opacity 0.2s ease;
       }
 
       .main-content.viewing-question {
         margin-left: 300px;
         padding: 20px;
+      }
+
+      /* Fade-in animation for content */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .main-content > * {
+        animation: fadeIn 0.3s ease;
       }
 
       .welcome-section {
@@ -647,6 +673,20 @@
         max-width: 100%;
       }
 
+      /* Mobile MathJax overflow handling */
+      @media (max-width: 720px) {
+        .question-text,
+        .option-item,
+        .explanation-box {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        mjx-container[jax="SVG"] {
+          max-width: 100%;
+        }
+      }
+
       .action-buttons {
         display: flex;
         gap: 15px;
@@ -661,7 +701,29 @@
         font-size: 13px;
         font-weight: 500;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.6s,
+          height 0.6s;
+      }
+
+      .btn:active::before {
+        width: 300px;
+        height: 300px;
       }
 
       .btn-primary {
@@ -846,7 +908,7 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div class="portal-title">Course Portal</div>
+        <div class="portal-title" onclick="showHome()">Course Portal</div>
         <button
           class="dark-mode-toggle"
           onclick="toggleDarkMode()"
@@ -1003,59 +1065,64 @@
         await loadQuestionStatus();
         await loadAccessSets();
 
-        // Restore previous state if exists
-        if (
-          currentView.type === "subject" &&
-          currentView.examId &&
-          currentView.subjectId
-        ) {
-          await selectSubjectRestore(currentView.examId, currentView.subjectId);
-        } else if (
-          currentView.type === "chapter" &&
-          currentView.chapterId &&
-          currentView.chapterName
-        ) {
-          await loadChapterQuestionsRestore(
-            currentView.chapterId,
-            currentView.chapterName,
-          );
-        } else if (
-          currentView.type === "question" &&
-          currentView.chapterId &&
-          currentView.chapterName
-        ) {
-          await loadChapterQuestionsRestore(
-            currentView.chapterId,
-            currentView.chapterName,
-          );
+        // URL-based routing - parse hash
+        handleRouteFromURL();
+
+        // Listen for URL changes
+        window.addEventListener("hashchange", handleRouteFromURL);
+      });
+
+      // URL-based routing handler
+      async function handleRouteFromURL() {
+        const hash = window.location.hash.slice(1); // Remove #
+        console.log("[ROUTE] Navigating to:", hash);
+
+        if (!hash) {
+          await showHome();
+          return;
+        }
+
+        const parts = hash.split("/");
+        const route = parts[0];
+
+        if (route === "subject" && parts.length >= 3) {
+          const examId = parts[1];
+          const subjectId = parts[2];
+          await selectSubjectRestore(examId, subjectId);
+        } else if (route === "chapter" && parts.length >= 3) {
+          const chapterId = parts[1];
+          const chapterName = decodeURIComponent(parts[2]);
+          await loadChapterQuestionsRestore(chapterId, chapterName);
+        } else if (route === "question" && parts.length >= 4) {
+          const chapterId = parts[1];
+          const chapterName = decodeURIComponent(parts[2]);
+          const questionIndex = parseInt(parts[3]);
+          await loadChapterQuestionsRestore(chapterId, chapterName);
           setTimeout(() => {
-            if (
-              currentView.questionIndex !== undefined &&
-              currentQuestions.length > 0
-            ) {
-              currentQuestionIndex = parseInt(currentView.questionIndex);
+            if (currentQuestions.length > 0) {
+              currentQuestionIndex = questionIndex;
               displayQuestionViewer();
             }
           }, 100);
-        } else if (currentView.type === "dpp" && currentView.dppId) {
-          // Restore DPP question grid
-          await openDPPRestore(currentView.dppId, currentView.dppName);
-        } else if (currentView.type === "dpp-question" && currentView.dppId) {
-          // Restore DPP question viewer
-          await openDPPRestore(currentView.dppId, currentView.dppName);
+        } else if (route === "dpp" && parts.length >= 3) {
+          const dppId = parts[1];
+          const dppName = decodeURIComponent(parts[2]);
+          await openDPPRestore(dppId, dppName);
+        } else if (route === "dpp-question" && parts.length >= 4) {
+          const dppId = parts[1];
+          const dppName = decodeURIComponent(parts[2]);
+          const questionIndex = parseInt(parts[3]);
+          await openDPPRestore(dppId, dppName);
           setTimeout(() => {
-            if (
-              currentView.questionIndex !== undefined &&
-              currentQuestions.length > 0
-            ) {
-              currentQuestionIndex = parseInt(currentView.questionIndex);
+            if (currentQuestions.length > 0) {
+              currentQuestionIndex = questionIndex;
               displayQuestionViewer();
             }
           }, 100);
         } else {
-          showHome();
+          await showHome();
         }
-      });
+      }
 
       function toggleDarkMode() {
         document.body.classList.toggle("dark-mode");
@@ -1182,16 +1249,16 @@
         container.innerHTML = currentExams
           .map(
             (exam) => `
-        <div class="exam-item">
-          <div class="exam-header" onclick="toggleExam('${exam.id}')">
-            <span>${exam.id}</span>
-            <span>▼</span>
-          </div>
-          <div class="subject-list" id="subjects-${exam.id}">
-            <!-- Subjects will be loaded here -->
-          </div>
-        </div>
-      `,
+              <div class="exam-item">
+                <div class="exam-header" onclick="toggleExam('${exam.id}')">
+                  <span>${exam.id}</span>
+                  <span>▼</span>
+                </div>
+                <div class="subject-list" id="subjects-${exam.id}">
+                  <!-- Subjects will be loaded here -->
+                </div>
+              </div>
+            `,
           )
           .join("");
       }
@@ -1220,10 +1287,10 @@
             subjectList.innerHTML = subjects
               .map(
                 (subject) => `
-            <div class="subject-item" onclick="selectSubject('${examId}', '${subject.id}')">
-              ${subject.id}
-            </div>
-          `,
+                  <div class="subject-item" onclick="selectSubject('${examId}', '${subject.id}')">
+                    ${subject.id}
+                  </div>
+                `,
               )
               .join("");
 
@@ -1258,6 +1325,9 @@
       async function selectSubject(examId, subjectId) {
         saveViewState("subject", { examId, subjectId });
 
+        // Update URL
+        window.location.hash = `subject/${examId}/${subjectId}`;
+
         document.getElementById("topbarTitle").textContent = subjectId;
 
         try {
@@ -1282,24 +1352,24 @@
         const content = document.getElementById("mainContent");
 
         content.innerHTML = `
-        <div class="back-button" onclick="goBack()">← Back</div>
-        <h2 class="section-title">${subjectName} - Chapters</h2>
-        <div class="chapter-list">
-          ${currentChapters
-            .map(
-              (chapter) => `
-            <div class="chapter-item-card" onclick="loadChapterQuestions('${chapter.id}', '${chapter.name}')">
-              <div>
-                <div style="font-weight: 600; margin-bottom: 5px;">${chapter.name}</div>
-                <div style="font-size: 14px; color: var(--text-secondary);">${chapter.id}</div>
+              <div class="back-button" onclick="goBack()">← Back</div>
+              <h2 class="section-title">${subjectName} - Chapters</h2>
+              <div class="chapter-list">
+                ${currentChapters
+                  .map(
+                    (chapter) => `
+                  <div class="chapter-item-card" onclick="loadChapterQuestions('${chapter.id}', '${chapter.name}')">
+                    <div>
+                      <div style="font-weight: 600; margin-bottom: 5px;">${chapter.name}</div>
+                      <div style="font-size: 14px; color: var(--text-secondary);">${chapter.id}</div>
+                    </div>
+                    <div>→</div>
+                  </div>
+                `,
+                  )
+                  .join("")}
               </div>
-              <div>→</div>
-            </div>
-          `,
-            )
-            .join("")}
-        </div>
-      `;
+            `;
       }
 
       async function loadChapterQuestionsRestore(chapterId, chapterName) {
@@ -1308,6 +1378,9 @@
         localStorage.setItem("currentChapterName", chapterName);
 
         try {
+          console.log(`[LOAD] Bulk loading all questions for: ${chapterId}`);
+          const startTime = Date.now();
+
           const response = await fetch(
             `${API_URL}/questions/load/${chapterId}`,
             {
@@ -1318,10 +1391,14 @@
           if (response.ok) {
             const data = await response.json();
             currentQuestions = data.questions || [];
+            const duration = Date.now() - startTime;
+            console.log(
+              `[LOAD] Loaded ${currentQuestions.length} questions in ${duration}ms`,
+            );
             displayQuestionGrid(chapterName);
           }
         } catch (error) {
-          console.error("Error loading questions:", error);
+          console.error("[LOAD] Error loading questions:", error);
         }
       }
 
@@ -1331,15 +1408,20 @@
         const subjectId = currentView.subjectId;
         saveViewState("chapter", { chapterId, chapterName, examId, subjectId });
 
+        // Update URL
+        window.location.hash = `chapter/${chapterId}/${encodeURIComponent(chapterName)}`;
+
         document.getElementById("topbarTitle").textContent = chapterName;
 
-        console.log("Loading questions for chapter:", chapterId);
+        console.log(`[LOAD] Bulk loading all questions for: ${chapterId}`);
 
         // Save current chapter to localStorage
         localStorage.setItem("currentChapterId", chapterId);
         localStorage.setItem("currentChapterName", chapterName);
 
         try {
+          const startTime = Date.now();
+
           const response = await fetch(
             `${API_URL}/questions/load/${chapterId}`,
             {
@@ -1350,8 +1432,11 @@
           if (response.ok) {
             const data = await response.json();
             currentQuestions = data.questions || [];
-            console.log("Loaded questions:", currentQuestions.length);
-            console.log("First question:", currentQuestions[0]);
+            const duration = Date.now() - startTime;
+
+            console.log(
+              `[LOAD] Loaded ${currentQuestions.length} questions in ${duration}ms`,
+            );
 
             if (currentQuestions.length === 0) {
               alert("No questions found in this chapter");
@@ -1360,11 +1445,11 @@
 
             displayQuestionGrid(chapterName);
           } else {
-            console.error("Failed to load questions:", response.status);
+            console.error("[LOAD] Failed to load questions:", response.status);
             alert("Failed to load questions");
           }
         } catch (error) {
-          console.error("Error loading questions:", error);
+          console.error("[LOAD] Error loading questions:", error);
           alert("Error loading questions: " + error.message);
         }
       }
@@ -1373,21 +1458,21 @@
         const content = document.getElementById("mainContent");
 
         content.innerHTML = `
-        <div class="back-button" onclick="goBack()">← Back</div>
-        <h2 class="section-title">${chapterName}</h2>
-        <div class="question-grid">
-          ${currentQuestions
-            .map((q, index) => {
-              const status = questionStatus[q.id] || "unseen";
-              return `
-              <div class="question-box ${status}" onclick="openQuestion(${index})">
-                ${index + 1}
+              <div class="back-button" onclick="goBack()">← Back</div>
+              <h2 class="section-title">${chapterName}</h2>
+              <div class="question-grid">
+                ${currentQuestions
+                  .map((q, index) => {
+                    const status = questionStatus[q.id] || "unseen";
+                    return `
+                    <div class="question-box ${status}" onclick="openQuestion(${index})">
+                      ${index + 1}
+                    </div>
+                  `;
+                  })
+                  .join("")}
               </div>
             `;
-            })
-            .join("")}
-        </div>
-      `;
       }
 
       async function openQuestion(index) {
@@ -1403,6 +1488,9 @@
           examId,
           subjectId,
         });
+
+        // Update URL
+        window.location.hash = `question/${chapterId}/${encodeURIComponent(chapterName)}/${index}`;
 
         const question = currentQuestions[index];
         selectedMultipleOptions = [];
@@ -1439,11 +1527,11 @@
             const status = questionStatus[q.id] || "unseen";
             const isActive = i === currentQuestionIndex;
             return `
-          <div class="question-nav-box ${status} ${isActive ? "active" : ""}" 
-               onclick="navigateToQuestion(${i})">
-            ${i + 1}
-          </div>
-        `;
+                <div class="question-nav-box ${status} ${isActive ? "active" : ""}"
+                     onclick="navigateToQuestion(${i})">
+                  ${i + 1}
+                </div>
+              `;
           })
           .join("");
 
@@ -1506,99 +1594,99 @@
 
         if (questionType === "other" || questionType === "subjective") {
           answerSection = `
-          <textarea 
-                 class="subjective-input" 
-                 id="subjectiveAnswer" 
-                 placeholder="Type your answer here..."
-                 rows="4"></textarea>
-        `;
+                <textarea
+                       class="subjective-input"
+                       id="subjectiveAnswer"
+                       placeholder="Type your answer here..."
+                       rows="4"></textarea>
+              `;
         } else if (questionType === "numerical") {
           answerSection = `
-          <input type="number" 
-                 step="0.01" 
-                 class="numerical-input" 
-                 id="numericalAnswer" 
-                 placeholder="Enter your answer">
-        `;
+                <input type="number"
+                       step="0.01"
+                       class="numerical-input"
+                       id="numericalAnswer"
+                       placeholder="Enter your answer">
+              `;
         } else if (questionType === "mcq_multiple") {
           answerSection = `
-          <div class="options-list" id="optionsList">
-            ${options
-              .map(
-                (opt, i) => `
-              <div class="option-item" onclick="toggleMultipleOption('${opt.label}', ${i})">
-                <input type="checkbox" id="opt-${i}" style="margin-right: 10px;">
-                <div>${opt.html || opt.label}</div>
-              </div>
-            `,
-              )
-              .join("")}
-          </div>
-        `;
+                <div class="options-list" id="optionsList">
+                  ${options
+                    .map(
+                      (opt, i) => `
+                    <div class="option-item" onclick="toggleMultipleOption('${opt.label}', ${i})">
+                      <input type="checkbox" id="opt-${i}" style="margin-right: 10px;">
+                      <div>${opt.html || opt.label}</div>
+                    </div>
+                  `,
+                    )
+                    .join("")}
+                </div>
+              `;
         } else {
           answerSection = `
-          <div class="options-list" id="optionsList">
-            ${options
-              .map(
-                (opt, i) => `
-              <div class="option-item" onclick="selectOption('${opt.label}', ${i})">
-                <div>${opt.html || opt.label}</div>
-              </div>
-            `,
-              )
-              .join("")}
-          </div>
-        `;
+                <div class="options-list" id="optionsList">
+                  ${options
+                    .map(
+                      (opt, i) => `
+                    <div class="option-item" onclick="selectOption('${opt.label}', ${i})">
+                      <div>${opt.html || opt.label}</div>
+                    </div>
+                  `,
+                    )
+                    .join("")}
+                </div>
+              `;
         }
 
         // Mobile navigation (below question)
         const mobileNav = `
-        <div class="mobile-question-nav">
-          <div style="margin-bottom: 15px; font-weight: 600;">Questions</div>
-          <div class="question-nav-grid">
-            ${currentQuestions
-              .map((q, i) => {
-                const status = questionStatus[q.id] || "unseen";
-                const isActive = i === currentQuestionIndex;
-                return `
-                <div class="question-nav-box ${status} ${isActive ? "active" : ""}" 
-                     onclick="navigateToQuestion(${i})">
-                  ${i + 1}
+              <div class="mobile-question-nav">
+                <div style="margin-bottom: 15px; font-weight: 600;">Questions</div>
+                <div class="question-nav-grid">
+                  ${currentQuestions
+                    .map((q, i) => {
+                      const status = questionStatus[q.id] || "unseen";
+                      const isActive = i === currentQuestionIndex;
+                      return `
+                      <div class="question-nav-box ${status} ${isActive ? "active" : ""}"
+                           onclick="navigateToQuestion(${i})">
+                        ${i + 1}
+                      </div>
+                    `;
+                    })
+                    .join("")}
                 </div>
-              `;
-              })
-              .join("")}
-          </div>
-        </div>
-      `;
+              </div>
+            `;
 
         content.innerHTML = `
-        <div class="question-viewer">
-          <div class="back-button" onclick="exitQuestionViewer()">
-            ← Back to Questions
-          </div>
-          <div class="question-content-box">
-            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
-              ${metadataTags}
-            </div>
-            <div class="validation-message" id="validationMessage"></div>
-            <div class="question-text">${questionHTML}</div>
-            
-            ${answerSection}
-            
-            <div class="action-buttons">
-              <button class="btn btn-primary" onclick="submitAnswer()">Submit</button>
-              <button class="btn btn-solution" onclick="showSolution()">Show Solution</button>
-              ${currentQuestionIndex > 0 ? '<button class="btn btn-secondary" onclick="previousQuestion()">Previous</button>' : ""}
-              ${currentQuestionIndex < currentQuestions.length - 1 ? '<button class="btn btn-secondary" onclick="nextQuestion()">Next</button>' : ""}
-            </div>
-            
-            <div id="explanationContainer"></div>
-          </div>
-          
-          ${mobileNav}
-        </div>
-      `;
+              <div class="question-viewer">
+                <div class="back-button" onclick="exitQuestionViewer()">
+                  ← Back to Questions
+                </div>
+                <div class="question-content-box">
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                    ${metadataTags}
+                  </div>
+                  <div class="validation-message" id="validationMessage"></div>
+                  <div class="question-text">${questionHTML}</div>
+
+                  ${answerSection}
+
+                  <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="submitAnswer()">Submit</button>
+                    <button class="btn btn-solution" onclick="showSolution()">Show Solution</button>
+                    ${currentQuestionIndex > 0 ? '<button class="btn btn-secondary" onclick="previousQuestion()">Previous</button>' : ""}
+                    ${currentQuestionIndex < currentQuestions.length - 1 ? '<button class="btn btn-secondary" onclick="nextQuestion()">Next</button>' : ""}
+                  </div>
+
+                  <div id="explanationContainer"></div>
+                </div>
+
+                ${mobileNav}
+              </div>
+            `;
 
         // Render MathJax after content is inserted
         if (window.MathJax) {
@@ -1625,7 +1713,16 @@
         localStorage.removeItem("currentChapterName");
         localStorage.removeItem("currentQuestionIndex");
 
-        goBack();
+        // If in DPP mode, show the DPP question grid
+        if (
+          currentView.type === "dpp-question" &&
+          currentView.dppId &&
+          currentView.dppName
+        ) {
+          displayDPPQuestionGrid(currentView.dppName);
+        } else {
+          goBack();
+        }
       }
 
       let selectedMultipleOptions = [];
@@ -1762,19 +1859,19 @@
         const explanation = question.explanation_html || "";
         if (explanation) {
           document.getElementById("explanationContainer").innerHTML = `
-          <div class="explanation-box">
-            <div class="explanation-title">${isCorrect ? "✓ Correct!" : "✗ Incorrect"}</div>
-            <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
-            <div style="margin-top: 15px;">${explanation}</div>
-          </div>
-        `;
+                <div class="explanation-box">
+                  <div class="explanation-title">${isCorrect ? "✓ Correct!" : "✗ Incorrect"}</div>
+                  <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
+                  <div style="margin-top: 15px;">${explanation}</div>
+                </div>
+              `;
         } else {
           document.getElementById("explanationContainer").innerHTML = `
-          <div class="explanation-box">
-            <div class="explanation-title">${isCorrect ? "✓ Correct!" : "✗ Incorrect"}</div>
-            <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
-          </div>
-        `;
+                <div class="explanation-box">
+                  <div class="explanation-title">${isCorrect ? "✓ Correct!" : "✗ Incorrect"}</div>
+                  <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
+                </div>
+              `;
         }
 
         // Render MathJax in explanation
@@ -1792,11 +1889,11 @@
             const status = questionStatus[q.id] || "unseen";
             const isActive = i === currentQuestionIndex;
             return `
-          <div class="question-nav-box ${status} ${isActive ? "active" : ""}" 
-               onclick="navigateToQuestion(${i})">
-            ${i + 1}
-          </div>
-        `;
+                <div class="question-nav-box ${status} ${isActive ? "active" : ""}"
+                     onclick="navigateToQuestion(${i})">
+                  ${i + 1}
+                </div>
+              `;
           })
           .join("");
 
@@ -1819,24 +1916,47 @@
 
       function nextQuestion() {
         if (currentQuestionIndex < currentQuestions.length - 1) {
-          currentQuestionIndex++;
-          localStorage.setItem("currentQuestionIndex", currentQuestionIndex);
-          openQuestion(currentQuestionIndex);
+          navigateToQuestion(currentQuestionIndex + 1);
         }
       }
 
       function previousQuestion() {
         if (currentQuestionIndex > 0) {
-          currentQuestionIndex--;
-          localStorage.setItem("currentQuestionIndex", currentQuestionIndex);
-          openQuestion(currentQuestionIndex);
+          navigateToQuestion(currentQuestionIndex - 1);
         }
       }
 
       function navigateToQuestion(index) {
+        // For DPP questions, use openDPPQuestion
+        if (currentView.type === "dpp-question") {
+          openDPPQuestion(index);
+          return;
+        }
+
         currentQuestionIndex = index;
+        const question = currentQuestions[index];
+
+        // Update URL without triggering hashchange
+        const chapterId = localStorage.getItem("currentChapterId");
+        const chapterName = localStorage.getItem("currentChapterName");
+        const newHash = `#question/${chapterId}/${encodeURIComponent(chapterName)}/${index}`;
+        history.replaceState(null, "", newHash);
+
+        // Update view state
+        saveViewState(currentView.type, {
+          ...currentView,
+          questionIndex: index,
+        });
         localStorage.setItem("currentQuestionIndex", index);
-        openQuestion(index);
+
+        // Mark as seen if not already
+        if (!questionStatus[question.id]) {
+          questionStatus[question.id] = "seen";
+          updateQuestionStatus(question.id, "seen");
+        }
+
+        // Just re-render current view, don't call openQuestion (avoid flash)
+        displayQuestionViewer();
       }
 
       function showSolution() {
@@ -1846,20 +1966,20 @@
 
         if (explanation) {
           document.getElementById("explanationContainer").innerHTML = `
-          <div class="explanation-box">
-            <div class="explanation-title">💡 Solution</div>
-            <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
-            <div style="margin-top: 15px;">${explanation}</div>
-          </div>
-        `;
+                <div class="explanation-box">
+                  <div class="explanation-title">💡 Solution</div>
+                  <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
+                  <div style="margin-top: 15px;">${explanation}</div>
+                </div>
+              `;
         } else {
           document.getElementById("explanationContainer").innerHTML = `
-          <div class="explanation-box">
-            <div class="explanation-title">💡 Solution</div>
-            <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
-            <div style="margin-top: 15px;">No detailed explanation available.</div>
-          </div>
-        `;
+                <div class="explanation-box">
+                  <div class="explanation-title">💡 Solution</div>
+                  <div><strong>Correct Answer:</strong> ${correctAnswer}</div>
+                  <div style="margin-top: 15px;">No detailed explanation available.</div>
+                </div>
+              `;
         }
 
         // Render MathJax in explanation
@@ -1871,7 +1991,9 @@
         }
 
         // Scroll to explanation
-        document.getElementById("explanationContainer").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        document
+          .getElementById("explanationContainer")
+          .scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
 
       function goBackToGrid() {
@@ -1880,33 +2002,49 @@
 
       async function loadQuestionStatus() {
         try {
-          const response = await fetch(`${API_URL}/auth/status`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          console.log("[STATUS] Loading question status for:", user.email);
+          const response = await fetch(
+            `${API_URL}/student-status/${user.email}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
 
           if (response.ok) {
             const data = await response.json();
-            questionStatus = data.question_status || {};
+            questionStatus = data.status?.question_status || {};
+            console.log(
+              "[STATUS] Loaded status:",
+              Object.keys(questionStatus).length,
+              "questions",
+            );
           }
         } catch (error) {
-          console.error("Error loading question status:", error);
+          console.error("[STATUS] Error loading question status:", error);
           questionStatus = {};
         }
       }
 
       async function updateQuestionStatus(questionId, status) {
         try {
-          await fetch(`${API_URL}/auth/update-status`, {
-            method: "POST",
+          console.log(`[STATUS] Updating ${questionId} to ${status}`);
+          await fetch(`${API_URL}/student-status/${user.email}`, {
+            method: "PUT",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ questionId, status }),
+            body: JSON.stringify({ question_id: questionId, status }),
           });
+          console.log(`[STATUS] Updated successfully`);
         } catch (error) {
-          console.error("Error updating status:", error);
+          console.error("[STATUS] Error updating status:", error);
         }
+      }
+
+      function exitQuestionView() {
+        // Update URL
+        window.location.hash = "";
       }
 
       async function showHome() {
@@ -1926,42 +2064,42 @@
         questionNavSidebar.style.display = "none";
 
         content.innerHTML = `
-        <div class="welcome-section">
-          <h1 class="welcome-title">Welcome, ${user.email.split("@")[0]}! 👋</h1>
-        </div>
-        
-        ${currentExams
-          .map(
-            (exam) => `
-          <div>
-            <h2 class="section-title">${exam.id}</h2>
-            <div class="card-grid" id="subjects-home-${exam.id}">
-              <!-- Subjects will be loaded -->
-            </div>
-            <div class="section-divider"></div>
-          </div>
-        `,
-          )
-          .join("")}
-        
-        <h2 class="section-title">Shared Question Sets</h2>
-        <div class="card-grid">
-          ${
-            accessSets.length > 0
-              ? accessSets
-                  .map(
-                    (dpp) => `
-            <div class="card" onclick="openDPP('${dpp.id}')">
-              <div class="card-title">${dpp.name}</div>
-              <div class="card-subtitle">${(dpp.question_ids || []).length} Questions</div>
-            </div>
-          `,
-                  )
-                  .join("")
-              : '<p style="color: var(--text-secondary);">No shared sets available yet</p>'
-          }
-        </div>
-      `;
+              <div class="welcome-section">
+                <h1 class="welcome-title">Welcome, ${user.email.split("@")[0]}! 👋</h1>
+              </div>
+
+              ${currentExams
+                .map(
+                  (exam) => `
+                <div>
+                  <h2 class="section-title">${exam.id}</h2>
+                  <div class="card-grid" id="subjects-home-${exam.id}">
+                    <!-- Subjects will be loaded -->
+                  </div>
+                  <div class="section-divider"></div>
+                </div>
+              `,
+                )
+                .join("")}
+
+              <h2 class="section-title">Shared Question Sets</h2>
+              <div class="card-grid">
+                ${
+                  accessSets.length > 0
+                    ? accessSets
+                        .map(
+                          (dpp) => `
+                  <div class="card" onclick="openDPP('${dpp.id}')">
+                    <div class="card-title">${dpp.name}</div>
+                    <div class="card-subtitle">${(dpp.question_ids || []).length} Questions</div>
+                  </div>
+                `,
+                        )
+                        .join("")
+                    : '<p style="color: var(--text-secondary);">No shared sets available yet</p>'
+                }
+              </div>
+            `;
 
         // Load subjects for each exam
         for (const exam of currentExams) {
@@ -1989,10 +2127,10 @@
               container.innerHTML = subjects
                 .map(
                   (subject) => `
-              <div class="card" onclick="selectSubject('${examId}', '${subject.id}')">
-                <div class="card-title">${subject.id}</div>
-              </div>
-            `,
+                    <div class="card" onclick="selectSubject('${examId}', '${subject.id}')">
+                      <div class="card-title">${subject.id}</div>
+                    </div>
+                  `,
                 )
                 .join("");
             }
@@ -2004,6 +2142,9 @@
 
       async function openDPPRestore(dppId, dppName) {
         try {
+          console.log(`[LOAD] Bulk loading DPP questions for: ${dppId}`);
+          const startTime = Date.now();
+
           // Load questions for this DPP using the question loader API (without saving state)
           const response = await fetch(`${API_URL}/questions/load/${dppId}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -2012,6 +2153,10 @@
           if (response.ok) {
             const data = await response.json();
             currentQuestions = data.questions || [];
+            const duration = Date.now() - startTime;
+            console.log(
+              `[LOAD] Loaded ${currentQuestions.length} DPP questions in ${duration}ms`,
+            );
 
             if (currentQuestions.length === 0) {
               return;
@@ -2020,7 +2165,7 @@
             displayDPPQuestionGrid(dppName);
           }
         } catch (error) {
-          console.error("Error opening DPP:", error);
+          console.error("[LOAD] Error opening DPP:", error);
         }
       }
 
@@ -2037,6 +2182,12 @@
           // Save view state
           saveViewState("dpp", { dppId, dppName: dpp.name });
 
+          // Update URL
+          window.location.hash = `dpp/${dppId}/${encodeURIComponent(dpp.name)}`;
+
+          console.log(`[LOAD] Bulk loading DPP questions for: ${dppId}`);
+          const startTime = Date.now();
+
           // Load questions for this DPP using the question loader API
           const response = await fetch(`${API_URL}/questions/load/${dppId}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -2045,6 +2196,10 @@
           if (response.ok) {
             const data = await response.json();
             currentQuestions = data.questions || [];
+            const duration = Date.now() - startTime;
+            console.log(
+              `[LOAD] Loaded ${currentQuestions.length} DPP questions in ${duration}ms`,
+            );
 
             if (currentQuestions.length === 0) {
               alert("No questions found in this DPP");
@@ -2056,36 +2211,50 @@
             alert("Failed to load DPP questions");
           }
         } catch (error) {
-          console.error("Error opening DPP:", error);
-          alert("Error loading DPP: " + error.message);
+          console.error("[LOAD] Error opening DPP:", error);
         }
       }
 
       function displayDPPQuestionGrid(dppName) {
+        saveViewState("dpp", { dppId: currentView.dppId, dppName });
+        currentQuestionIndex = 0; // Reset to first question
+
+        document.getElementById("topbarTitle").textContent = dppName;
         const content = document.getElementById("mainContent");
 
+        // Show question grid, not viewer
         content.innerHTML = `
-        <div class="back-button" onclick="goBack()">← Back</div>
-        <h2 class="section-title">${dppName}</h2>
-        <div class="question-grid">
-          ${currentQuestions
-            .map((q, index) => {
-              const status = questionStatus[q.id] || "unseen";
-              return `
-              <div class="question-box ${status}" onclick="openDPPQuestion(${index}, '${dppName}')">
-                ${index + 1}
+              <div class="back-button" onclick="showHome()">← Back to Home</div>
+              <h2 class="section-title">${dppName}</h2>
+              <div class="question-grid">
+                ${currentQuestions
+                  .map((q, index) => {
+                    const status = questionStatus[q.id] || "unseen";
+                    return `
+                    <div class="question-box ${status}" onclick="openDPPQuestion(${index})">
+                      ${index + 1}
+                    </div>
+                  `;
+                  })
+                  .join("")}
               </div>
             `;
-            })
-            .join("")}
-        </div>
-      `;
       }
 
-      async function openDPPQuestion(index, dppName) {
+      async function openDPPQuestion(index) {
         currentQuestionIndex = index;
         const dppId = currentView.dppId;
-        saveViewState("dpp-question", { dppId, dppName, questionIndex: index });
+        const dppName = currentView.dppName;
+
+        saveViewState("dpp-question", {
+          dppId,
+          dppName,
+          questionIndex: index,
+        });
+
+        // Update URL
+        const newHash = `#dpp-question/${dppId}/${encodeURIComponent(dppName)}/${index}`;
+        history.replaceState(null, "", newHash);
 
         const question = currentQuestions[index];
         selectedMultipleOptions = [];
@@ -2119,14 +2288,14 @@
       function showProfile() {
         const content = document.getElementById("mainContent");
         content.innerHTML = `
-        <h2 class="section-title">Profile</h2>
-        <div class="card" style="max-width: 500px;">
-          <div style="margin-bottom: 15px;"><strong>Email:</strong> ${user.email}</div>
-          <div style="margin-bottom: 15px;"><strong>Institution:</strong> ${user.institution}</div>
-          <div style="margin-bottom: 15px;"><strong>Role:</strong> ${user.role}</div>
-          <button class="btn btn-primary" onclick="logout()">Logout</button>
-        </div>
-      `;
+              <h2 class="section-title">Profile</h2>
+              <div class="card" style="max-width: 500px;">
+                <div style="margin-bottom: 15px;"><strong>Email:</strong> ${user.email}</div>
+                <div style="margin-bottom: 15px;"><strong>Institution:</strong> ${user.institution}</div>
+                <div style="margin-bottom: 15px;"><strong>Role:</strong> ${user.role}</div>
+                <button class="btn btn-primary" onclick="logout()">Logout</button>
+              </div>
+            `;
       }
 
       function logout() {

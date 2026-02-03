@@ -19,7 +19,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.static("public"));
 
 app.use("/api/auth", authRoutes);
-app.use("/api/auth", studentStatusRoutes);
+app.use("/api/student-status", studentStatusRoutes);
 app.use("/api/institution", institutionRoutes);
 app.use("/api/student-sets", studentSetsRoutes);
 app.use("/api/users", usersRoutes);

@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Tester</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: monospace;
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #4ec9b0;
+        margin-bottom: 20px;
+      }
+      h2 {
+        color: #569cd6;
+        margin: 30px 0 15px;
+        font-size: 18px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+      }
+      .endpoint {
+        background: #252526;
+        border: 1px solid #3e3e42;
+        margin-bottom: 15px;
+        padding: 15px;
+        border-radius: 4px;
+      }
+      .endpoint-header {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .method {
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-weight: bold;
+        font-size: 11px;
+      }
+      .GET {
+        background: #61affe;
+        color: #000;
+      }
+      .POST {
+        background: #49cc90;
+        color: #000;
+      }
+      .PUT {
+        background: #fca130;
+        color: #000;
+      }
+      .DELETE {
+        background: #f93e3e;
+        color: #fff;
+      }
+      .path {
+        color: #ce9178;
+        font-size: 14px;
+      }
+      .desc {
+        color: #6a9955;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      label {
+        display: block;
+        margin: 8px 0 4px;
+        color: #9cdcfe;
+        font-size: 12px;
+      }
+      input,
+      textarea,
+      select {
+        width: 100%;
+        background: #1e1e1e;
+        border: 1px solid #3e3e42;
+        color: #d4d4d4;
+        padding: 6px;
+        font-family: monospace;
+        font-size: 12px;
+        border-radius: 3px;
+      }
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+      .btn-group {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      button {
+        background: #0e639c;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 12px;
+        font-family: monospace;
+      }
+      button:hover {
+        background: #1177bb;
+      }
+      .btn-clear {
+        background: #666;
+      }
+      .btn-clear:hover {
+        background: #777;
+      }
+      .response {
+        margin-top: 10px;
+        background: #1e1e1e;
+        border: 1px solid #3e3e42;
+        padding: 10px;
+        border-radius: 3px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .response pre {
+        margin: 0;
+        font-size: 11px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+      .status-200 {
+        color: #4ec9b0;
+      }
+      .status-400,
+      .status-500 {
+        color: #f48771;
+      }
+      .token-section {
+        background: #252526;
+        border: 1px solid #3e3e42;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+      }
+      .hidden {
+        display: none;
+      }
+      .info {
+        background: #1e3a5f;
+        border-left: 3px solid #569cd6;
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🧪 API Tester</h1>
+
+      <div class="info">
+        All endpoints are tested against:
+        <strong>http://localhost:3000/api</strong><br />
+        First login or set a token below. Click "Test" to execute each API call.
+      </div>
+
+      <div class="token-section">
+        <h2>🔐 Authentication</h2>
+        <label>Token (will be auto-filled after login)</label>
+        <input
+          type="text"
+          id="globalToken"
+          placeholder="Bearer token will appear here"
+        />
+        <div class="btn-group">
+          <button onclick="clearToken()">Clear Token</button>
+        </div>
+      </div>
+
+      <!-- AUTH ENDPOINTS -->
+      <h2>🔑 Auth Endpoints (/api/auth)</h2>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method POST">POST</span>
+          <span class="path">/api/auth/login</span>
+        </div>
+        <div class="desc">Login and get JWT token</div>
+        <label>Email:</label>
+        <input type="text" id="login-email" value="1@1.com" />
+        <label>Password:</label>
+        <input type="password" id="login-password" value="1" />
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'POST',
+                '/auth/login',
+                {
+                  email: getValue('login-email'),
+                  password: getValue('login-password'),
+                },
+                false,
+                'login-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('login-response')">
+            Clear
+          </button>
+        </div>
+        <div id="login-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method POST">POST</span>
+          <span class="path">/api/auth/register</span>
+        </div>
+        <div class="desc">Register a new user</div>
+        <label>Email:</label>
+        <input type="text" id="reg-email" value="test@test.com" />
+        <label>Password:</label>
+        <input type="password" id="reg-password" value="password123" />
+        <label>Institution:</label>
+        <input type="text" id="reg-institution" value="test-institution" />
+        <label>Role:</label>
+        <select id="reg-role">
+          <option value="student">student</option>
+          <option value="staff">staff</option>
+          <option value="admin">admin</option>
+        </select>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'POST',
+                '/auth/register',
+                {
+                  email: getValue('reg-email'),
+                  password: getValue('reg-password'),
+                  institution: getValue('reg-institution'),
+                  role: getValue('reg-role'),
+                },
+                false,
+                'reg-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('reg-response')">
+            Clear
+          </button>
+        </div>
+        <div id="reg-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/auth/me</span>
+        </div>
+        <div class="desc">Get current user info (requires token)</div>
+        <div class="btn-group">
+          <button
+            onclick="testAPI('GET', '/auth/me', null, true, 'me-response')"
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('me-response')">
+            Clear
+          </button>
+        </div>
+        <div id="me-response" class="response hidden"></div>
+      </div>
+
+      <!-- QUESTIONS ENDPOINTS -->
+      <h2>📚 Questions Endpoints (/api/questions)</h2>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/questions/exams</span>
+        </div>
+        <div class="desc">Get all exams</div>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI('GET', '/questions/exams', null, true, 'exams-response')
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('exams-response')">
+            Clear
+          </button>
+        </div>
+        <div id="exams-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path"
+            >/api/questions/subjects/:subject/question-sets</span
+          >
+        </div>
+        <div class="desc">Get question sets for a subject</div>
+        <label>Subject:</label>
+        <input type="text" id="subject-id" value="physics" />
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/questions/subjects/' +
+                  getValue('subject-id') +
+                  '/question-sets',
+                null,
+                true,
+                'subject-sets-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('subject-sets-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="subject-sets-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/questions/metadata/:setId</span>
+        </div>
+        <div class="desc">
+          Get question IDs for a set (fast - no file loading)
+        </div>
+        <label>Set ID:</label>
+        <input type="text" id="meta-setid" value="qset-12-1770074893472" />
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/questions/metadata/' + getValue('meta-setid'),
+                null,
+                true,
+                'meta-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('meta-response')">
+            Clear
+          </button>
+        </div>
+        <div id="meta-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/questions/single/:questionId</span>
+        </div>
+        <div class="desc">Get a single question by ID (lazy loading)</div>
+        <label>Question ID:</label>
+        <input
+          type="text"
+          id="single-qid"
+          value="physics-unitsandmeasurements-1"
+        />
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/questions/single/' + getValue('single-qid'),
+                null,
+                true,
+                'single-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('single-response')">
+            Clear
+          </button>
+        </div>
+        <div id="single-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/questions/qs-loader</span>
+        </div>
+        <div class="desc">Get shared question sets for current user</div>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/questions/qs-loader',
+                null,
+                true,
+                'qsloader-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('qsloader-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="qsloader-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/questions/my-sets</span>
+        </div>
+        <div class="desc">Get my custom question sets</div>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/questions/my-sets',
+                null,
+                true,
+                'mysets-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('mysets-response')">
+            Clear
+          </button>
+        </div>
+        <div id="mysets-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method POST">POST</span>
+          <span class="path">/api/questions/my-sets/create</span>
+        </div>
+        <div class="desc">Create a new custom question set</div>
+        <label>Set Name:</label>
+        <input type="text" id="create-name" value="My Test Set" />
+        <label>Question IDs (JSON array):</label>
+        <textarea id="create-qids">
+["physics-unitsandmeasurements-1", "physics-unitsandmeasurements-10"]</textarea
+        >
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'POST',
+                '/questions/my-sets/create',
+                {
+                  name: getValue('create-name'),
+                  question_ids: JSON.parse(getValue('create-qids')),
+                },
+                true,
+                'create-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('create-response')">
+            Clear
+          </button>
+        </div>
+        <div id="create-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/questions/load/:setId</span>
+        </div>
+        <div class="desc">
+          ⚡ Load ALL questions from a set in one request (returns full question
+          data)
+        </div>
+        <label>Set ID:</label>
+        <input type="text" id="load-setid" value="qset-12-1770074893472" />
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/questions/load/' + getValue('load-setid'),
+                null,
+                true,
+                'load-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('load-response')">
+            Clear
+          </button>
+        </div>
+        <div id="load-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method POST">POST</span>
+          <span class="path">/api/questions/upload</span>
+        </div>
+        <div class="desc">Upload a single question</div>
+        <label>Question Data (JSON):</label>
+        <textarea id="upload-data">
+{
+  "exam": "jee-advanced",
+  "subject": "physics",
+  "chapter": "units-and-measurements",
+  "question_type": "mcq_single",
+  "question_html": "<p>What is the SI unit of force?</p>",
+  "options": [
+    {"label": "A", "html": "Newton"},
+    {"label": "B", "html": "Joule"},
+    {"label": "C", "html": "Watt"},
+    {"label": "D", "html": "Pascal"}
+  ],
+  "answer": {"value": "A"},
+  "explanation_html": "<p>Force is measured in Newtons (N)</p>"
+}</textarea
+        >
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'POST',
+                '/questions/upload',
+                JSON.parse(getValue('upload-data')),
+                true,
+                'upload-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('upload-response')">
+            Clear
+          </button>
+        </div>
+        <div id="upload-response" class="response hidden"></div>
+      </div>
+
+      <!-- STUDENT STATUS ENDPOINTS -->
+      <h2>📊 Student Status Endpoints (/api/student-status)</h2>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/student-status/status</span>
+        </div>
+        <div class="desc">Get question status for current user</div>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/student-status/status',
+                null,
+                true,
+                'status-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('status-response')">
+            Clear
+          </button>
+        </div>
+        <div id="status-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/student-status/:email</span>
+        </div>
+        <div class="desc">Get question status by email</div>
+        <label>Email:</label>
+        <input type="text" id="status-email" value="1@1.com" />
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/student-status/' + getValue('status-email'),
+                null,
+                true,
+                'status-email-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('status-email-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="status-email-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method PUT">PUT</span>
+          <span class="path">/api/student-status/:email</span>
+        </div>
+        <div class="desc">Update question status for a user</div>
+        <label>Email:</label>
+        <input type="text" id="update-email" value="1@1.com" />
+        <label>Question ID:</label>
+        <input
+          type="text"
+          id="update-qid"
+          value="physics-unitsandmeasurements-1"
+        />
+        <label>Status:</label>
+        <select id="update-status">
+          <option value="seen">seen</option>
+          <option value="correct">correct</option>
+          <option value="wrong">wrong</option>
+          <option value="unseen">unseen</option>
+        </select>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'PUT',
+                '/student-status/' + getValue('update-email'),
+                {
+                  question_id: getValue('update-qid'),
+                  status: getValue('update-status'),
+                },
+                true,
+                'update-status-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('update-status-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="update-status-response" class="response hidden"></div>
+      </div>
+
+      <!-- USERS ENDPOINTS -->
+      <h2>👥 Users Endpoints (/api/users)</h2>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/users/list</span>
+        </div>
+        <div class="desc">Get all users (admin only)</div>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI('GET', '/users/list', null, true, 'users-list-response')
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('users-list-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="users-list-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/users/institution-students</span>
+        </div>
+        <div class="desc">Get students in same institution (staff/admin)</div>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/users/institution-students',
+                null,
+                true,
+                'inst-students-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('inst-students-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="inst-students-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method POST">POST</span>
+          <span class="path">/api/users/create</span>
+        </div>
+        <div class="desc">Create a new user (admin/staff)</div>
+        <label>Email:</label>
+        <input type="text" id="user-create-email" value="newuser@test.com" />
+        <label>Password:</label>
+        <input type="password" id="user-create-password" value="password123" />
+        <label>Role:</label>
+        <select id="user-create-role">
+          <option value="student">student</option>
+          <option value="staff">staff</option>
+          <option value="admin">admin</option>
+        </select>
+        <label>Institution:</label>
+        <input
+          type="text"
+          id="user-create-institution"
+          value="test-institution"
+        />
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'POST',
+                '/users/create',
+                {
+                  email: getValue('user-create-email'),
+                  password: getValue('user-create-password'),
+                  role: getValue('user-create-role'),
+                  institution: getValue('user-create-institution'),
+                },
+                true,
+                'user-create-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('user-create-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="user-create-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method PUT">PUT</span>
+          <span class="path">/api/users/update/:email</span>
+        </div>
+        <div class="desc">Update user information</div>
+        <label>Email (user to update):</label>
+        <input type="text" id="user-update-email" value="test@test.com" />
+        <label>New Password (optional):</label>
+        <input
+          type="password"
+          id="user-update-password"
+          placeholder="leave empty to keep current"
+        />
+        <label>Access Sets (JSON array, optional):</label>
+        <input
+          type="text"
+          id="user-update-sets"
+          placeholder='["set1", "set2"]'
+        />
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'PUT',
+                '/users/update/' + getValue('user-update-email'),
+                {
+                  password: getValue('user-update-password') || undefined,
+                  access_sets: getValue('user-update-sets')
+                    ? JSON.parse(getValue('user-update-sets'))
+                    : undefined,
+                },
+                true,
+                'user-update-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('user-update-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="user-update-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method DELETE">DELETE</span>
+          <span class="path">/api/users/delete/:email</span>
+        </div>
+        <div class="desc">Delete a user (admin only)</div>
+        <label>Email:</label>
+        <input type="text" id="user-delete-email" value="test@test.com" />
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'DELETE',
+                '/users/delete/' + getValue('user-delete-email'),
+                null,
+                true,
+                'user-delete-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('user-delete-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="user-delete-response" class="response hidden"></div>
+      </div>
+
+      <!-- INSTITUTION ENDPOINTS -->
+      <h2>🏢 Institution Endpoints (/api/institution)</h2>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/institution/view</span>
+        </div>
+        <div class="desc">Get current user's institution info</div>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/institution/view',
+                null,
+                true,
+                'inst-view-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('inst-view-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="inst-view-response" class="response hidden"></div>
+      </div>
+
+      <!-- STUDENT SETS ENDPOINTS -->
+      <h2>📝 Student Sets Endpoints (/api/student-sets)</h2>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method GET">GET</span>
+          <span class="path">/api/student-sets/my-sets</span>
+        </div>
+        <div class="desc">Get question sets created by current user</div>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'GET',
+                '/student-sets/my-sets',
+                null,
+                true,
+                'student-mysets-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('student-mysets-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="student-mysets-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method POST">POST</span>
+          <span class="path">/api/student-sets/create</span>
+        </div>
+        <div class="desc">Create a new question set</div>
+        <label>Set Name:</label>
+        <input type="text" id="ss-create-name" value="My Custom Set" />
+        <label>Question IDs (JSON array):</label>
+        <textarea id="ss-create-qids">
+["physics-unitsandmeasurements-1", "physics-unitsandmeasurements-10"]</textarea
+        >
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'POST',
+                '/student-sets/create',
+                {
+                  name: getValue('ss-create-name'),
+                  question_ids: JSON.parse(getValue('ss-create-qids')),
+                },
+                true,
+                'ss-create-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button
+            class="btn-clear"
+            onclick="clearResponse('ss-create-response')"
+          >
+            Clear
+          </button>
+        </div>
+        <div id="ss-create-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method POST">POST</span>
+          <span class="path">/api/student-sets/share</span>
+        </div>
+        <div class="desc">Share a question set with students</div>
+        <label>Set ID:</label>
+        <input type="text" id="share-setid" value="qset-12-1770074893472" />
+        <label>Student Emails (JSON array):</label>
+        <textarea id="share-emails">["1@1.com", "2@2.com"]</textarea>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'POST',
+                '/student-sets/share',
+                {
+                  setId: getValue('share-setid'),
+                  studentEmails: JSON.parse(getValue('share-emails')),
+                },
+                true,
+                'share-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('share-response')">
+            Clear
+          </button>
+        </div>
+        <div id="share-response" class="response hidden"></div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method POST">POST</span>
+          <span class="path">/api/student-sets/unshare</span>
+        </div>
+        <div class="desc">Unshare a question set from students</div>
+        <label>Set ID:</label>
+        <input type="text" id="unshare-setid" value="qset-12-1770074893472" />
+        <label>Student Emails (JSON array):</label>
+        <textarea id="unshare-emails">["1@1.com"]</textarea>
+        <div class="btn-group">
+          <button
+            onclick="
+              testAPI(
+                'POST',
+                '/student-sets/unshare',
+                {
+                  setId: getValue('unshare-setid'),
+                  studentEmails: JSON.parse(getValue('unshare-emails')),
+                },
+                true,
+                'unshare-response',
+              )
+            "
+          >
+            Test
+          </button>
+          <button class="btn-clear" onclick="clearResponse('unshare-response')">
+            Clear
+          </button>
+        </div>
+        <div id="unshare-response" class="response hidden"></div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api";
+      const tokenInput = document.getElementById("globalToken");
+
+      // Load token from localStorage
+      const savedToken = localStorage.getItem("token");
+      if (savedToken) {
+        tokenInput.value = savedToken;
+      }
+
+      function getValue(id) {
+        return document.getElementById(id).value;
+      }
+
+      function clearResponse(id) {
+        const el = document.getElementById(id);
+        el.innerHTML = "";
+        el.classList.add("hidden");
+      }
+
+      function clearToken() {
+        tokenInput.value = "";
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        console.log("[TESTER] Token cleared");
+      }
+
+      async function testAPI(method, endpoint, body, requiresAuth, responseId) {
+        console.log(`[TESTER] ${method} ${endpoint}`);
+        console.log("[TESTER] Body:", body);
+
+        const responseEl = document.getElementById(responseId);
+        responseEl.classList.remove("hidden");
+        responseEl.innerHTML = "<pre>Loading...</pre>";
+
+        try {
+          const options = {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+
+          if (requiresAuth) {
+            const token = tokenInput.value || localStorage.getItem("token");
+            if (!token) {
+              responseEl.innerHTML =
+                '<pre class="status-400">❌ Error: No token found. Please login first.</pre>';
+              return;
+            }
+            options.headers["Authorization"] = `Bearer ${token}`;
+          }
+
+          if (body) {
+            options.body = JSON.stringify(body);
+          }
+
+          const startTime = Date.now();
+          const res = await fetch(`${API_URL}${endpoint}`, options);
+          const duration = Date.now() - startTime;
+
+          const data = await res.json();
+
+          console.log(`[TESTER] Response (${res.status}):`, data);
+
+          // Save token if this was a login
+          if (endpoint === "/auth/login" && res.ok && data.token) {
+            tokenInput.value = data.token;
+            localStorage.setItem("token", data.token);
+            if (data.user) {
+              localStorage.setItem("user", JSON.stringify(data.user));
+            }
+            console.log("[TESTER] Token saved!");
+          }
+
+          const statusClass = res.ok
+            ? "status-200"
+            : res.status >= 500
+              ? "status-500"
+              : "status-400";
+          const statusEmoji = res.ok ? "✅" : "❌";
+
+          responseEl.innerHTML = `
+          <pre class="${statusClass}">
+${statusEmoji} Status: ${res.status} ${res.statusText}
+⏱️ Time: ${duration}ms
+
+${JSON.stringify(data, null, 2)}</pre>
+        `;
+        } catch (err) {
+          console.error("[TESTER] Error:", err);
+          responseEl.innerHTML = `<pre class="status-500">❌ Error: ${err.message}</pre>`;
+        }
+      }
+
+      console.log("[TESTER] API Tester loaded");
+      console.log("[TESTER] All API calls will be logged to this console");
+    </script>
+  </body>
+</html>
