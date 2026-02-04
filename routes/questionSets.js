@@ -77,14 +77,20 @@ router.get(
         throw error;
       }
 
-      console.log(`[API] Found ${subject?.question_sets?.length || 0} question sets`);
+      console.log(
+        `[API] Found ${subject?.question_sets?.length || 0} question sets`,
+      );
       res.json({ questionSets: subject.question_sets || [] });
     } catch (error) {
-      console.error("[API] Get question sets error:", error.message, error.stack);
-      res.status(500).json({ 
+      console.error(
+        "[API] Get question sets error:",
+        error.message,
+        error.stack,
+      );
+      res.status(500).json({
         error: "Failed to fetch question sets",
         details: error.message,
-        subjectId: req.params.subjectId
+        subjectId: req.params.subjectId,
       });
     }
   },

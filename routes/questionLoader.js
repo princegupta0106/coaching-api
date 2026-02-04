@@ -52,20 +52,28 @@ router.get("/single/:questionId", verifyToken, async (req, res) => {
 
     if (error) {
       console.log(`[SINGLE] Not found in database: ${questionId}`, error);
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: "Question not found",
-        questionId 
+        questionId,
       });
     }
 
-    console.log(`[SINGLE] Found: ${questionId}`);
-    res.json({ question });
+    // Flatten the question data - merge content into root level
+    const flatQuestion = {
+      id: question.id,
+      ...(question.content || question),
+    };
+
+    console.log(
+      `[SINGLE] Found: ${questionId}, type: ${flatQuestion.question_type}`,
+    );
+    res.json({ question: flatQuestion });
   } catch (error) {
     console.error("[SINGLE] Error:", error.message, error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to load question",
       details: error.message,
-      questionId: req.params.questionId
+      questionId: req.params.questionId,
     });
   }
 });
@@ -87,10 +95,10 @@ router.get("/load/:setId", verifyToken, async (req, res) => {
 
     if (error) {
       console.error("[LOAD] Supabase error:", error.message, error);
-      return res.status(500).json({ 
+      return res.status(500).json({
         error: "Failed to fetch question set",
         details: error.message,
-        setId 
+        setId,
       });
     }
 
@@ -109,23 +117,29 @@ router.get("/load/:setId", verifyToken, async (req, res) => {
 
     if (questionsError) {
       console.error("[LOAD] Error fetching questions:", questionsError);
-      return res.status(500).json({ 
+      return res.status(500).json({
         error: "Failed to fetch questions",
-        details: questionsError.message 
+        details: questionsError.message,
       });
     }
 
+    // Flatten all questions - merge content into root level
+    const flatQuestions = (questions || []).map((q) => ({
+      id: q.id,
+      ...(q.content || q),
+    }));
+
     const duration = Date.now() - startTime;
     console.log(
-      `[LOAD] Loaded ${questions.length} questions in ${duration}ms`,
+      `[LOAD] Loaded ${flatQuestions.length} questions in ${duration}ms`,
     );
 
-    res.json({ questions: questions || [] });
+    res.json({ questions: flatQuestions });
   } catch (error) {
     console.error("[LOAD] Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to load questions",
-      details: error.message 
+      details: error.message,
     });
   }
 });

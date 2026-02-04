@@ -560,13 +560,14 @@
 
       .question-type-badge {
         display: inline-block;
-        padding: 6px 12px;
+        padding: 4px 10px;
         background: var(--accent-color);
         color: white;
-        border-radius: 6px;
-        font-size: 12px;
+        border-radius: 4px;
+        font-size: 11px;
         font-weight: 600;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
+        margin-right: 5px;
       }
 
       .question-metadata {
@@ -619,23 +620,38 @@
       .options-list {
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        margin-bottom: 30px;
+        gap: 8px;
+        margin-bottom: 20px;
+        margin-top: 15px;
       }
 
       .option-item {
-        padding: 15px 20px;
+        padding: 10px 15px;
         border: 2px solid var(--border-color);
-        border-radius: 8px;
+        border-radius: 4px;
         cursor: pointer;
         transition: all 0.2s;
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 10px;
+        font-size: 16px;
       }
 
-      .option-item > div {
-        display: inline;
+      .option-label {
+        min-width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent-color);
+        color: white;
+        font-weight: 600;
+        border-radius: 3px;
+        font-size: 14px;
+      }
+
+      .option-content {
+        flex: 1;
       }
 
       .option-item:hover {
@@ -1048,7 +1064,12 @@
       // Initialize
       window.addEventListener("load", async () => {
         if (!token || user.role !== "student") {
-          console.error("No token or not a student. Token:", token, "User:", user);
+          console.error(
+            "No token or not a student. Token:",
+            token,
+            "User:",
+            user,
+          );
           alert("Please login as a student");
           window.location.href = "/index.html";
           return;
@@ -1335,7 +1356,9 @@
           } else {
             const errorData = await response.json();
             console.error("Error response:", errorData);
-            alert(`Failed to load chapters: ${errorData.error || 'Unknown error'}`);
+            alert(
+              `Failed to load chapters: ${errorData.error || "Unknown error"}`,
+            );
           }
         } catch (error) {
           console.error("Error loading chapters:", error);
@@ -1354,9 +1377,15 @@
         console.log(`[SELECT SUBJECT] Loading chapters for: ${subjectId}`);
         console.log(`[SELECT SUBJECT] API_URL: ${API_URL}`);
         console.log(`[SELECT SUBJECT] Token exists: ${!!token}`);
-        console.log(`[SELECT SUBJECT] Token value: ${token ? token.substring(0, 20) + '...' : 'NO TOKEN'}`);
-        console.log(`[SELECT SUBJECT] Full Request URL: ${API_URL}/questions/subjects/${subjectId}/question-sets`);
-        console.log(`[SELECT SUBJECT] Request Headers:`, { Authorization: `Bearer ${token ? 'EXISTS' : 'MISSING'}` });
+        console.log(
+          `[SELECT SUBJECT] Token value: ${token ? token.substring(0, 20) + "..." : "NO TOKEN"}`,
+        );
+        console.log(
+          `[SELECT SUBJECT] Full Request URL: ${API_URL}/questions/subjects/${subjectId}/question-sets`,
+        );
+        console.log(`[SELECT SUBJECT] Request Headers:`, {
+          Authorization: `Bearer ${token ? "EXISTS" : "MISSING"}`,
+        });
 
         try {
           const response = await fetch(
@@ -1382,7 +1411,9 @@
           } else {
             const errorData = await response.json();
             console.error("Error response:", errorData);
-            alert(`Failed to load chapters: ${errorData.error || 'Unknown error'}`);
+            alert(
+              `Failed to load chapters: ${errorData.error || "Unknown error"}`,
+            );
           }
         } catch (error) {
           console.error("Error loading chapters:", error);
@@ -1422,9 +1453,15 @@
         try {
           console.log(`[LOAD] Bulk loading all questions for: ${chapterId}`);
           console.log(`[LOAD] API_URL: ${API_URL}`);
-          console.log(`[LOAD] Token: ${token ? token.substring(0, 20) + '...' : 'NO TOKEN'}`);
-          console.log(`[LOAD] Full Request URL: ${API_URL}/questions/load/${chapterId}`);
-          console.log(`[LOAD] Request Headers:`, { Authorization: `Bearer ${token ? token.substring(0, 20) + '...' : 'NO TOKEN'}` });
+          console.log(
+            `[LOAD] Token: ${token ? token.substring(0, 20) + "..." : "NO TOKEN"}`,
+          );
+          console.log(
+            `[LOAD] Full Request URL: ${API_URL}/questions/load/${chapterId}`,
+          );
+          console.log(`[LOAD] Request Headers:`, {
+            Authorization: `Bearer ${token ? token.substring(0, 20) + "..." : "NO TOKEN"}`,
+          });
           const startTime = Date.now();
 
           const response = await fetch(
@@ -1462,9 +1499,15 @@
         console.log(`[LOAD] Bulk loading all questions for: ${chapterId}`);
         console.log(`[LOAD] API_URL: ${API_URL}`);
         console.log(`[LOAD] Token exists: ${!!token}`);
-        console.log(`[LOAD] Token value: ${token ? token.substring(0, 20) + '...' : 'NO TOKEN'}`);
-        console.log(`[LOAD] Full Request URL: ${API_URL}/questions/load/${chapterId}`);
-        console.log(`[LOAD] Request Headers:`, { Authorization: `Bearer ${token ? 'EXISTS' : 'MISSING'}` });
+        console.log(
+          `[LOAD] Token value: ${token ? token.substring(0, 20) + "..." : "NO TOKEN"}`,
+        );
+        console.log(
+          `[LOAD] Full Request URL: ${API_URL}/questions/load/${chapterId}`,
+        );
+        console.log(`[LOAD] Request Headers:`, {
+          Authorization: `Bearer ${token ? "EXISTS" : "MISSING"}`,
+        });
 
         // Save current chapter to localStorage
         localStorage.setItem("currentChapterId", chapterId);
@@ -1666,14 +1709,21 @@
           answerSection = `
                 <div class="options-list" id="optionsList">
                   ${options
-                    .map(
-                      (opt, i) => `
+                    .map((opt, i) => {
+                      // Extract text from HTML, removing all tags
+                      const tempDiv = document.createElement("div");
+                      tempDiv.innerHTML = opt.html || opt.label;
+                      const cleanText =
+                        tempDiv.textContent || tempDiv.innerText || opt.label;
+                      const label = opt.label.toUpperCase();
+                      return `
                     <div class="option-item" onclick="toggleMultipleOption('${opt.label}', ${i})">
-                      <input type="checkbox" id="opt-${i}" style="margin-right: 10px;">
-                      <div>${opt.html || opt.label}</div>
+                      <input type="checkbox" id="opt-${i}">
+                      <div class="option-label">${label}</div>
+                      <div class="option-content">${cleanText}</div>
                     </div>
-                  `,
-                    )
+                  `;
+                    })
                     .join("")}
                 </div>
               `;
@@ -1681,13 +1731,20 @@
           answerSection = `
                 <div class="options-list" id="optionsList">
                   ${options
-                    .map(
-                      (opt, i) => `
+                    .map((opt, i) => {
+                      // Extract text from HTML, removing all tags
+                      const tempDiv = document.createElement("div");
+                      tempDiv.innerHTML = opt.html || opt.label;
+                      const cleanText =
+                        tempDiv.textContent || tempDiv.innerText || opt.label;
+                      const label = opt.label.toUpperCase();
+                      return `
                     <div class="option-item" onclick="selectOption('${opt.label}', ${i})">
-                      <div>${opt.html || opt.label}</div>
+                      <div class="option-label">${label}</div>
+                      <div class="option-content">${cleanText}</div>
                     </div>
-                  `,
-                    )
+                  `;
+                    })
                     .join("")}
                 </div>
               `;
@@ -1720,7 +1777,7 @@
                   ← Back to Questions
                 </div>
                 <div class="question-content-box">
-                  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                  <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px;">
                     ${metadataTags}
                   </div>
                   <div class="validation-message" id="validationMessage"></div>
