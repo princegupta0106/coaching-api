@@ -31,10 +31,14 @@
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
         background: var(--bg-secondary);
         color: var(--text-primary);
-        transition: background 0.3s, color 0.3s;
+        transition:
+          background 0.3s,
+          color 0.3s;
       }
 
       /* Custom Scrollbar */
@@ -539,9 +543,7 @@
         <div class="nav-item" onclick="showView('manage')">
           📋 Manage Student Sets
         </div>
-        <div class="nav-item" onclick="showView('users')">
-          👥 Manage Users
-        </div>
+        <div class="nav-item" onclick="showView('users')">👥 Manage Users</div>
       </div>
 
       <div class="user-profile">
@@ -570,7 +572,9 @@
           <!-- Student list will be loaded here -->
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" onclick="closeStudentModal()">Cancel</button>
+          <button class="btn btn-secondary" onclick="closeStudentModal()">
+            Cancel
+          </button>
           <button class="btn btn-primary" onclick="confirmStudentSelection()">
             Add Selected (<span id="selectedCount">0</span>)
           </button>
@@ -579,26 +583,32 @@
     </div>
 
     <script>
-      const API_URL = "http://localhost:3000/api";
+      // Automatically detect API URL based on environment
+      const API_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api"
+          : `${window.location.origin}/api`;
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user") || "{}");
 
       let allStudents = [];
       let selectedStudents = [];
-      let currentView = 'create';
+      let currentView = "create";
 
       // Offline detection
       function updateOnlineStatus() {
-        const offlineNotification = document.getElementById('offlineNotification');
+        const offlineNotification = document.getElementById(
+          "offlineNotification",
+        );
         if (!navigator.onLine) {
-          offlineNotification.classList.add('show');
+          offlineNotification.classList.add("show");
         } else {
-          offlineNotification.classList.remove('show');
+          offlineNotification.classList.remove("show");
         }
       }
 
-      window.addEventListener('online', updateOnlineStatus);
-      window.addEventListener('offline', updateOnlineStatus);
+      window.addEventListener("online", updateOnlineStatus);
+      window.addEventListener("offline", updateOnlineStatus);
       updateOnlineStatus();
 
       // Initialize
@@ -610,9 +620,11 @@
         }
 
         // Set user info
-        document.getElementById("userName").textContent = user.email.split("@")[0];
+        document.getElementById("userName").textContent =
+          user.email.split("@")[0];
         document.getElementById("userEmail").textContent = user.email;
-        document.getElementById("userAvatar").textContent = user.email[0].toUpperCase();
+        document.getElementById("userAvatar").textContent =
+          user.email[0].toUpperCase();
 
         // Load dark mode preference
         if (localStorage.getItem("darkMode") === "true") {
@@ -620,14 +632,16 @@
           document.getElementById("darkModeToggle").classList.add("active");
         }
 
-        showView('create');
+        showView("create");
         await loadAllStudents();
       });
 
       function toggleDarkMode() {
         document.body.classList.toggle("dark-mode");
         const isDark = document.body.classList.contains("dark-mode");
-        document.getElementById("darkModeToggle").classList.toggle("active", isDark);
+        document
+          .getElementById("darkModeToggle")
+          .classList.toggle("active", isDark);
         localStorage.setItem("darkMode", isDark);
       }
 
@@ -641,26 +655,28 @@
 
       function showView(view) {
         currentView = view;
-        document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((item) => item.classList.remove("active"));
         event.target.classList.add("active");
 
-        if (view === 'create') {
+        if (view === "create") {
           showCreateView();
-        } else if (view === 'manage') {
+        } else if (view === "manage") {
           showManageView();
-        } else if (view === 'users') {
+        } else if (view === "users") {
           showUsersView();
         }
       }
 
       function showMessage(message, type) {
-        const messageDiv = document.createElement('div');
+        const messageDiv = document.createElement("div");
         messageDiv.className = `message ${type}`;
         messageDiv.textContent = message;
-        
-        const content = document.getElementById('mainContent');
+
+        const content = document.getElementById("mainContent");
         content.insertBefore(messageDiv, content.firstChild);
-        
+
         setTimeout(() => messageDiv.remove(), 5000);
       }
 
@@ -684,7 +700,7 @@
                   placeholder="e.g., 12A, 12B, Physics-Group1"
                 />
                 <small style="color: var(--text-secondary); font-size: 13px;">
-                  Will be created as: ${user.institution || 'institution'}-setname
+                  Will be created as: ${user.institution || "institution"}-setname
                 </small>
               </div>
 
@@ -707,9 +723,12 @@
       // Load all students from institution
       async function loadAllStudents() {
         try {
-          const response = await fetch(`${API_URL}/users/institution-students`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          const response = await fetch(
+            `${API_URL}/users/institution-students`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
 
           if (response.ok) {
             const data = await response.json();
@@ -722,30 +741,35 @@
 
       // Open student selection modal
       function openStudentModal() {
-        const modal = document.getElementById('studentModal');
-        const modalBody = document.getElementById('studentModalBody');
-        
-        modalBody.innerHTML = allStudents.map(student => `
+        const modal = document.getElementById("studentModal");
+        const modalBody = document.getElementById("studentModalBody");
+
+        modalBody.innerHTML = allStudents
+          .map(
+            (student) => `
           <div class="student-checkbox-item" onclick="toggleStudentSelection('${student.email}')">
             <input 
               type="checkbox" 
               id="student-${student.email}" 
-              ${selectedStudents.includes(student.email) ? 'checked' : ''}
+              ${selectedStudents.includes(student.email) ? "checked" : ""}
               onclick="event.stopPropagation(); toggleStudentSelection('${student.email}')"
             />
             <div>
               <div style="font-weight: 500;">${student.email}</div>
-              <div style="font-size: 12px; color: var(--text-secondary);">${student.institution || 'N/A'}</div>
+              <div style="font-size: 12px; color: var(--text-secondary);">${student.institution || "N/A"}</div>
             </div>
           </div>
-        `).join('');
+        `,
+          )
+          .join("");
 
-        document.getElementById('selectedCount').textContent = selectedStudents.length;
-        modal.classList.add('show');
+        document.getElementById("selectedCount").textContent =
+          selectedStudents.length;
+        modal.classList.add("show");
       }
 
       function closeStudentModal() {
-        document.getElementById('studentModal').classList.remove('show');
+        document.getElementById("studentModal").classList.remove("show");
       }
 
       function toggleStudentSelection(email) {
@@ -760,7 +784,8 @@
           checkbox.checked = true;
         }
 
-        document.getElementById('selectedCount').textContent = selectedStudents.length;
+        document.getElementById("selectedCount").textContent =
+          selectedStudents.length;
       }
 
       function confirmStudentSelection() {
@@ -769,10 +794,12 @@
       }
 
       function updateSelectedStudentTags() {
-        const container = document.getElementById('selectedStudentTags');
+        const container = document.getElementById("selectedStudentTags");
         if (!container) return;
 
-        container.innerHTML = selectedStudents.map(email => `
+        container.innerHTML = selectedStudents
+          .map(
+            (email) => `
           <div style="
             background: var(--accent-color);
             color: white;
@@ -786,11 +813,13 @@
             ${email}
             <span onclick="removeStudent('${email}')" style="cursor: pointer; font-weight: bold;">×</span>
           </div>
-        `).join('');
+        `,
+          )
+          .join("");
       }
 
       function removeStudent(email) {
-        selectedStudents = selectedStudents.filter(e => e !== email);
+        selectedStudents = selectedStudents.filter((e) => e !== email);
         updateSelectedStudentTags();
       }
 
@@ -846,7 +875,7 @@
       async function loadStudentSets() {
         try {
           const response = await fetch(`${API_URL}/student-sets/my-sets`, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
 
           if (response.ok) {
@@ -860,7 +889,7 @@
 
       function displayStudentSets(sets) {
         const container = document.getElementById("studentSetsList");
-        
+
         if (sets.length === 0) {
           container.innerHTML = `
             <div class="card">
@@ -870,7 +899,9 @@
           return;
         }
 
-        container.innerHTML = sets.map(set => `
+        container.innerHTML = sets
+          .map(
+            (set) => `
           <div class="set-item">
             <div class="set-header">
               <div>
@@ -885,15 +916,18 @@
               </div>
             </div>
             <div class="student-list" id="students-${set.id}" style="display: none;">
-              ${set.students.join(', ')}
+              ${set.students.join(", ")}
             </div>
           </div>
-        `).join('');
+        `,
+          )
+          .join("");
       }
 
       function viewSetStudents(setId) {
         const container = document.getElementById(`students-${setId}`);
-        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+        container.style.display =
+          container.style.display === "none" ? "block" : "none";
       }
 
       async function deleteSet(setId) {
@@ -902,7 +936,7 @@
         try {
           const response = await fetch(`${API_URL}/student-sets/${setId}`, {
             method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
 
           if (response.ok) {
@@ -963,7 +997,7 @@
       async function loadUsers() {
         try {
           const response = await fetch(`${API_URL}/users`, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
 
           if (response.ok) {
@@ -977,14 +1011,16 @@
 
       function displayUsers(users) {
         const container = document.getElementById("usersList");
-        
-        container.innerHTML = users.map(u => `
+
+        container.innerHTML = users
+          .map(
+            (u) => `
           <div class="set-item">
             <div class="set-header">
               <div>
                 <div class="set-name">${u.email}</div>
                 <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
-                  Role: ${u.role} | Institution: ${u.institution || 'N/A'}
+                  Role: ${u.role} | Institution: ${u.institution || "N/A"}
                 </div>
               </div>
               <div class="set-actions">
@@ -992,7 +1028,9 @@
               </div>
             </div>
           </div>
-        `).join('');
+        `,
+          )
+          .join("");
       }
 
       async function createUser(event) {
@@ -1033,7 +1071,7 @@
         try {
           const response = await fetch(`${API_URL}/users/${userId}`, {
             method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
 
           if (response.ok) {

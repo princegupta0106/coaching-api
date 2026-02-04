@@ -215,7 +215,11 @@
     </div>
 
     <script>
-      const API_URL = "http://localhost:3000/api/auth";
+      // Automatically detect API URL based on environment
+      const API_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api/auth"
+          : `${window.location.origin}/api/auth`;
 
       function showMessage(elementId, message, type) {
         const el = document.getElementById(elementId);

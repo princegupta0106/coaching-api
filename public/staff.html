@@ -160,7 +160,11 @@
     </div>
 
     <script>
-      const API_URL = "http://localhost:3000/api/student-sets";
+      // Automatically detect API URL based on environment
+      const API_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api/student-sets"
+          : `${window.location.origin}/api/student-sets`;
       const token = localStorage.getItem("token");
 
       function showError(message) {

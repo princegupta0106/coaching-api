@@ -999,7 +999,11 @@
     </div>
 
     <script>
-      const API_URL = "http://localhost:3000/api";
+      // Automatically detect API URL based on environment
+      const API_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api"
+          : `${window.location.origin}/api`;
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user") || "{}");
 

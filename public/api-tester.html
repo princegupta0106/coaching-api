@@ -167,10 +167,21 @@
       <h1>🧪 API Tester</h1>
 
       <div class="info">
-        All endpoints are tested against:
-        <strong>http://localhost:3000/api</strong><br />
-        First login or set a token below. Click "Test" to execute each API call.
+        API Endpoint: <strong id="apiEndpoint"></strong><br />
+        <span id="serverStatus"
+          >First login or set a token below. Click "Test" to execute each API
+          call.</span
+        >
       </div>
+
+      <script>
+        // Display current API endpoint
+        const displayEndpoint =
+          window.location.hostname === "localhost"
+            ? "http://localhost:3000/api"
+            : window.location.origin + "/api";
+        document.getElementById("apiEndpoint").textContent = displayEndpoint;
+      </script>
 
       <div class="token-section">
         <h2>🔐 Authentication</h2>
@@ -1053,7 +1064,11 @@
     </div>
 
     <script>
-      const API_URL = "http://localhost:3000/api";
+      // Automatically detect API URL based on environment
+      const API_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api"
+          : `${window.location.origin}/api`;
       const tokenInput = document.getElementById("globalToken");
 
       // Load token from localStorage

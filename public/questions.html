@@ -475,8 +475,15 @@
     </div>
 
     <script>
-      const API_URL = "http://localhost:3000/api/questions";
-      const STUDENT_SETS_URL = "http://localhost:3000/api/student-sets";
+      // Automatically detect API URLs based on environment
+      const API_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api/questions"
+          : `${window.location.origin}/api/questions`;
+      const STUDENT_SETS_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api/student-sets"
+          : `${window.location.origin}/api/student-sets`;
       const token = localStorage.getItem("token");
 
       let currentView = "exams";

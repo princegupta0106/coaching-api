@@ -235,8 +235,15 @@
     </div>
 
     <script>
-      const API_URL = "http://localhost:3000/api/student-sets";
-      const USERS_API_URL = "http://localhost:3000/api/users";
+      // Automatically detect API URLs based on environment
+      const API_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api/student-sets"
+          : `${window.location.origin}/api/student-sets`;
+      const USERS_API_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api/users"
+          : `${window.location.origin}/api/users`;
       const token = localStorage.getItem("token");
 
       function switchTab(tab) {
