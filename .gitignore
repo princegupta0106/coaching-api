@@ -1,7 +1,7 @@
 node_modules/
 .env
 .env.*
-data/
+# data/ - COMMENTED OUT SO DATA FOLDER IS INCLUDED IN DEPLOYMENT
 
 # Python
 __pycache__/

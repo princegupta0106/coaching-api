@@ -1,8 +1,6 @@
 const express = require("express");
 const { createClient } = require("@supabase/supabase-js");
 const { verifyToken } = require("../middleware/auth");
-const fs = require("fs");
-const path = require("path");
 
 const router = express.Router();
 
@@ -10,47 +8,6 @@ const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY,
 );
-
-// Cache for question file paths (built on first request)
-let questionFileIndex = null;
-
-// Build index of all question files (runs once on startup or first request)
-function buildQuestionIndex() {
-  console.log("[INDEX] Building question file index...");
-  const startTime = Date.now();
-  const index = new Map();
-  const dataDir = path.join(__dirname, "..", "data");
-
-  function scanDirectory(dir) {
-    const files = fs.readdirSync(dir);
-    for (const file of files) {
-      const filePath = path.join(dir, file);
-      const stat = fs.statSync(filePath);
-
-      if (stat.isDirectory()) {
-        scanDirectory(filePath);
-      } else if (file.endsWith(".json")) {
-        const questionId = file.replace(".json", "");
-        index.set(questionId, filePath);
-      }
-    }
-  }
-
-  scanDirectory(dataDir);
-  const duration = Date.now() - startTime;
-  console.log(
-    `[INDEX] Index built with ${index.size} questions in ${duration}ms`,
-  );
-  return index;
-}
-
-// Get question file path from index (fast lookup)
-function getQuestionFile(questionId) {
-  if (!questionFileIndex) {
-    questionFileIndex = buildQuestionIndex();
-  }
-  return questionFileIndex.get(questionId);
-}
 
 // Get only question IDs/metadata (fast - no file loading)
 router.get("/metadata/:setId", verifyToken, async (req, res) => {
@@ -80,26 +37,29 @@ router.get("/metadata/:setId", verifyToken, async (req, res) => {
   }
 });
 
-// Get a single question by ID (on-demand loading)
+// Get a single question by ID (from Supabase)
 router.get("/single/:questionId", verifyToken, async (req, res) => {
   try {
     const { questionId } = req.params;
     console.log(`[SINGLE] Loading question: ${questionId}`);
     console.log(`[SINGLE] User:`, req.user);
 
-    const questionFile = getQuestionFile(questionId);
+    const { data: question, error } = await supabase
+      .from("questions")
+      .select("*")
+      .eq("id", questionId)
+      .single();
 
-    if (questionFile) {
-      const questionData = JSON.parse(fs.readFileSync(questionFile, "utf8"));
-      console.log(`[SINGLE] Found: ${questionId}`);
-      res.json({ question: questionData });
-    } else {
-      console.log(`[SINGLE] Not found: ${questionId}`);
-      res.status(404).json({ 
+    if (error) {
+      console.log(`[SINGLE] Not found in database: ${questionId}`, error);
+      return res.status(404).json({ 
         error: "Question not found",
         questionId 
       });
     }
+
+    console.log(`[SINGLE] Found: ${questionId}`);
+    res.json({ question });
   } catch (error) {
     console.error("[SINGLE] Error:", error.message, error.stack);
     res.status(500).json({ 
@@ -141,45 +101,32 @@ router.get("/load/:setId", verifyToken, async (req, res) => {
       return res.json({ questions: [] });
     }
 
-    // Build index if not already built
-    if (!questionFileIndex) {
-      questionFileIndex = buildQuestionIndex();
-    }
+    // Load all questions from Supabase
+    const { data: questions, error: questionsError } = await supabase
+      .from("questions")
+      .select("*")
+      .in("id", questionIds);
 
-    // Load all questions using the index (FAST!)
-    const questions = [];
-    let foundCount = 0;
-    let notFoundCount = 0;
-
-    for (const questionId of questionIds) {
-      try {
-        const questionFile = questionFileIndex.get(questionId);
-
-        if (questionFile) {
-          const questionData = JSON.parse(
-            fs.readFileSync(questionFile, "utf8"),
-          );
-          questions.push(questionData);
-          foundCount++;
-        } else {
-          console.log(`[LOAD] Not found: ${questionId}`);
-          notFoundCount++;
-        }
-      } catch (err) {
-        console.error(`[LOAD] Error loading ${questionId}:`, err.message);
-        notFoundCount++;
-      }
+    if (questionsError) {
+      console.error("[LOAD] Error fetching questions:", questionsError);
+      return res.status(500).json({ 
+        error: "Failed to fetch questions",
+        details: questionsError.message 
+      });
     }
 
     const duration = Date.now() - startTime;
     console.log(
-      `[LOAD] Complete: ${foundCount} loaded, ${notFoundCount} missing in ${duration}ms`,
+      `[LOAD] Loaded ${questions.length} questions in ${duration}ms`,
     );
 
-    res.json({ questions });
+    res.json({ questions: questions || [] });
   } catch (error) {
     console.error("[LOAD] Error:", error);
-    res.status(500).json({ error: "Failed to load questions" });
+    res.status(500).json({ 
+      error: "Failed to load questions",
+      details: error.message 
+    });
   }
 });
 
