@@ -85,6 +85,7 @@ router.get("/single/:questionId", verifyToken, async (req, res) => {
   try {
     const { questionId } = req.params;
     console.log(`[SINGLE] Loading question: ${questionId}`);
+    console.log(`[SINGLE] User:`, req.user);
 
     const questionFile = getQuestionFile(questionId);
 
@@ -94,11 +95,18 @@ router.get("/single/:questionId", verifyToken, async (req, res) => {
       res.json({ question: questionData });
     } else {
       console.log(`[SINGLE] Not found: ${questionId}`);
-      res.status(404).json({ error: "Question not found" });
+      res.status(404).json({ 
+        error: "Question not found",
+        questionId 
+      });
     }
   } catch (error) {
-    console.error("[SINGLE] Error:", error);
-    res.status(500).json({ error: "Failed to load question" });
+    console.error("[SINGLE] Error:", error.message, error.stack);
+    res.status(500).json({ 
+      error: "Failed to load question",
+      details: error.message,
+      questionId: req.params.questionId
+    });
   }
 });
 
@@ -108,6 +116,7 @@ router.get("/load/:setId", verifyToken, async (req, res) => {
     const { setId } = req.params;
     const startTime = Date.now();
     console.log(`[LOAD] Loading all questions for set: ${setId}`);
+    console.log(`[LOAD] User:`, req.user);
 
     // Get question set from database to get question_ids
     const { data: questionSet, error } = await supabase
@@ -117,8 +126,12 @@ router.get("/load/:setId", verifyToken, async (req, res) => {
       .single();
 
     if (error) {
-      console.error("[LOAD] Error fetching question set:", error);
-      return res.json({ questions: [] });
+      console.error("[LOAD] Supabase error:", error.message, error);
+      return res.status(500).json({ 
+        error: "Failed to fetch question set",
+        details: error.message,
+        setId 
+      });
     }
 
     const questionIds = questionSet.question_ids || [];

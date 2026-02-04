@@ -1007,6 +1007,11 @@
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user") || "{}");
 
+      // Debug logging
+      console.log("[INIT] API URL:", API_URL);
+      console.log("[INIT] Token exists:", !!token);
+      console.log("[INIT] User role:", user.role);
+
       let currentExams = [];
       let currentSubjects = [];
       let currentChapters = [];
@@ -1043,8 +1048,9 @@
       // Initialize
       window.addEventListener("load", async () => {
         if (!token || user.role !== "student") {
+          console.error("No token or not a student. Token:", token, "User:", user);
           alert("Please login as a student");
-          window.location.href = "/";
+          window.location.href = "/index.html";
           return;
         }
 
@@ -1320,9 +1326,20 @@
             const data = await response.json();
             currentChapters = data.questionSets || [];
             displayChapterList(subjectId);
+          } else if (response.status === 401 || response.status === 403) {
+            console.error("Authentication failed. Redirecting to login.");
+            alert("Session expired. Please login again.");
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/index.html";
+          } else {
+            const errorData = await response.json();
+            console.error("Error response:", errorData);
+            alert(`Failed to load chapters: ${errorData.error || 'Unknown error'}`);
           }
         } catch (error) {
           console.error("Error loading chapters:", error);
+          alert(`Network error: ${error.message}`);
         }
       }
 
@@ -1334,6 +1351,13 @@
 
         document.getElementById("topbarTitle").textContent = subjectId;
 
+        console.log(`[SELECT SUBJECT] Loading chapters for: ${subjectId}`);
+        console.log(`[SELECT SUBJECT] API_URL: ${API_URL}`);
+        console.log(`[SELECT SUBJECT] Token exists: ${!!token}`);
+        console.log(`[SELECT SUBJECT] Token value: ${token ? token.substring(0, 20) + '...' : 'NO TOKEN'}`);
+        console.log(`[SELECT SUBJECT] Full Request URL: ${API_URL}/questions/subjects/${subjectId}/question-sets`);
+        console.log(`[SELECT SUBJECT] Request Headers:`, { Authorization: `Bearer ${token ? 'EXISTS' : 'MISSING'}` });
+
         try {
           const response = await fetch(
             `${API_URL}/questions/subjects/${subjectId}/question-sets`,
@@ -1342,13 +1366,27 @@
             },
           );
 
+          console.log(`[SELECT SUBJECT] Response status: ${response.status}`);
+          console.log(`[SELECT SUBJECT] Response ok: ${response.ok}`);
+
           if (response.ok) {
             const data = await response.json();
             currentChapters = data.questionSets || [];
             displayChapterList(subjectId);
+          } else if (response.status === 401 || response.status === 403) {
+            console.error("Authentication failed. Redirecting to login.");
+            alert("Session expired. Please login again.");
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/index.html";
+          } else {
+            const errorData = await response.json();
+            console.error("Error response:", errorData);
+            alert(`Failed to load chapters: ${errorData.error || 'Unknown error'}`);
           }
         } catch (error) {
           console.error("Error loading chapters:", error);
+          alert(`Network error: ${error.message}`);
         }
       }
 
@@ -1383,6 +1421,10 @@
 
         try {
           console.log(`[LOAD] Bulk loading all questions for: ${chapterId}`);
+          console.log(`[LOAD] API_URL: ${API_URL}`);
+          console.log(`[LOAD] Token: ${token ? token.substring(0, 20) + '...' : 'NO TOKEN'}`);
+          console.log(`[LOAD] Full Request URL: ${API_URL}/questions/load/${chapterId}`);
+          console.log(`[LOAD] Request Headers:`, { Authorization: `Bearer ${token ? token.substring(0, 20) + '...' : 'NO TOKEN'}` });
           const startTime = Date.now();
 
           const response = await fetch(
@@ -1418,6 +1460,11 @@
         document.getElementById("topbarTitle").textContent = chapterName;
 
         console.log(`[LOAD] Bulk loading all questions for: ${chapterId}`);
+        console.log(`[LOAD] API_URL: ${API_URL}`);
+        console.log(`[LOAD] Token exists: ${!!token}`);
+        console.log(`[LOAD] Token value: ${token ? token.substring(0, 20) + '...' : 'NO TOKEN'}`);
+        console.log(`[LOAD] Full Request URL: ${API_URL}/questions/load/${chapterId}`);
+        console.log(`[LOAD] Request Headers:`, { Authorization: `Bearer ${token ? 'EXISTS' : 'MISSING'}` });
 
         // Save current chapter to localStorage
         localStorage.setItem("currentChapterId", chapterId);
@@ -1432,6 +1479,9 @@
               headers: { Authorization: `Bearer ${token}` },
             },
           );
+
+          console.log(`[LOAD] Response status: ${response.status}`);
+          console.log(`[LOAD] Response ok: ${response.ok}`);
 
           if (response.ok) {
             const data = await response.json();

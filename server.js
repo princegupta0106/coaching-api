@@ -13,6 +13,14 @@ const questionUploaderRoutes = require("./routes/questionUploader");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Log environment check on startup
+console.log("=== Server Configuration ===");
+console.log("PORT:", PORT);
+console.log("SUPABASE_URL:", process.env.SUPABASE_URL ? "✓ Set" : "✗ Missing");
+console.log("SUPABASE_SERVICE_KEY:", process.env.SUPABASE_SERVICE_KEY ? "✓ Set" : "✗ Missing");
+console.log("JWT_SECRET:", process.env.JWT_SECRET ? "✓ Set" : "✗ Missing");
+console.log("===========================");
+
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));

@@ -63,6 +63,8 @@ router.get(
   async (req, res) => {
     try {
       const { subjectId } = req.params;
+      console.log(`[API] Fetching question sets for subject: ${subjectId}`);
+      console.log(`[API] User:`, req.user);
 
       const { data: subject, error } = await supabase
         .from("subjects")
@@ -70,12 +72,20 @@ router.get(
         .eq("id", subjectId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("[API] Supabase error:", error);
+        throw error;
+      }
 
+      console.log(`[API] Found ${subject?.question_sets?.length || 0} question sets`);
       res.json({ questionSets: subject.question_sets || [] });
     } catch (error) {
-      console.error("Get question sets error:", error);
-      res.status(500).json({ error: "Failed to fetch question sets" });
+      console.error("[API] Get question sets error:", error.message, error.stack);
+      res.status(500).json({ 
+        error: "Failed to fetch question sets",
+        details: error.message,
+        subjectId: req.params.subjectId
+      });
     }
   },
 );
