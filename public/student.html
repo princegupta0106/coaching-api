@@ -52,6 +52,9 @@
         --sidebar-hover: #334155;
         --sidebar-width: 260px;
         --topbar-height: 60px;
+        --nav-box-size: 34px;
+        --nav-gap: 10px;
+        --nav-font-size: 10px;
       }
 
       body.dark-mode {
@@ -172,10 +175,13 @@
       .question-nav-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 6px;
+        gap: var(--nav-gap);
+        justify-items: center;
       }
 
       .question-nav-box {
+        width: var(--nav-box-size);
+        height: var(--nav-box-size);
         aspect-ratio: 1;
         border-radius: 4px;
         display: flex;
@@ -185,7 +191,7 @@
         cursor: pointer;
         border: 1px solid var(--border-color);
         background: var(--bg-primary);
-        font-size: 12px;
+        font-size: var(--nav-font-size);
         transition: transform 0.2s;
       }
 
@@ -567,6 +573,12 @@
         margin-bottom: 30px;
         min-height: 100px;
       }
+      .question-counter {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
 
       .numerical-input {
         width: 100%;
@@ -812,6 +824,31 @@
         flex-wrap: wrap;
       }
 
+      .page-loader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 0;
+        gap: 12px;
+        color: var(--text-secondary);
+      }
+
+      .loader-spinner {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 3px solid var(--border-color);
+        border-top-color: var(--accent-color);
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
       .btn {
         padding: 8px 16px;
         border: none;
@@ -957,6 +994,12 @@
 
         .card {
           padding: 16px;
+        }
+
+        :root {
+          --nav-box-size: 24px;
+          --nav-gap: 9px;
+          --nav-font-size: 9px;
         }
 
         .question-text {
@@ -1298,13 +1341,14 @@
           user.institution || "Institution";
       }
 
-      function renderWithDelay(renderFn, delayMs = 1000) {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            renderFn();
-            resolve();
-          }, delayMs);
-        });
+      function setPageLoader(container, message = "Loading...") {
+        if (!container) return;
+        container.innerHTML = `
+          <div class="page-loader">
+            <div class="loader-spinner"></div>
+            <div>${message}</div>
+          </div>
+        `;
       }
 
       // URL-based routing handler
@@ -1640,13 +1684,16 @@
         examList.style.display = "none";
         questionNavSidebar.style.display = "none";
 
-        await renderWithDelay(() => {
-          content.innerHTML = `
-            <div class="back-button" onclick="showHome()">← Back</div>
-            <h2 class="section-title">Bookmarks</h2>
-            <div id="bookmarksContainer">Loading bookmarks...</div>
-          `;
-        });
+        content.innerHTML = `
+          <div class="back-button" onclick="showHome()">← Back</div>
+          <h2 class="section-title">Bookmarks</h2>
+          <div id="bookmarksContainer"></div>
+        `;
+
+        setPageLoader(
+          document.getElementById("bookmarksContainer"),
+          "Loading bookmarks...",
+        );
 
         try {
           await loadBookmarks();
@@ -1932,32 +1979,43 @@
       function displayChapterList(subjectName) {
         const content = document.getElementById("mainContent");
 
-        renderWithDelay(() => {
-          content.innerHTML = `
-                <div class="back-button" onclick="goBack()">← Back</div>
-                <h2 class="section-title">${subjectName} - Chapters</h2>
-                <div class="chapter-list">
-                  ${currentChapters
-                    .map(
-                      (chapter) => `
-                    <div class="chapter-item-card" onclick="loadChapterQuestions('${chapter.id}', '${chapter.name}')">
-                      <div>
-                        <div style="font-weight: 600; margin-bottom: 5px;">${chapter.name}</div>
-                      </div>
-                      <div>→</div>
+        content.innerHTML = `
+              <div class="back-button" onclick="goBack()">← Back</div>
+              <h2 class="section-title">${subjectName} - Chapters</h2>
+              <div class="chapter-list">
+                ${currentChapters
+                  .map(
+                    (chapter) => `
+                  <div class="chapter-item-card" onclick="loadChapterQuestions('${chapter.id}', '${chapter.name}')">
+                    <div>
+                      <div style="font-weight: 600; margin-bottom: 5px;">${chapter.name}</div>
                     </div>
-                  `,
-                    )
-                    .join("")}
-                </div>
-              `;
-        });
+                    <div>→</div>
+                  </div>
+                `,
+                  )
+                  .join("")}
+              </div>
+            `;
       }
 
       async function loadChapterQuestionsRestore(chapterId, chapterName) {
         document.getElementById("topbarTitle").textContent = chapterName;
         localStorage.setItem("currentChapterId", chapterId);
         localStorage.setItem("currentChapterName", chapterName);
+
+        const content = document.getElementById("mainContent");
+        if (content) {
+          content.innerHTML = `
+            <div class="back-button" onclick="goBack()">← Back</div>
+            <h2 class="section-title">${chapterName}</h2>
+            <div id="chapterLoader"></div>
+          `;
+          setPageLoader(
+            document.getElementById("chapterLoader"),
+            "Loading questions...",
+          );
+        }
 
         try {
           console.log(`[LOAD] Bulk loading all questions for: ${chapterId}`);
@@ -2022,6 +2080,19 @@
         localStorage.setItem("currentChapterId", chapterId);
         localStorage.setItem("currentChapterName", chapterName);
 
+        const content = document.getElementById("mainContent");
+        if (content) {
+          content.innerHTML = `
+            <div class="back-button" onclick="goBack()">← Back</div>
+            <h2 class="section-title">${chapterName}</h2>
+            <div id="chapterLoader"></div>
+          `;
+          setPageLoader(
+            document.getElementById("chapterLoader"),
+            "Loading questions...",
+          );
+        }
+
         try {
           const startTime = Date.now();
 
@@ -2063,24 +2134,22 @@
       function displayQuestionGrid(chapterName) {
         const content = document.getElementById("mainContent");
 
-        renderWithDelay(() => {
-          content.innerHTML = `
-                <div class="back-button" onclick="goBack()">← Back</div>
-                <h2 class="section-title">${chapterName}</h2>
-                <div class="question-grid">
-                  ${currentQuestions
-                    .map((q, index) => {
-                      const status = questionStatus[q.id] || "unseen";
-                      return `
-                      <div class="question-box ${status}" onclick="openQuestion(${index})">
-                        ${index + 1}
-                      </div>
-                    `;
-                    })
-                    .join("")}
-                </div>
-              `;
-        });
+        content.innerHTML = `
+              <div class="back-button" onclick="goBack()">← Back</div>
+              <h2 class="section-title">${chapterName}</h2>
+              <div class="question-grid">
+                ${currentQuestions
+                  .map((q, index) => {
+                    const status = questionStatus[q.id] || "unseen";
+                    return `
+                    <div class="question-box ${status}" onclick="openQuestion(${index})">
+                      ${index + 1}
+                    </div>
+                  `;
+                  })
+                  .join("")}
+              </div>
+            `;
       }
 
       async function openQuestion(index) {
@@ -2154,6 +2223,8 @@
         content.classList.add("viewing-question");
         examList.style.display = "none";
         questionNavSidebar.style.display = "block";
+
+        setPageLoader(content, "Loading question...");
 
         // Display navigation in sidebar
         const navGrid = document.getElementById("questionNavGrid");
@@ -2303,44 +2374,43 @@
 
         const bookmarked = isBookmarked(question.id);
 
-        renderWithDelay(() => {
-          content.innerHTML = `
-                <div class="question-viewer">
-                  <div class="back-button" onclick="exitQuestionViewer()">
-                    ← Back to Questions
-                  </div>
-                  <div class="question-content-box">
-                    <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px;">
-                      ${metadataTags}
-                    </div>
-                    <div class="validation-message" id="validationMessage"></div>
-                    <div class="question-text">${questionHTML}</div>
-
-                    ${answerSection}
-
-                    <div class="action-buttons">
-                      <button class="btn btn-primary" onclick="submitAnswer()">Check</button>
-                      <button class="btn btn-solution" onclick="showSolution()">Solution</button>
-                      <button class="bookmark-icon ${bookmarked ? "active" : ""}" id="bookmarkToggle" onclick="toggleBookmark('${question.id}')" aria-pressed="${bookmarked ? "true" : "false"}">
-                        ${bookmarked ? "&#9829;" : "&#9825;"}
-                      </button>
-                      ${currentQuestionIndex > 0 ? '<button class="btn btn-secondary" onclick="previousQuestion()">&#8592;</button>' : ""}
-                      ${currentQuestionIndex < currentQuestions.length - 1 ? '<button class="btn btn-secondary" onclick="nextQuestion()">&#8594;</button>' : ""}
-                    </div>
-
-                    <div id="explanationContainer"></div>
-                  </div>
-
-                  ${mobileNav}
+        content.innerHTML = `
+              <div class="question-viewer">
+                <div class="back-button" onclick="exitQuestionViewer()">
+                  ← Back to Questions
                 </div>
-              `;
+                <div class="question-content-box">
+                  <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px;">
+                    ${metadataTags}
+                  </div>
+                  <div class="question-counter">Question ${currentQuestionIndex + 1} of ${currentQuestions.length}</div>
+                  <div class="validation-message" id="validationMessage"></div>
+                  <div class="question-text">${questionHTML}</div>
 
-          if (window.MathJax) {
-            MathJax.typesetPromise([content]).catch((err) =>
-              console.log("MathJax render error:", err),
-            );
-          }
-        });
+                  ${answerSection}
+
+                  <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="submitAnswer()">Check</button>
+                    <button class="btn btn-solution" onclick="showSolution()">Solution</button>
+                    <button class="bookmark-icon ${bookmarked ? "active" : ""}" id="bookmarkToggle" onclick="toggleBookmark('${question.id}')" aria-pressed="${bookmarked ? "true" : "false"}">
+                      ${bookmarked ? "&#9829;" : "&#9825;"}
+                    </button>
+                    ${currentQuestionIndex > 0 ? '<button class="btn btn-secondary" onclick="previousQuestion()">&#8592;</button>' : ""}
+                    ${currentQuestionIndex < currentQuestions.length - 1 ? '<button class="btn btn-secondary" onclick="nextQuestion()">&#8594;</button>' : ""}
+                  </div>
+
+                  <div id="explanationContainer"></div>
+                </div>
+
+                ${mobileNav}
+              </div>
+            `;
+
+        if (window.MathJax) {
+          MathJax.typesetPromise([content]).catch((err) =>
+            console.log("MathJax render error:", err),
+          );
+        }
       }
 
       function exitQuestionViewer() {
@@ -2721,45 +2791,43 @@
         examList.style.display = "block";
         questionNavSidebar.style.display = "none";
 
-        await renderWithDelay(() => {
-          content.innerHTML = `
-                <div class="welcome-section">
-                  <h1 class="welcome-title">Welcome, ${getDisplayName()}! 👋</h1>
-                </div>
+        content.innerHTML = `
+              <div class="welcome-section">
+                <h1 class="welcome-title">Welcome, ${getDisplayName()}! 👋</h1>
+              </div>
 
-                ${currentExams
-                  .map(
-                    (exam) => `
-                  <div>
-                    <h2 class="section-title">${exam.name || exam.id}</h2>
-                    <div class="card-grid" id="subjects-home-${exam.id}">
-                      <!-- Subjects will be loaded -->
-                    </div>
-                    <div class="section-divider"></div>
+              ${currentExams
+                .map(
+                  (exam) => `
+                <div>
+                  <h2 class="section-title">${exam.name || exam.id}</h2>
+                  <div class="card-grid" id="subjects-home-${exam.id}">
+                    <!-- Subjects will be loaded -->
+                  </div>
+                  <div class="section-divider"></div>
+                </div>
+              `,
+                )
+                .join("")}
+
+              <h2 class="section-title">Shared Question Sets</h2>
+              <div class="card-grid">
+                ${
+                  accessSets.length > 0
+                    ? accessSets
+                        .map(
+                          (dpp) => `
+                  <div class="card" onclick="openDPP('${dpp.id}')">
+                    <div class="card-title">${dpp.name}</div>
+                    <div class="card-subtitle">${(dpp.question_ids || []).length} Questions</div>
                   </div>
                 `,
-                  )
-                  .join("")}
-
-                <h2 class="section-title">Shared Question Sets</h2>
-                <div class="card-grid">
-                  ${
-                    accessSets.length > 0
-                      ? accessSets
-                          .map(
-                            (dpp) => `
-                    <div class="card" onclick="openDPP('${dpp.id}')">
-                      <div class="card-title">${dpp.name}</div>
-                      <div class="card-subtitle">${(dpp.question_ids || []).length} Questions</div>
-                    </div>
-                  `,
-                          )
-                          .join("")
-                      : '<p style="color: var(--text-secondary);">No shared sets available yet</p>'
-                  }
-                </div>
-              `;
-        });
+                        )
+                        .join("")
+                    : '<p style="color: var(--text-secondary);">No shared sets available yet</p>'
+                }
+              </div>
+            `;
 
         // Load subjects for each exam
         for (const exam of currentExams) {
