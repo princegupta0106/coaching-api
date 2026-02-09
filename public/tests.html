@@ -1,0 +1,1522 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tests</title>
+
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [["$", "$"]],
+          displayMath: [["$$", "$$"]],
+          processEscapes: true,
+          processEnvironments: true,
+        },
+        svg: { fontCache: "global" },
+        options: {
+          skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+        },
+      };
+    </script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+    ></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --text-primary: #333;
+        --text-secondary: #666;
+        --border-color: #e0e0e0;
+        --accent-color: #667eea;
+        --sidebar-bg: #1e293b;
+        --sidebar-text: #cbd5e1;
+        --sidebar-active: #3b82f6;
+        --sidebar-hover: #334155;
+        --sidebar-width: 260px;
+      }
+
+      body.dark-mode {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #2d2d2d;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --border-color: #404040;
+        --accent-color: #7c8adb;
+        --sidebar-bg: #0f172a;
+        --sidebar-text: #94a3b8;
+        --sidebar-active: #3b82f6;
+        --sidebar-hover: #1e293b;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+      }
+
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: var(--sidebar-bg);
+        border-right: 1px solid var(--border-color);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        z-index: 99;
+      }
+
+      .sidebar-header {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .portal-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+        cursor: pointer;
+      }
+
+      .sidebar-links {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .sidebar-link {
+        padding: 10px 12px;
+        border-radius: 6px;
+        color: var(--sidebar-text);
+        cursor: pointer;
+        margin-bottom: 8px;
+        background: transparent;
+        transition: background 0.2s;
+      }
+
+      .sidebar-link:hover {
+        background: var(--sidebar-hover);
+      }
+
+      .sidebar-link.active {
+        background: var(--sidebar-active);
+        color: #ffffff;
+      }
+
+      .test-nav-sidebar {
+        padding: 15px;
+        flex: 1;
+        overflow-y: auto;
+        display: none;
+      }
+
+      .question-nav-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+      }
+
+      .question-nav-box {
+        aspect-ratio: 1;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        font-size: 12px;
+      }
+
+      .question-nav-box.active {
+        border-color: var(--sidebar-active);
+        background: var(--sidebar-active);
+        color: white;
+      }
+
+      .question-nav-box.seen {
+        background: #ffd700;
+        border-color: #ffd700;
+      }
+
+      .question-nav-box.answered {
+        background: #27ae60;
+        border-color: #27ae60;
+        color: white;
+      }
+
+      .user-profile {
+        padding: 15px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: auto;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--accent-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .user-info {
+        flex: 1;
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #ffffff;
+      }
+
+      .user-email {
+        font-size: 12px;
+        color: var(--sidebar-text);
+      }
+
+      .logout-btn {
+        padding: 6px 12px;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 30px;
+        min-height: 100vh;
+      }
+
+      .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .test-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .test-card:last-child {
+        border-bottom: none;
+      }
+
+      .btn {
+        padding: 10px 18px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: #10b981;
+        color: white;
+      }
+
+      .btn-secondary {
+        background: #f5f5f5;
+        color: #333;
+        border: 1px solid #ddd;
+      }
+
+      .question-box {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 25px;
+      }
+
+      .question-text {
+        font-size: 18px;
+        line-height: 1.8;
+        margin-bottom: 25px;
+      }
+
+      .question-text .MathJax,
+      .option-content .MathJax {
+        display: inline-block !important;
+        margin: 0 !important;
+      }
+
+      .MathJax_Display {
+        display: inline !important;
+        margin: 0 !important;
+      }
+
+      .options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .option-item {
+        padding: 12px 14px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .option-item.selected {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+      }
+
+      .option-label {
+        font-weight: 700;
+        min-width: 24px;
+        color: #667eea;
+      }
+
+      .numerical-input {
+        width: 100%;
+        max-width: 280px;
+        padding: 12px 14px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        margin-bottom: 10px;
+      }
+
+      .subjective-input {
+        width: 100%;
+        min-height: 120px;
+        padding: 12px 14px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        margin-bottom: 10px;
+        resize: vertical;
+      }
+
+      .timer {
+        font-weight: 700;
+        color: #e74c3c;
+      }
+
+      .test-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(102, 126, 234, 0.15);
+        color: var(--accent-color);
+      }
+
+      .pill.warning {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+      }
+
+      .pill.danger {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-top: 10px;
+      }
+
+      .summary-card {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 12px;
+        background: var(--bg-primary);
+      }
+
+      .chart-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .review-chart {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .review-chart::after {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border-radius: 50%;
+        background: var(--bg-primary);
+      }
+
+      .legend {
+        display: grid;
+        gap: 6px;
+        font-size: 13px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .legend-color {
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+      }
+
+      .bottom-nav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        background: var(--bg-primary);
+        border-top: 1px solid var(--border-color);
+        justify-content: space-around;
+        align-items: center;
+        z-index: 100;
+      }
+
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+
+      .nav-item.active {
+        color: var(--accent-color);
+      }
+
+      .nav-icon {
+        font-size: 22px;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 20px 15px 90px;
+        }
+
+        .test-card {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header-actions {
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        .question-box {
+          padding: 18px;
+        }
+
+        .bottom-nav {
+          display: flex;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="portal-title" onclick="goToDashboard()">Course Portal</div>
+      </div>
+      <div class="sidebar-links">
+        <div class="sidebar-link" onclick="goToDashboard()">Dashboard</div>
+        <div class="sidebar-link active">Tests</div>
+      </div>
+      <div class="test-nav-sidebar" id="testNavSidebar">
+        <div style="margin-bottom: 12px; color: var(--sidebar-text)">
+          Questions
+        </div>
+        <div class="question-nav-grid" id="questionNavGrid"></div>
+      </div>
+      <div class="user-profile">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">User</div>
+          <div class="user-email" id="userEmail">email@example.com</div>
+        </div>
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="main-content" id="mainContent"></div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="goToDashboard()">
+        <div class="nav-icon">🏠</div>
+        <div>Home</div>
+      </div>
+      <div class="nav-item" onclick="goToDashboard()">
+        <div class="nav-icon">📚</div>
+        <div>Exams</div>
+      </div>
+      <div class="nav-item" onclick="goToDashboard()">
+        <div class="nav-icon">📝</div>
+        <div>DPPs</div>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-icon">⏱️</div>
+        <div>Tests</div>
+      </div>
+      <div class="nav-item" onclick="goToDashboard()">
+        <div class="nav-icon">👤</div>
+        <div>Profile</div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api"
+          : `${window.location.origin}/api`;
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      let tests = [];
+      let attempts = [];
+      let attemptsByTest = new Map();
+      let activeTest = null;
+      let questions = [];
+      let currentQuestionIndex = 0;
+      let answers = new Map();
+      let attemptId = null;
+      let questionStatus = {};
+      let autosaveTimer = null;
+      let upcomingTimerInterval = null;
+      let timerInterval = null;
+      let remainingSeconds = 0;
+
+      function markQuestionSeen(questionId) {
+        if (!questionId) return;
+        if (!questionStatus[questionId]) {
+          questionStatus[questionId] = "seen";
+        }
+      }
+
+      function markQuestionAnswered(questionId) {
+        if (!questionId) return;
+        questionStatus[questionId] = "answered";
+      }
+
+      function scheduleAutosave() {
+        if (!attemptId) return;
+        if (autosaveTimer) clearTimeout(autosaveTimer);
+        autosaveTimer = setTimeout(() => {
+          saveProgress();
+        }, 300);
+      }
+
+      async function saveProgress() {
+        if (!activeTest || !attemptId) return;
+        try {
+          const payload = {
+            answers: Array.from(answers.entries()).map(
+              ([questionId, answer]) => ({
+                questionId,
+                answer,
+              }),
+            ),
+            questionStatus,
+            lastQuestionIndex: currentQuestionIndex,
+          };
+
+          await fetch(`${API_URL}/tests/${activeTest.id}/attempt`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(payload),
+          });
+        } catch (error) {
+          console.error("Autosave failed:", error);
+        }
+      }
+
+      window.addEventListener("load", () => {
+        if (!token || user.role !== "student") {
+          alert("Please login as a student");
+          window.location.href = "/index.html";
+          return;
+        }
+
+        document.getElementById("userName").textContent =
+          user.email.split("@")[0];
+        document.getElementById("userEmail").textContent = user.email;
+        document.getElementById("userAvatar").textContent =
+          user.email[0].toUpperCase();
+
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+        }
+
+        handleRouteFromURL();
+        window.addEventListener("hashchange", handleRouteFromURL);
+      });
+
+      async function handleRouteFromURL() {
+        const hash = window.location.hash.replace("#", "");
+
+        if (!hash || hash === "tests") {
+          await loadTests();
+          return;
+        }
+
+        const parts = hash.split("/");
+        if (parts[0] === "test" && parts[1]) {
+          const testId = parts[1];
+          const index = parts[3] ? parseInt(parts[3], 10) : null;
+          await startTest(testId, Number.isFinite(index) ? index : null);
+          return;
+        }
+
+        if (parts[0] === "attempt" && parts[1]) {
+          await viewAttempt(parts[1]);
+          return;
+        }
+
+        await loadTests();
+      }
+
+      function goToDashboard() {
+        window.location.href = "/student.html";
+      }
+
+      function handleLogout() {
+        if (confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/";
+        }
+      }
+
+      async function loadTests() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-title">Available Tests</div>
+          <div class="page-subtitle">Start a timed test and see your result</div>
+          <div class="card" id="upcomingTests">Loading upcoming tests...</div>
+          <div class="card" id="availableTests">Loading available tests...</div>
+          <div class="card" id="pastTests">Loading past tests...</div>
+          <div class="card" id="attemptsList">Loading past attempts...</div>
+        `;
+
+        try {
+          await loadAttemptHistory(false);
+
+          const response = await fetch(`${API_URL}/tests`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to load tests");
+          }
+
+          const data = await response.json();
+          tests = data.tests || [];
+          renderTestSections();
+          renderAttemptHistory(attempts);
+        } catch (error) {
+          document.getElementById("upcomingTests").textContent =
+            "Failed to load tests";
+          document.getElementById("availableTests").textContent =
+            "Failed to load tests";
+          document.getElementById("pastTests").textContent =
+            "Failed to load tests";
+          document.getElementById("attemptsList").textContent =
+            "Failed to load attempts";
+        }
+      }
+
+      async function loadAttemptHistory(render) {
+        try {
+          const response = await fetch(`${API_URL}/tests/attempts/list`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to load attempts");
+          }
+
+          const data = await response.json();
+          attempts = data.attempts || [];
+          attemptsByTest = new Map(
+            attempts.map((attempt) => [attempt.test_id, attempt]),
+          );
+
+          if (render !== false) {
+            renderAttemptHistory(attempts);
+          }
+        } catch (error) {
+          const container = document.getElementById("attemptsList");
+          if (container) {
+            container.textContent = "Failed to load attempts";
+          }
+        }
+      }
+
+      function renderTestSections() {
+        const now = Date.now();
+        const upcoming = [];
+        const available = [];
+        const past = [];
+
+        tests.forEach((test) => {
+          const attempt = attemptsByTest.get(test.id);
+          const startAt = test.start_at
+            ? new Date(test.start_at).getTime()
+            : null;
+          const lastStartAt = test.last_start_at
+            ? new Date(test.last_start_at).getTime()
+            : null;
+
+          if (attempt && attempt.status === "submitted") {
+            past.push({ test, attempt, state: "done" });
+            return;
+          }
+
+          if (startAt && now < startAt) {
+            upcoming.push({ test, attempt, state: "upcoming" });
+            return;
+          }
+
+          if (lastStartAt && now > lastStartAt) {
+            past.push({ test, attempt, state: "closed" });
+            return;
+          }
+
+          available.push({ test, attempt, state: "available" });
+        });
+
+        renderTestSection("upcomingTests", "Upcoming Tests", upcoming);
+        renderTestSection("availableTests", "Available Tests", available);
+        renderTestSection("pastTests", "Past Tests", past);
+        startUpcomingCountdowns();
+      }
+
+      function renderTestSection(containerId, title, items) {
+        const container = document.getElementById(containerId);
+
+        if (!items.length) {
+          container.innerHTML = `
+            <div class="page-subtitle">${title}</div>
+            <p style="color: var(--text-secondary);">No tests here.</p>
+          `;
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="page-subtitle">${title}</div>
+          ${items.map((entry) => buildTestCard(entry)).join("")}
+        `;
+      }
+
+      function buildTestCard(entry) {
+        const { test, attempt, state } = entry;
+        const questionCount = (test.question_ids || []).length;
+        const duration = test.duration_minutes || 30;
+        let action = "";
+        let badge = "";
+
+        if (state === "upcoming") {
+          const startAt = test.start_at ? new Date(test.start_at).getTime() : 0;
+          action = `<button class="btn btn-secondary" disabled>Not Started</button>`;
+          badge = `<span class="pill warning" data-start-at="${startAt}">Starts soon</span>`;
+        } else if (state === "done") {
+          action = `<button class="btn btn-secondary" onclick="viewAttempt('${attempt.id}')">Review</button>`;
+          badge = `<span class="pill">Done</span>`;
+        } else if (state === "closed") {
+          action = `<button class="btn btn-secondary" disabled>Closed</button>`;
+          badge = `<span class="pill danger">Closed</span>`;
+        } else if (attempt && attempt.status === "in_progress") {
+          action = `<button class="btn btn-primary" onclick="startTest('${test.id}')">Resume</button>`;
+          badge = `<span class="pill">In progress</span>`;
+        } else {
+          action = `<button class="btn btn-primary" onclick="startTest('${test.id}')">Start</button>`;
+          badge = `<span class="pill">Open</span>`;
+        }
+
+        return `
+          <div class="test-card">
+            <div>
+              <div style="font-weight: 600;">${test.name}</div>
+              <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+                ${duration} min • ${questionCount} questions
+              </div>
+              ${badge}
+            </div>
+            ${action}
+          </div>
+        `;
+      }
+
+      function startUpcomingCountdowns() {
+        if (upcomingTimerInterval) {
+          clearInterval(upcomingTimerInterval);
+        }
+
+        const updateCountdowns = () => {
+          document.querySelectorAll("[data-start-at]").forEach((badge) => {
+            const startAt = parseInt(badge.dataset.startAt, 10);
+            if (!startAt) return;
+            const diff = Math.max(0, startAt - Date.now());
+            if (diff === 0) {
+              badge.textContent = "Starting";
+              return;
+            }
+            const totalSeconds = Math.floor(diff / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            badge.textContent = `Starts in ${hours}h ${minutes}m ${seconds}s`;
+          });
+        };
+
+        updateCountdowns();
+        upcomingTimerInterval = setInterval(updateCountdowns, 1000);
+      }
+
+      function renderAttemptHistory(attempts) {
+        const container = document.getElementById("attemptsList");
+
+        if (!attempts.length) {
+          container.innerHTML =
+            '<div class="page-subtitle">No past attempts yet.</div>';
+          return;
+        }
+
+        container.innerHTML = attempts
+          .map((attempt) => {
+            const testName = attempt.test?.name || attempt.test_id;
+            const scoreLine =
+              attempt.status === "submitted"
+                ? `${attempt.score || 0} / ${attempt.total || 0}`
+                : "In progress";
+            const actionButton =
+              attempt.status === "submitted"
+                ? `<button class="btn btn-secondary" onclick="viewAttempt('${attempt.id}')">Review</button>`
+                : `<button class="btn btn-primary" onclick="startTest('${attempt.test_id}')">Resume</button>`;
+            return `
+            <div class="test-card">
+              <div>
+                <div style="font-weight: 600;">${testName}</div>
+                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+                  ${scoreLine}
+                </div>
+              </div>
+              ${actionButton}
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      async function startTest(testId, indexOverride) {
+        try {
+          const startResponse = await fetch(
+            `${API_URL}/tests/${testId}/start`,
+            {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (!startResponse.ok) {
+            const data = await startResponse.json();
+            throw new Error(data.error || "Failed to start test");
+          }
+
+          const startData = await startResponse.json();
+
+          const testResponse = await fetch(`${API_URL}/tests/${testId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!testResponse.ok) {
+            throw new Error("Failed to load test");
+          }
+
+          const testData = await testResponse.json();
+          activeTest = testData.test;
+
+          const questionsResponse = await fetch(
+            `${API_URL}/tests/${testId}/questions`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+
+          if (!questionsResponse.ok) {
+            throw new Error("Failed to load questions");
+          }
+
+          const questionData = await questionsResponse.json();
+          questions = questionData.questions || [];
+          hydrateAttempt(startData.attempt);
+          if (Number.isFinite(indexOverride)) {
+            currentQuestionIndex = Math.max(0, indexOverride);
+          }
+          startTimerFromServer(
+            startData.attempt.end_at,
+            startData.serverTime,
+            startData.durationMinutes || activeTest.duration_minutes || 30,
+          );
+          renderTestQuestion();
+          updateTestRoute();
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
+      function hydrateAttempt(attempt) {
+        attemptId = attempt.id;
+        const attemptAnswers = Array.isArray(attempt.answers)
+          ? attempt.answers
+          : [];
+        answers = new Map(
+          attemptAnswers.map((entry) => [entry.questionId, entry.answer]),
+        );
+        questionStatus = attempt.question_status || {};
+        if (Object.keys(questionStatus).length === 0) {
+          attemptAnswers.forEach((entry) => {
+            if (entry.questionId) {
+              questionStatus[entry.questionId] = "answered";
+            }
+          });
+        }
+        currentQuestionIndex = Number.isFinite(attempt.last_question_index)
+          ? attempt.last_question_index
+          : 0;
+      }
+
+      function startTimerFromServer(endAt, serverTime, fallbackMinutes) {
+        if (endAt && serverTime) {
+          const remaining = Math.floor(
+            (new Date(endAt).getTime() - new Date(serverTime).getTime()) / 1000,
+          );
+          startTimerWithSeconds(remaining);
+          return;
+        }
+        startTimerWithSeconds(Math.max(1, fallbackMinutes * 60));
+      }
+
+      function startTimerWithSeconds(seconds) {
+        clearInterval(timerInterval);
+        remainingSeconds = Math.max(0, seconds);
+        timerInterval = setInterval(() => {
+          remainingSeconds -= 1;
+          updateTimerDisplay();
+          if (remainingSeconds <= 0) {
+            clearInterval(timerInterval);
+            submitTest();
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const timerLabel = document.getElementById("timerLabel");
+        if (!timerLabel) return;
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        timerLabel.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+      }
+
+      function updateTestRoute() {
+        if (!activeTest) return;
+        window.location.hash = `test/${activeTest.id}/q/${currentQuestionIndex}`;
+      }
+
+      function updateAttemptRoute(attemptIdToLoad) {
+        if (!attemptIdToLoad) return;
+        window.location.hash = `attempt/${attemptIdToLoad}`;
+      }
+
+      function goToTestsHome() {
+        window.location.hash = "tests";
+        loadTests();
+      }
+
+      function getCleanOptionText(opt) {
+        if (!opt) return "";
+        let text = "";
+        if (opt.html) {
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = opt.html;
+          text = (tempDiv.textContent || tempDiv.innerText || "").trim();
+        }
+        if (!text) {
+          text = (opt.text || opt.value || "").toString().trim();
+        }
+        const label = (opt.label || "").toString().trim();
+        if (label && text.toLowerCase().startsWith(label.toLowerCase())) {
+          text = text.slice(label.length).trim();
+        }
+        return text;
+      }
+
+      function renderTestQuestion() {
+        const question = questions[currentQuestionIndex];
+        if (!question) {
+          return;
+        }
+
+        markQuestionSeen(question.id);
+
+        document.getElementById("testNavSidebar").style.display = "block";
+        document.getElementById("questionNavGrid").innerHTML = questions
+          .map(
+            (q, i) => `
+              <div class="question-nav-box ${questionStatus[q.id] || ""} ${i === currentQuestionIndex ? "active" : ""}"
+                   onclick="navigateQuestion(${i})">
+                ${i + 1}
+              </div>
+            `,
+          )
+          .join("");
+
+        const questionHtml =
+          question.question_html ||
+          question.content?.question_html ||
+          "Question not available";
+        const questionType = question.question_type || "mcq_single";
+        const options = question.options || [];
+
+        let answerSection = "";
+
+        if (questionType === "numerical") {
+          const saved = answers.get(question.id) ?? "";
+          answerSection = `
+            <input
+              type="number"
+              step="0.01"
+              class="numerical-input"
+              id="numericalAnswer"
+              value="${saved}"
+              oninput="saveNumericalAnswer('${question.id}')"
+              placeholder="Enter your answer"
+            />
+          `;
+        } else if (questionType === "subjective" || questionType === "other") {
+          const saved = answers.get(question.id) ?? "";
+          answerSection = `
+            <textarea
+              class="subjective-input"
+              id="subjectiveAnswer"
+              rows="4"
+              oninput="saveSubjectiveAnswer('${question.id}')"
+              placeholder="Type your answer..."
+            >${saved}</textarea>
+          `;
+        } else if (questionType === "mcq_multiple") {
+          const selectedAnswers = Array.isArray(answers.get(question.id))
+            ? answers.get(question.id)
+            : [];
+          answerSection = `
+            <div class="options-list">
+              ${options
+                .map((opt, i) => {
+                  const label =
+                    opt.label?.toUpperCase() || String.fromCharCode(65 + i);
+                  const text = getCleanOptionText(opt);
+                  const selected = selectedAnswers.includes(opt.label);
+                  return `
+                    <div class="option-item ${selected ? "selected" : ""}"
+                         onclick="toggleMultipleOption('${question.id}', '${opt.label}')">
+                      <input type="checkbox" ${selected ? "checked" : ""} />
+                      <div class="option-label">${label}</div>
+                      <div class="option-content">${text}</div>
+                    </div>
+                  `;
+                })
+                .join("")}
+            </div>
+          `;
+        } else {
+          answerSection = `
+            <div class="options-list">
+              ${options
+                .map((opt, i) => {
+                  const label =
+                    opt.label?.toUpperCase() || String.fromCharCode(65 + i);
+                  const text = getCleanOptionText(opt);
+                  const selected = answers.get(question.id) === opt.label;
+                  return `
+                    <div class="option-item ${selected ? "selected" : ""}"
+                         onclick="selectOption('${question.id}', '${opt.label}')">
+                      <div class="option-label">${label}</div>
+                      <div class="option-content">${text}</div>
+                    </div>
+                  `;
+                })
+                .join("")}
+            </div>
+          `;
+        }
+
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="test-header">
+            <div>
+              <div class="page-title">${activeTest.name}</div>
+              <div class="page-subtitle">Question ${currentQuestionIndex + 1} of ${questions.length}</div>
+            </div>
+            <div class="header-actions">
+              <div class="timer">⏱️ <span id="timerLabel">00:00</span></div>
+              <button class="btn btn-secondary" onclick="clearAnswer()">Clear</button>
+              <button class="btn btn-primary" onclick="submitTest()">Submit Test</button>
+            </div>
+          </div>
+          <div class="card question-box">
+            <div class="question-text">${questionHtml}</div>
+            ${answerSection}
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="btn btn-secondary" onclick="previousQuestion()">Previous</button>
+              <button class="btn btn-secondary" onclick="nextQuestion()">Next</button>
+            </div>
+          </div>
+        `;
+
+        scheduleAutosave();
+
+        updateTimerDisplay();
+
+        if (window.MathJax) {
+          MathJax.typesetPromise([content]).catch((err) =>
+            console.log("MathJax render error:", err),
+          );
+        }
+      }
+
+      function selectOption(questionId, label) {
+        answers.set(questionId, label);
+        markQuestionAnswered(questionId);
+        scheduleAutosave();
+        renderTestQuestion();
+      }
+
+      function saveNumericalAnswer(questionId) {
+        const input = document.getElementById("numericalAnswer");
+        answers.set(questionId, input.value);
+        if (input.value !== "") {
+          markQuestionAnswered(questionId);
+        } else {
+          markQuestionSeen(questionId);
+        }
+        scheduleAutosave();
+      }
+
+      function saveSubjectiveAnswer(questionId) {
+        const input = document.getElementById("subjectiveAnswer");
+        answers.set(questionId, input.value);
+        if (input.value.trim() !== "") {
+          markQuestionAnswered(questionId);
+        } else {
+          markQuestionSeen(questionId);
+        }
+        scheduleAutosave();
+      }
+
+      function toggleMultipleOption(questionId, label) {
+        const current = answers.get(questionId);
+        const selected = Array.isArray(current) ? [...current] : [];
+        const index = selected.indexOf(label);
+        if (index > -1) {
+          selected.splice(index, 1);
+        } else {
+          selected.push(label);
+        }
+        answers.set(questionId, selected);
+        if (selected.length > 0) {
+          markQuestionAnswered(questionId);
+        } else {
+          markQuestionSeen(questionId);
+        }
+        scheduleAutosave();
+        renderTestQuestion();
+      }
+
+      function clearAnswer() {
+        const question = questions[currentQuestionIndex];
+        if (!question) return;
+
+        answers.delete(question.id);
+        markQuestionSeen(question.id);
+        scheduleAutosave();
+        renderTestQuestion();
+      }
+
+      function navigateQuestion(index) {
+        currentQuestionIndex = index;
+        renderTestQuestion();
+        updateTestRoute();
+      }
+
+      function previousQuestion() {
+        if (currentQuestionIndex > 0) {
+          currentQuestionIndex -= 1;
+          renderTestQuestion();
+          updateTestRoute();
+        }
+      }
+
+      function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+          currentQuestionIndex += 1;
+          renderTestQuestion();
+          updateTestRoute();
+        }
+      }
+
+      async function submitTest() {
+        if (!activeTest) return;
+        clearInterval(timerInterval);
+
+        const payload = {
+          answers: Array.from(answers.entries()).map(
+            ([questionId, answer]) => ({
+              questionId,
+              answer,
+            }),
+          ),
+        };
+
+        try {
+          const response = await fetch(
+            `${API_URL}/tests/${activeTest.id}/submit`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(payload),
+            },
+          );
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Failed to submit test");
+          }
+
+          renderResult(data);
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
+      async function viewAttempt(attemptIdToLoad) {
+        try {
+          updateAttemptRoute(attemptIdToLoad);
+          const attemptResponse = await fetch(
+            `${API_URL}/tests/attempts/${attemptIdToLoad}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (!attemptResponse.ok) {
+            const data = await attemptResponse.json();
+            throw new Error(data.error || "Failed to load attempt");
+          }
+
+          const attemptData = await attemptResponse.json();
+          const attempt = attemptData.attempt;
+          const test = attemptData.test;
+
+          const questionsResponse = await fetch(
+            `${API_URL}/tests/${test.id}/questions`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+
+          if (!questionsResponse.ok) {
+            throw new Error("Failed to load questions");
+          }
+
+          const questionData = await questionsResponse.json();
+          renderReview(test, attempt, questionData.questions || []);
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
+      function buildPieStyle(stats) {
+        const total = Math.max(1, stats.total);
+        const correctPct = (stats.correct / total) * 100;
+        const wrongPct = (stats.wrong / total) * 100;
+        const ungradedPct = (stats.ungraded / total) * 100;
+        const unattemptedPct = (stats.unattempted / total) * 100;
+
+        const a = correctPct;
+        const b = a + wrongPct;
+        const c = b + ungradedPct;
+        const d = c + unattemptedPct;
+
+        return `conic-gradient(
+          #27ae60 0% ${a}%,
+          #e74c3c ${a}% ${b}%,
+          #f59e0b ${b}% ${c}%,
+          #94a3b8 ${c}% ${d}%
+        )`;
+      }
+
+      function computeReviewStats(reviewQuestions, answerMap, resultMap) {
+        let correct = 0;
+        let wrong = 0;
+        let ungraded = 0;
+        let unattempted = 0;
+
+        reviewQuestions.forEach((question) => {
+          const userAnswer = answerMap.get(question.id);
+          const hasAnswer = Array.isArray(userAnswer)
+            ? userAnswer.length > 0
+            : userAnswer !== undefined &&
+              userAnswer !== null &&
+              `${userAnswer}` !== "";
+
+          const qResult = resultMap.get(question.id);
+          if (!hasAnswer) {
+            unattempted += 1;
+            return;
+          }
+
+          if (!qResult) {
+            ungraded += 1;
+            return;
+          }
+
+          if (qResult.isCorrect) {
+            correct += 1;
+          } else {
+            wrong += 1;
+          }
+        });
+
+        return {
+          total: reviewQuestions.length,
+          correct,
+          wrong,
+          ungraded,
+          unattempted,
+        };
+      }
+
+      function renderReview(test, attempt, reviewQuestions) {
+        const answerMap = new Map(
+          (attempt.answers || []).map((entry) => [
+            entry.questionId,
+            entry.answer,
+          ]),
+        );
+        const resultMap = new Map(
+          (attempt.result?.perQuestion || []).map((entry) => [
+            entry.questionId,
+            entry,
+          ]),
+        );
+
+        const stats = computeReviewStats(reviewQuestions, answerMap, resultMap);
+        const chartStyle = buildPieStyle(stats);
+        const startedAt = attempt.started_at
+          ? new Date(attempt.started_at).toLocaleString()
+          : "-";
+        const submittedAt = attempt.submitted_at
+          ? new Date(attempt.submitted_at).toLocaleString()
+          : "-";
+        const duration = attempt.duration_seconds
+          ? `${Math.floor(attempt.duration_seconds / 60)}m ${attempt.duration_seconds % 60}s`
+          : "-";
+
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-title">Test Review</div>
+          <div class="page-subtitle">${test.name}</div>
+          <div class="card">
+            <div style="font-size: 18px; font-weight: 700; margin-bottom: 10px;">
+              Score: ${attempt.score || 0} / ${attempt.total || 0}
+            </div>
+            <div style="color: var(--text-secondary); margin-bottom: 15px;">
+              Status: ${attempt.status}
+            </div>
+            <div class="chart-row">
+              <div class="review-chart" style="background: ${chartStyle};"></div>
+              <div class="legend">
+                <div class="legend-item"><span class="legend-color" style="background:#27ae60"></span>Correct: ${stats.correct}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#e74c3c"></span>Wrong: ${stats.wrong}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#f59e0b"></span>Ungraded: ${stats.ungraded}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#94a3b8"></span>Unattempted: ${stats.unattempted}</div>
+              </div>
+            </div>
+            <div class="summary-grid">
+              <div class="summary-card">
+                <div style="font-size: 12px; color: var(--text-secondary);">Started</div>
+                <div style="font-weight: 600;">${startedAt}</div>
+              </div>
+              <div class="summary-card">
+                <div style="font-size: 12px; color: var(--text-secondary);">Submitted</div>
+                <div style="font-weight: 600;">${submittedAt}</div>
+              </div>
+              <div class="summary-card">
+                <div style="font-size: 12px; color: var(--text-secondary);">Time Taken</div>
+                <div style="font-weight: 600;">${duration}</div>
+              </div>
+              <div class="summary-card">
+                <div style="font-size: 12px; color: var(--text-secondary);">Questions</div>
+                <div style="font-weight: 600;">${stats.total}</div>
+              </div>
+            </div>
+            <button class="btn btn-secondary" onclick="goToTestsHome()">Back</button>
+          </div>
+          ${reviewQuestions
+            .map((question, index) => {
+              const questionHtml =
+                question.question_html ||
+                question.content?.question_html ||
+                "Question not available";
+              const qResult = resultMap.get(question.id);
+              const rawUserAnswer = answerMap.get(question.id);
+              const userAnswer = Array.isArray(rawUserAnswer)
+                ? rawUserAnswer.join(", ")
+                : (rawUserAnswer ?? "");
+              const correctAnswer = qResult?.correctAnswer ?? "";
+              const status = qResult
+                ? qResult.isCorrect
+                  ? "Correct"
+                  : "Wrong"
+                : userAnswer
+                  ? "Not graded"
+                  : "Unattempted";
+              const answerLabel = userAnswer || "Unattempted";
+              return `
+                <div class="card question-box">
+                  <div style="font-weight: 700; margin-bottom: 8px;">Q${index + 1} • ${status}</div>
+                  <div class="question-text">${questionHtml}</div>
+                  <div style="font-size: 14px; margin-bottom: 6px;">
+                    Your Answer: <strong>${answerLabel}</strong>
+                  </div>
+                  <div style="font-size: 14px;">
+                    Correct Answer: <strong>${correctAnswer}</strong>
+                  </div>
+                </div>
+              `;
+            })
+            .join("")}
+        `;
+
+        if (window.MathJax) {
+          MathJax.typesetPromise([content]).catch((err) =>
+            console.log("MathJax render error:", err),
+          );
+        }
+      }
+
+      function renderResult(result) {
+        document.getElementById("testNavSidebar").style.display = "none";
+
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-title">Test Result</div>
+          <div class="page-subtitle">${activeTest.name}</div>
+          <div class="card">
+            <div style="font-size: 20px; font-weight: 700; margin-bottom: 10px;">
+              Score: ${result.score} / ${result.total}
+            </div>
+            <div style="color: var(--text-secondary); margin-bottom: 15px;">
+              Percentage: ${result.percentage}%
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="goToTestsHome()">Back to Tests</button>
+              <button class="btn btn-secondary" onclick="viewAttempt('${result.attempt.id}')">Review</button>
+            </div>
+          </div>
+        `;
+      }
+    </script>
+  </body>
+</html>

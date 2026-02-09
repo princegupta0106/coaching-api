@@ -154,6 +154,11 @@
         color: #667eea;
       }
 
+      .option-content {
+        flex: 1;
+        margin-left: 10px;
+      }
+
       .input-box {
         width: 100%;
         max-width: 400px;
@@ -453,6 +458,37 @@
         renderNav();
       }
 
+      function getOptionContent(opt) {
+        if (!opt) return "";
+
+        // Prefer parsing provided HTML; fall back to text fields.
+        let content = "";
+        if (opt.html) {
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = opt.html;
+          const contentDiv = tempDiv.querySelector(".grow.question");
+          content = (
+            contentDiv ? contentDiv.textContent : tempDiv.textContent || ""
+          ).trim();
+        }
+
+        if (!content) {
+          content = (opt.text || opt.value || "").toString().trim();
+        }
+
+        if (!content) return "";
+
+        // Strip duplicated leading labels (A, A., A), etc.) when present.
+        const label = (opt.label || "").toString().trim();
+        if (label) {
+          const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          const regex = new RegExp(`^${escapedLabel}[.)]?\\s*`, "i");
+          content = content.replace(regex, "").trim();
+        }
+
+        return content;
+      }
+
       function renderQuestion(question) {
         console.log("[VIEWER] Rendering question:", question.id);
 
@@ -468,15 +504,18 @@
           answerInput = `
           <div class="options">
             ${options
-              .map(
-                (opt, i) => `
-              <div class="option" onclick="toggleMultiple('${opt.label}', ${i})">
+              .map((opt, i) => {
+                const label = (opt.label || "").toString();
+                const content = getOptionContent(opt);
+
+                return `
+              <div class="option" onclick="toggleMultiple('${label}', ${i})">
                 <input type="checkbox" id="opt-${i}">
-                <div class="option-label">${opt.label}</div>
-                <div>${opt.html || opt.label}</div>
+                <div class="option-label">${label.toUpperCase()}</div>
+                <div class="option-content">${content}</div>
               </div>
-            `,
-              )
+            `;
+              })
               .join("")}
           </div>
         `;
@@ -484,14 +523,17 @@
           answerInput = `
           <div class="options">
             ${options
-              .map(
-                (opt, i) => `
-              <div class="option" onclick="selectOption('${opt.label}', ${i})">
-                <div class="option-label">${opt.label}</div>
-                <div>${opt.html || opt.label}</div>
+              .map((opt, i) => {
+                const label = (opt.label || "").toString();
+                const content = getOptionContent(opt);
+
+                return `
+              <div class="option" onclick="selectOption('${label}', ${i})">
+                <div class="option-label">${label.toUpperCase()}</div>
+                <div class="option-content">${content}</div>
               </div>
-            `,
-              )
+            `;
+              })
               .join("")}
           </div>
         `;

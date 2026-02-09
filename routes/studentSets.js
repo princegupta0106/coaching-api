@@ -80,13 +80,13 @@ router.get("/list", verifyToken, async (req, res) => {
   }
 });
 
-// Update student set (admin only)
+// Update student set (admin and staff with access)
 router.put("/update/:setId", verifyToken, async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.user.role !== "admin" && req.user.role !== "staff") {
       return res
         .status(403)
-        .json({ error: "Only admins can update student sets" });
+        .json({ error: "Only admins and staff can update student sets" });
     }
 
     const { setId } = req.params;
@@ -94,6 +94,21 @@ router.put("/update/:setId", verifyToken, async (req, res) => {
 
     if (!students || !Array.isArray(students)) {
       return res.status(400).json({ error: "Students array is required" });
+    }
+
+    // Check if staff has access to this set
+    if (req.user.role === "staff") {
+      const { data: user } = await supabase
+        .from("users")
+        .select("student_sets")
+        .eq("email", req.user.email)
+        .single();
+
+      if (!user || !(user.student_sets || []).includes(setId)) {
+        return res
+          .status(403)
+          .json({ error: "You don't have access to this student set" });
+      }
     }
 
     const { data, error } = await supabase
@@ -112,13 +127,29 @@ router.put("/update/:setId", verifyToken, async (req, res) => {
   }
 });
 
-// Share student set with staff (admin only)
+// Share student set with staff (admin and staff with access)
 router.post("/share", verifyToken, async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.user.role !== "admin" && req.user.role !== "staff") {
       return res
         .status(403)
-        .json({ error: "Only admins can share student sets" });
+        .json({ error: "Only admins and staff can share student sets" });
+    }
+
+    // Check if staff has access to this set
+    if (req.user.role === "staff") {
+      const { setId } = req.body;
+      const { data: user } = await supabase
+        .from("users")
+        .select("student_sets")
+        .eq("email", req.user.email)
+        .single();
+
+      if (!user || !(user.student_sets || []).includes(setId)) {
+        return res
+          .status(403)
+          .json({ error: "You don't have access to this student set" });
+      }
     }
 
     const { setId, staffEmail } = req.body;
@@ -201,13 +232,29 @@ router.get("/my-sets", verifyToken, async (req, res) => {
   }
 });
 
-// Remove share access from staff (admin only)
+// Remove share access from staff (admin and staff with access)
 router.post("/unshare", verifyToken, async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.user.role !== "admin" && req.user.role !== "staff") {
       return res
         .status(403)
-        .json({ error: "Only admins can unshare student sets" });
+        .json({ error: "Only admins and staff can unshare student sets" });
+    }
+
+    // Check if staff has access to this set
+    if (req.user.role === "staff") {
+      const { setId } = req.body;
+      const { data: user } = await supabase
+        .from("users")
+        .select("student_sets")
+        .eq("email", req.user.email)
+        .single();
+
+      if (!user || !(user.student_sets || []).includes(setId)) {
+        return res
+          .status(403)
+          .json({ error: "You don't have access to this student set" });
+      }
     }
 
     const { setId, staffEmail } = req.body;
@@ -249,16 +296,31 @@ router.post("/unshare", verifyToken, async (req, res) => {
   }
 });
 
-// Get shared staff for a set (admin only)
+// Get shared staff for a set (admin and staff with access)
 router.get("/shared-staff/:setId", verifyToken, async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.user.role !== "admin" && req.user.role !== "staff") {
       return res
         .status(403)
-        .json({ error: "Only admins can view shared staff" });
+        .json({ error: "Only admins and staff can view shared staff" });
     }
 
     const { setId } = req.params;
+
+    // Check if staff has access to this set
+    if (req.user.role === "staff") {
+      const { data: user } = await supabase
+        .from("users")
+        .select("student_sets")
+        .eq("email", req.user.email)
+        .single();
+
+      if (!user || !(user.student_sets || []).includes(setId)) {
+        return res
+          .status(403)
+          .json({ error: "You don't have access to this student set" });
+      }
+    }
 
     // Find all staff users who have this set in their student_sets
     const { data: staffUsers, error } = await supabase

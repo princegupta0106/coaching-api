@@ -9,6 +9,9 @@ const questionSetsRoutes = require("./routes/questionSets");
 const studentStatusRoutes = require("./routes/studentStatus");
 const questionLoaderRoutes = require("./routes/questionLoader");
 const questionUploaderRoutes = require("./routes/questionUploader");
+const simpleBulkUploadRoutes = require("./routes/simpleBulkUpload");
+const superAdminRoutes = require("./routes/superAdmin");
+const testRoutes = require("./routes/tests");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +40,9 @@ app.use("/api/users", usersRoutes);
 app.use("/api/questions", questionSetsRoutes);
 app.use("/api/questions", questionLoaderRoutes);
 app.use("/api/questions", questionUploaderRoutes);
+app.use("/api/bulk-upload", simpleBulkUploadRoutes);
+app.use("/api/super-admin", superAdminRoutes);
+app.use("/api/tests", testRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

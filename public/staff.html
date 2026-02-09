@@ -3,274 +3,877 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Staff Dashboard</title>
+    <title>Staff Panel</title>
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [["$", "$"]],
+          displayMath: [["$$", "$$"]],
+          processEscapes: true,
+          processEnvironments: true,
+        },
+        svg: { fontCache: "global" },
+        options: {
+          skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+        },
+      };
+    </script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
+
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --text-primary: #333;
+        --text-secondary: #666;
+        --border-color: #e0e0e0;
+        --accent-color: #667eea;
+        --sidebar-width: 260px;
+      }
+
+      body.dark-mode {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #2d2d2d;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --border-color: #404040;
+        --accent-color: #7c8adb;
+      }
+
       body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 20px;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        transition:
+          background 0.3s,
+          color 0.3s;
       }
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background: white;
-        padding: 40px;
-        border-radius: 10px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: var(--bg-primary);
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        z-index: 100;
       }
-      h1 {
-        color: #333;
-        margin-bottom: 30px;
-      }
-      h2 {
-        color: #555;
-        margin: 30px 0 20px 0;
-        font-size: 22px;
-      }
-      .user-info {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 30px;
-      }
-      .user-info p {
-        margin: 8px 0;
-        color: #555;
-      }
-      .student-set-card {
-        background: #f8f9fa;
-        padding: 25px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        border-left: 4px solid #667eea;
-      }
-      .set-header {
+
+      .dark-mode-toggle {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px;
+        cursor: pointer;
       }
-      .set-title {
-        font-weight: bold;
-        color: #333;
-        font-size: 20px;
+
+      .toggle-switch {
+        width: 50px;
+        height: 26px;
+        background: var(--border-color);
+        border-radius: 13px;
+        position: relative;
+        transition: background 0.3s;
       }
-      .students-list {
-        margin-top: 15px;
-      }
-      .students-list h3 {
-        font-size: 16px;
-        color: #555;
-        margin-bottom: 10px;
-      }
-      .student-item {
+
+      .toggle-switch::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
         background: white;
-        padding: 10px 15px;
-        margin: 5px 0;
-        border-radius: 5px;
-        color: #666;
+        top: 3px;
+        left: 3px;
+        transition: transform 0.3s;
       }
-      .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: #999;
+
+      .toggle-switch.active {
+        background: var(--accent-color);
       }
-      .empty-state svg {
-        width: 100px;
-        height: 100px;
-        margin-bottom: 20px;
-        opacity: 0.5;
+      .toggle-switch.active::after {
+        transform: translateX(24px);
       }
-      .back-btn {
-        padding: 12px 30px;
-        background: #667eea;
+
+      .nav-menu {
+        flex: 1;
+        padding: 20px 0;
+        overflow-y: auto;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        cursor: pointer;
+        transition: background 0.2s;
+        border-left: 3px solid transparent;
+      }
+
+      .nav-item:hover {
+        background: var(--bg-secondary);
+      }
+      .nav-item.active {
+        background: rgba(102, 126, 234, 0.1);
+        border-left-color: var(--accent-color);
+        color: var(--accent-color);
+      }
+
+      .user-profile {
+        padding: 15px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: auto;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--accent-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .user-info {
+        flex: 1;
+      }
+      .user-name {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .user-email {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      .logout-btn {
+        padding: 8px 16px;
+        background: #e74c3c;
         color: white;
         border: none;
-        border-radius: 5px;
+        border-radius: 4px;
+        font-size: 12px;
         cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        text-decoration: none;
-        display: inline-block;
       }
-      .back-btn:hover {
+
+      .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 30px;
+        min-height: 100vh;
+      }
+
+      .page-header {
+        margin-bottom: 30px;
+      }
+      .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+
+      .card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        padding: 25px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .modal-body .MathJax,
+      .modal-body .MathJax_Display {
+        display: inline !important;
+        margin: 0 !important;
+      }
+
+      .review-chart {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .review-chart::after {
+        content: "";
+        position: absolute;
+        inset: 16px;
+        border-radius: 50%;
+        background: var(--bg-primary);
+      }
+
+      .legend {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .legend-color {
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 14px;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        transition: border-color 0.2s;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent-color);
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--accent-color);
+        color: white;
+      }
+      .btn-primary:hover {
         background: #5568d3;
       }
-      .logout-btn {
-        background: #e74c3c;
-        margin-left: 10px;
+
+      .btn-secondary {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
       }
-      .logout-btn:hover {
+      .btn-secondary:hover {
+        background: var(--border-color);
+      }
+
+      .btn-danger {
+        background: #e74c3c;
+        color: white;
+      }
+      .btn-danger:hover {
         background: #c0392b;
       }
-      .loading {
-        text-align: center;
-        padding: 40px;
-        color: #667eea;
-        font-size: 18px;
+
+      .btn-small {
+        padding: 8px 16px;
+        font-size: 13px;
       }
-      .error {
-        background: #fee;
-        color: #c33;
+
+      .set-item {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+
+      .set-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 15px;
+      }
+
+      .set-name {
+        font-weight: 600;
+        font-size: 16px;
+        color: var(--text-primary);
+      }
+      .set-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal.show {
+        display: flex;
+      }
+
+      .modal-content {
+        background: var(--bg-primary);
+        border-radius: 8px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal-content.large {
+        max-width: 900px;
+      }
+
+      .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--text-secondary);
+      }
+
+      .modal-body {
+        padding: 20px;
+        overflow-y: auto;
+        flex: 1;
+      }
+
+      .modal-footer {
+        padding: 20px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .checkbox-item {
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .checkbox-item:hover {
+        background: var(--bg-secondary);
+      }
+
+      .message {
         padding: 15px;
-        border-radius: 5px;
+        border-radius: 6px;
         margin-bottom: 20px;
+      }
+
+      .message.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .search-input {
+        margin-bottom: 15px;
+      }
+
+      .staff-item,
+      .student-item {
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.2s;
+      }
+
+      .staff-item:hover,
+      .student-item:hover {
+        background: var(--bg-secondary);
+      }
+
+      .staff-email,
+      .student-email {
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .shared-badge {
+        background: var(--accent-color);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        margin-left: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+        .main-content {
+          margin-left: 0;
+          padding: 20px 15px;
+        }
+
+        .set-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .set-actions {
+          flex-wrap: wrap;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <h1>Staff Dashboard</h1>
-
-      <div class="user-info">
-        <p><strong>Email:</strong> <span id="userEmail"></span></p>
-        <p><strong>Institution:</strong> <span id="userInstitution"></span></p>
-        <p><strong>Role:</strong> Staff</p>
+    <div class="sidebar">
+      <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <span>Dark Mode</span>
+        <div class="toggle-switch" id="darkModeToggle"></div>
       </div>
 
-      <div id="loading" class="loading">Loading your student sets...</div>
-      <div id="error" class="error" style="display: none"></div>
-
-      <div id="setsContent" style="display: none">
-        <h2>Your Student Sets (<span id="setsCount">0</span>)</h2>
-        <div id="studentSetsList"></div>
+      <div class="nav-menu">
+        <div class="nav-item active" onclick="showView(event, 'questionSets')">
+          <i class="fas fa-clipboard-list"></i> My Question Sets
+        </div>
+        <div class="nav-item" onclick="showView(event, 'randomSets')">
+          <i class="fas fa-random"></i> Random Set Generator
+        </div>
+        <div class="nav-item" onclick="showView(event, 'studentSets')">
+          <i class="fas fa-users"></i> Student Sets
+        </div>
+        <div class="nav-item" onclick="showView(event, 'tests')">
+          <i class="fas fa-clipboard-check"></i> Tests
+        </div>
+        <div class="nav-item" onclick="showView(event, 'upload')">
+          <i class="fas fa-upload"></i> Upload Question
+        </div>
       </div>
 
-      <div style="margin-top: 30px">
-        <button class="back-btn" onclick="manageQuestions()">
-          Manage Question Sets
-        </button>
-        <button class="back-btn" onclick="uploadQuestions()">
-          📤 Upload Questions
-        </button>
-        <button class="back-btn" onclick="bulkUpload()">
-          📦 Bulk Upload (Folders)
-        </button>
-        <button class="back-btn" onclick="goHome()">Back to Home</button>
-        <button class="back-btn logout-btn" onclick="handleLogout()">
-          Logout
-        </button>
+      <div class="user-profile">
+        <div class="user-avatar" id="userAvatar">S</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Staff</div>
+          <div class="user-email" id="userEmail">staff@example.com</div>
+        </div>
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="main-content" id="mainContent"></div>
+
+    <!-- Modal for Sharing Question Sets -->
+    <div class="modal" id="shareModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Share with Student Set</div>
+          <button class="close-modal" onclick="closeShareModal()">×</button>
+        </div>
+        <div class="modal-body" id="shareModalBody"></div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeShareModal()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="confirmShare()">
+            Share
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Managing Questions -->
+    <div class="modal" id="questionsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Manage Questions</div>
+          <button class="close-modal" onclick="closeQuestionsModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Select Exam</label>
+            <select id="modalExamSelect" onchange="loadModalSubjects()">
+              <option value="">Select Exam...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Select Subject</label>
+            <select id="modalSubjectSelect" onchange="loadModalChapters()">
+              <option value="">Select Subject...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Select Chapter</label>
+            <select id="modalChapterSelect" onchange="loadModalQuestions()">
+              <option value="">Select Chapter...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label
+              >Available Questions
+              <span id="addedCount" style="color: var(--accent-color)">0</span>
+              new selected</label
+            >
+            <div
+              id="availableQuestions"
+              style="max-height: 300px; overflow-y: auto"
+            ></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeQuestionsModal()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="saveSelectedQuestions()">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Sharing Student Set with Staff -->
+    <div class="modal" id="shareStudentSetModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Share Student Set with Staff</div>
+          <button class="close-modal" onclick="closeShareStudentSetModal()">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Search Staff</label>
+            <input
+              type="text"
+              id="staffSearchInput"
+              placeholder="Search by email..."
+              oninput="filterStaffList()"
+            />
+          </div>
+          <div
+            id="staffListBody"
+            style="max-height: 400px; overflow-y: auto"
+          ></div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="closeShareStudentSetModal()"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Managing Student Set Students -->
+    <div class="modal" id="manageStudentsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Manage Students in Set</div>
+          <button class="close-modal" onclick="closeManageStudentsModal()">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Search Students</label>
+            <input
+              type="text"
+              id="studentSearchInput"
+              placeholder="Search by email..."
+              oninput="filterStudentList()"
+            />
+          </div>
+          <div
+            id="studentListBody"
+            style="max-height: 400px; overflow-y: auto"
+          ></div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="closeManageStudentsModal()"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Test Attempts -->
+    <div class="modal" id="testAttemptsModal">
+      <div class="modal-content large">
+        <div class="modal-header">
+          <div class="modal-title">Test Attempts</div>
+          <button class="close-modal" onclick="closeTestAttemptsModal()">
+            ×
+          </button>
+        </div>
+        <div class="modal-body" id="testAttemptsBody"></div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeTestAttemptsModal()">
+            Close
+          </button>
+        </div>
       </div>
     </div>
 
     <script>
-      // Automatically detect API URL based on environment
       const API_URL =
         window.location.hostname === "localhost"
-          ? "http://localhost:3000/api/student-sets"
-          : `${window.location.origin}/api/student-sets`;
+          ? "http://localhost:3000/api"
+          : `${window.location.origin}/api`;
       const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-      function showError(message) {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("error").textContent = message;
-        document.getElementById("error").style.display = "block";
-      }
+      let selectedQuestionSetId = null;
+      let selectedStudentSetId = null;
+      let myStudentSets = [];
+      let selectedQuestions = [];
+      let currentSetQuestions = [];
+      let selectedChapters = [];
+      let allStaffMembers = [];
+      let allInstitutionStudents = [];
+      let currentEditingSet = null;
+      let staffTests = [];
+      let testQuestionSets = [];
+      let selectedTestSetIds = [];
 
-      function goHome() {
-        window.location.href = "/";
-      }
-
-      function handleLogout() {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/";
-      }
-
-      function manageQuestions() {
-        window.location.href = "/questions.html";
-      }
-
-      function uploadQuestions() {
-        window.location.href = "/uploader.html";
-      }
-
-      function bulkUpload() {
-        window.location.href = "/bulk-uploader.html";
-      }
-
-      async function loadStaffSets() {
-        if (!token) {
-          showError("Not authenticated. Redirecting...");
-          setTimeout(() => (window.location.href = "/"), 2000);
+      // Initialize page
+      window.addEventListener("DOMContentLoaded", async () => {
+        if (!token || user.role !== "staff") {
+          alert("Please login as staff");
+          window.location.href = "/";
           return;
         }
 
-        const userStr = localStorage.getItem("user");
-        if (userStr) {
-          try {
-            const user = JSON.parse(userStr);
-            document.getElementById("userEmail").textContent = user.email;
-            document.getElementById("userInstitution").textContent =
-              user.institution;
-          } catch (error) {
-            console.error("Failed to parse user:", error);
-          }
+        document.getElementById("userName").textContent =
+          user.email.split("@")[0];
+        document.getElementById("userEmail").textContent = user.email;
+        document.getElementById("userAvatar").textContent =
+          user.email[0].toUpperCase();
+
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+          document.getElementById("darkModeToggle").classList.add("active");
         }
 
-        try {
-          const response = await fetch(`${API_URL}/my-sets`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+        showQuestionSetsView();
+        await loadMyStudentSets();
+      });
 
-          if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.error || "Failed to load student sets");
-          }
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+        const isDark = document.body.classList.contains("dark-mode");
+        document
+          .getElementById("darkModeToggle")
+          .classList.toggle("active", isDark);
+        localStorage.setItem("darkMode", isDark);
+      }
 
-          const data = await response.json();
-          displaySets(data.studentSets);
-        } catch (error) {
-          showError(error.message);
+      function handleLogout() {
+        if (confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/";
         }
       }
 
-      function displaySets(sets) {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("setsContent").style.display = "block";
-        document.getElementById("setsCount").textContent = sets.length;
+      function showView(event, view) {
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((item) => item.classList.remove("active"));
 
-        const container = document.getElementById("studentSetsList");
+        if (event && event.target) {
+          // Find the closest nav-item
+          const navItem = event.target.closest(".nav-item");
+          if (navItem) {
+            navItem.classList.add("active");
+          }
+        }
+
+        if (view === "questionSets") showQuestionSetsView();
+        else if (view === "randomSets") showRandomSetsView();
+        else if (view === "studentSets") showStudentSetsView();
+        else if (view === "tests") showTestsView();
+        else if (view === "upload") showUploadView();
+      }
+
+      function showMessage(message, type) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${type}`;
+        messageDiv.textContent = message;
+
+        const content = document.getElementById("mainContent");
+        content.insertBefore(messageDiv, content.firstChild);
+
+        setTimeout(() => messageDiv.remove(), 5000);
+      }
+
+      // ============ QUESTION SETS VIEW ============
+      async function showQuestionSetsView() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+        <div class="page-header">
+          <div class="page-title">My Question Sets</div>
+          <div class="page-subtitle">Manage your question sets</div>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">Create New Question Set</div>
+          <form onsubmit="createQuestionSet(event)">
+            <div class="form-group">
+              <label>Set Name</label>
+              <input type="text" id="setName" required placeholder="e.g., Physics - Mechanics, Chemistry Unit 1" />
+            </div>
+            <button type="submit" class="btn btn-primary">Create Question Set</button>
+          </form>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">My Question Sets</div>
+          <div id="questionSetsList">Loading...</div>
+        </div>
+      `;
+
+        loadQuestionSets();
+      }
+
+      async function loadQuestionSets() {
+        try {
+          const response = await fetch(`${API_URL}/questions/my-sets`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            displayQuestionSets(data.sets || []);
+          }
+        } catch (error) {
+          console.error("Error loading question sets:", error);
+        }
+      }
+
+      function displayQuestionSets(sets) {
+        const container = document.getElementById("questionSetsList");
 
         if (sets.length === 0) {
-          container.innerHTML = `
-          <div class="empty-state">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <h3>No Student Sets Available</h3>
-            <p>You don't have access to any student sets yet. Contact your admin to get access.</p>
-          </div>
-        `;
+          container.innerHTML = `<p style="color: var(--text-secondary);">No question sets found. Create one above!</p>`;
           return;
         }
 
         container.innerHTML = sets
           .map(
             (set) => `
-        <div class="student-set-card">
+        <div class="set-item">
           <div class="set-header">
-            <div class="set-title">${set.id}</div>
-          </div>
-          <div class="students-list">
-            <h3>Students (${(set.students || []).length})</h3>
-            ${
-              (set.students || []).length > 0
-                ? (set.students || [])
-                    .map(
-                      (email) => `
-                  <div class="student-item">${email}</div>
-                `,
-                    )
-                    .join("")
-                : '<p style="color: #999; font-style: italic;">No students in this set</p>'
-            }
+            <div>
+              <div class="set-name">${set.name}</div>
+              <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
+                ID: ${set.id} | ${(set.question_ids || []).length} questions
+              </div>
+            </div>
+            <div class="set-actions">
+              <button class="btn btn-secondary btn-small" onclick="manageQuestions('${set.id}', ${JSON.stringify(set.question_ids || []).replace(/"/g, "&quot;")})">
+                <i class="fas fa-edit"></i> Manage Questions
+              </button>
+              <button class="btn btn-secondary btn-small" onclick="openShareModal('${set.id}')">
+                <i class="fas fa-share"></i> Share
+              </button>
+              <button class="btn btn-danger btn-small" onclick="deleteQuestionSet('${set.id}')">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
           </div>
         </div>
       `,
@@ -278,7 +881,1415 @@
           .join("");
       }
 
-      window.addEventListener("load", loadStaffSets);
+      async function createQuestionSet(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("setName").value.trim();
+
+        try {
+          const response = await fetch(`${API_URL}/questions/my-sets/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ name, questionIds: [] }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage("Question set created successfully!", "success");
+            document.getElementById("setName").value = "";
+            loadQuestionSets();
+          } else {
+            showMessage(data.error || "Failed to create question set", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      async function deleteQuestionSet(setId) {
+        if (!confirm("Delete this question set?")) return;
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/my-sets/${setId}`,
+            {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            showMessage("Question set deleted", "success");
+            loadQuestionSets();
+          } else {
+            showMessage("Failed to delete", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      function openShareModal(setId) {
+        selectedQuestionSetId = setId;
+        const modal = document.getElementById("shareModal");
+        const modalBody = document.getElementById("shareModalBody");
+
+        if (myStudentSets.length === 0) {
+          modalBody.innerHTML = `
+            <p style="color: var(--text-secondary); text-align: center; padding: 20px;">
+              No student sets available. Please ask your admin to share student sets with you.
+            </p>
+          `;
+        } else {
+          modalBody.innerHTML = myStudentSets
+            .map(
+              (set) => `
+          <div class="checkbox-item" onclick="selectStudentSet('${set.id}')">
+            <input type="radio" name="studentSet" id="ss-${set.id}"
+              onclick="event.stopPropagation(); selectStudentSet('${set.id}')" />
+            <div>
+              <div style="font-weight: 500;">${set.id}</div>
+              <div style="font-size: 12px; color: var(--text-secondary);">${set.students.length} students</div>
+            </div>
+          </div>
+        `,
+            )
+            .join("");
+        }
+
+        modal.classList.add("show");
+      }
+
+      function closeShareModal() {
+        document.getElementById("shareModal").classList.remove("show");
+        selectedQuestionSetId = null;
+        selectedStudentSetId = null;
+      }
+
+      function selectStudentSet(setId) {
+        selectedStudentSetId = setId;
+        document
+          .querySelectorAll('input[name="studentSet"]')
+          .forEach((input) => {
+            input.checked = input.id === `ss-${setId}`;
+          });
+      }
+
+      async function confirmShare() {
+        if (!selectedStudentSetId) {
+          showMessage("Please select a student set", "error");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/my-sets/${selectedQuestionSetId}/share`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ studentSetId: selectedStudentSetId }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage(
+              `Shared with ${data.sharedWith || 0} students!`,
+              "success",
+            );
+            closeShareModal();
+          } else {
+            showMessage(data.error || "Failed to share", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      // ============ STUDENT SETS VIEW ============
+      async function showStudentSetsView() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+        <div class="page-header">
+          <div class="page-title">Student Sets</div>
+          <div class="page-subtitle">View student sets you have access to</div>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">Available Student Sets</div>
+          <div id="studentSetsList">Loading...</div>
+        </div>
+      `;
+
+        displayStudentSets();
+      }
+
+      async function loadMyStudentSets() {
+        try {
+          const response = await fetch(`${API_URL}/student-sets/my-sets`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            myStudentSets = data.studentSets || [];
+          }
+        } catch (error) {
+          console.error("Error loading student sets:", error);
+        }
+      }
+
+      function displayStudentSets() {
+        const container = document.getElementById("studentSetsList");
+
+        if (myStudentSets.length === 0) {
+          container.innerHTML = `<p style="color: var(--text-secondary);">No student sets assigned to you yet.</p>`;
+          return;
+        }
+
+        container.innerHTML = myStudentSets
+          .map(
+            (set) => `
+        <div class="set-item">
+          <div class="set-header">
+            <div>
+              <div class="set-name">${set.id}</div>
+              <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
+                ${set.students.length} students
+              </div>
+            </div>
+            <div class="set-actions">
+              <button class="btn btn-secondary btn-small" onclick="viewStudents('${set.id}')">
+                <i class="fas fa-eye"></i> View Students
+              </button>
+              <button class="btn btn-secondary btn-small" onclick="openManageStudentsModal('${set.id}')">
+                <i class="fas fa-edit"></i> Manage Students
+              </button>
+              <button class="btn btn-secondary btn-small" onclick="openShareStudentSetModal('${set.id}')">
+                <i class="fas fa-share"></i> Share with Staff
+              </button>
+            </div>
+          </div>
+          <div id="students-${set.id}" style="display: none; margin-top: 15px; padding: 15px;
+            background: var(--bg-primary); border-radius: 6px;">
+            ${set.students
+              .map(
+                (email) => `
+              <div style="padding: 8px; border-bottom: 1px solid var(--border-color);">${email}</div>
+            `,
+              )
+              .join("")}
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      function viewStudents(setId) {
+        const container = document.getElementById(`students-${setId}`);
+        container.style.display =
+          container.style.display === "none" ? "block" : "none";
+      }
+
+      // ============ TESTS VIEW ============
+      async function showTestsView() {
+        selectedTestSetIds = [];
+
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+        <div class="page-header">
+          <div class="page-title">Tests</div>
+          <div class="page-subtitle">Create tests from your question sets</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Create New Test</div>
+          <form onsubmit="createTest(event)">
+            <div class="form-group">
+              <label>Test Name</label>
+              <input type="text" id="testName" required placeholder="e.g., Mock Test 1" />
+            </div>
+            <div class="form-group">
+              <label>Duration (minutes)</label>
+              <input type="number" id="testDuration" min="5" max="300" value="30" />
+            </div>
+            <div class="form-group">
+              <label>Start Time (optional)</label>
+              <input type="datetime-local" id="testStartAt" />
+            </div>
+            <div class="form-group">
+              <label>Last Start Time (optional)</label>
+              <input type="datetime-local" id="testLastStartAt" />
+            </div>
+            <div class="form-group">
+              <label>Select Question Sets</label>
+              <div id="testSetList" style="max-height: 220px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;">
+                <p style="color: var(--text-secondary);">Loading question sets...</p>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Test</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">My Tests</div>
+          <div id="testsList">Loading...</div>
+        </div>
+      `;
+
+        await loadTestQuestionSets();
+        await loadStaffTests();
+      }
+
+      async function loadTestQuestionSets() {
+        try {
+          const response = await fetch(`${API_URL}/questions/my-sets`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            testQuestionSets = data.sets || [];
+            renderTestSetList();
+          }
+        } catch (error) {
+          console.error("Error loading question sets for tests:", error);
+        }
+      }
+
+      function renderTestSetList() {
+        const container = document.getElementById("testSetList");
+
+        if (!testQuestionSets.length) {
+          container.innerHTML =
+            '<p style="color: var(--text-secondary);">No question sets found.</p>';
+          return;
+        }
+
+        container.innerHTML = testQuestionSets
+          .map(
+            (set) => `
+          <div class="checkbox-item" onclick="toggleTestSetSelection('${set.id}')">
+            <input type="checkbox" id="test-set-${set.id}"
+              onclick="event.stopPropagation(); toggleTestSetSelection('${set.id}')" />
+            <div>
+              <div style="font-weight: 500;">${set.name}</div>
+              <div style="font-size: 12px; color: var(--text-secondary);">${(set.question_ids || []).length} questions</div>
+            </div>
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      function toggleTestSetSelection(setId) {
+        const checkbox = document.getElementById(`test-set-${setId}`);
+        const index = selectedTestSetIds.indexOf(setId);
+
+        if (index > -1) {
+          selectedTestSetIds.splice(index, 1);
+          checkbox.checked = false;
+        } else {
+          selectedTestSetIds.push(setId);
+          checkbox.checked = true;
+        }
+      }
+
+      async function createTest(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("testName").value.trim();
+        const durationMinutes = parseInt(
+          document.getElementById("testDuration").value,
+          10,
+        );
+        const startAtInput = document.getElementById("testStartAt").value;
+        const lastStartAtInput =
+          document.getElementById("testLastStartAt").value;
+
+        if (!selectedTestSetIds.length) {
+          showMessage("Select at least one question set", "error");
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/tests`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              name,
+              questionSetIds: selectedTestSetIds,
+              durationMinutes,
+              startAt: startAtInput || null,
+              lastStartAt: lastStartAtInput || null,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage("Test created successfully!", "success");
+            document.getElementById("testName").value = "";
+            selectedTestSetIds = [];
+            renderTestSetList();
+            loadStaffTests();
+          } else {
+            showMessage(data.error || "Failed to create test", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      async function loadStaffTests() {
+        try {
+          const response = await fetch(`${API_URL}/tests`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            staffTests = data.tests || [];
+            renderStaffTests();
+          }
+        } catch (error) {
+          console.error("Error loading tests:", error);
+        }
+      }
+
+      function renderStaffTests() {
+        const container = document.getElementById("testsList");
+
+        if (!staffTests.length) {
+          container.innerHTML =
+            '<p style="color: var(--text-secondary);">No tests created yet.</p>';
+          return;
+        }
+
+        container.innerHTML = staffTests
+          .map(
+            (test) => `
+          <div class="set-item">
+            <div class="set-header">
+              <div>
+                <div class="set-name">${test.name}</div>
+                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
+                  ${test.duration_minutes || 30} min • ${(test.question_ids || []).length} questions
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                  Start: ${test.start_at || "Anytime"} • Last start: ${test.last_start_at || "Anytime"}
+                </div>
+              </div>
+              <div class="set-actions">
+                <button class="btn btn-secondary btn-small" onclick="window.open('/tests.html', '_blank')">
+                  <i class="fas fa-external-link-alt"></i> Test Page
+                </button>
+                <button class="btn btn-secondary btn-small" onclick="openTestAttemptsModal('${test.id}')">
+                  <i class="fas fa-chart-bar"></i> Attempts
+                </button>
+                <button class="btn btn-secondary btn-small" onclick="window.open('/tests-report.html?testId=${test.id}', '_blank')">
+                  <i class="fas fa-file-alt"></i> Report
+                </button>
+              </div>
+            </div>
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      async function openTestAttemptsModal(testId) {
+        const modal = document.getElementById("testAttemptsModal");
+        const body = document.getElementById("testAttemptsBody");
+        body.innerHTML = "Loading attempts...";
+        modal.classList.add("show");
+
+        try {
+          const response = await fetch(`${API_URL}/tests/${testId}/attempts`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to load attempts");
+          }
+
+          const data = await response.json();
+          const attempts = data.attempts || [];
+
+          if (!attempts.length) {
+            body.innerHTML =
+              '<p style="color: var(--text-secondary);">No attempts yet.</p>';
+            return;
+          }
+
+          body.innerHTML = attempts
+            .map(
+              (attempt) => `
+            <div class="set-item">
+              <div class="set-header">
+                <div>
+                  <div class="set-name">${attempt.student_email}</div>
+                  <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                    ${attempt.status} • ${attempt.score || 0}/${attempt.total || 0}
+                  </div>
+                </div>
+                <div class="set-actions">
+                  <button class="btn btn-secondary btn-small" onclick="viewAttemptDetail('${attempt.id}')">
+                    <i class="fas fa-eye"></i> Review
+                  </button>
+                </div>
+              </div>
+            </div>
+          `,
+            )
+            .join("");
+        } catch (error) {
+          body.textContent = "Failed to load attempts";
+        }
+      }
+
+      function closeTestAttemptsModal() {
+        document.getElementById("testAttemptsModal").classList.remove("show");
+      }
+
+      function buildPieStyle(stats) {
+        const total = Math.max(1, stats.total);
+        const correctPct = (stats.correct / total) * 100;
+        const wrongPct = (stats.wrong / total) * 100;
+        const ungradedPct = (stats.ungraded / total) * 100;
+        const unattemptedPct = (stats.unattempted / total) * 100;
+
+        const a = correctPct;
+        const b = a + wrongPct;
+        const c = b + ungradedPct;
+        const d = c + unattemptedPct;
+
+        return `conic-gradient(
+          #27ae60 0% ${a}%,
+          #e74c3c ${a}% ${b}%,
+          #f59e0b ${b}% ${c}%,
+          #94a3b8 ${c}% ${d}%
+        )`;
+      }
+
+      function computeReviewStats(reviewQuestions, answerMap, resultMap) {
+        let correct = 0;
+        let wrong = 0;
+        let ungraded = 0;
+        let unattempted = 0;
+
+        reviewQuestions.forEach((question) => {
+          const userAnswer = answerMap.get(question.id);
+          const hasAnswer = Array.isArray(userAnswer)
+            ? userAnswer.length > 0
+            : userAnswer !== undefined &&
+              userAnswer !== null &&
+              `${userAnswer}` !== "";
+
+          const qResult = resultMap.get(question.id);
+          if (!hasAnswer) {
+            unattempted += 1;
+            return;
+          }
+
+          if (!qResult) {
+            ungraded += 1;
+            return;
+          }
+
+          if (qResult.isCorrect) {
+            correct += 1;
+          } else {
+            wrong += 1;
+          }
+        });
+
+        return {
+          total: reviewQuestions.length,
+          correct,
+          wrong,
+          ungraded,
+          unattempted,
+        };
+      }
+
+      async function viewAttemptDetail(attemptId) {
+        const body = document.getElementById("testAttemptsBody");
+        body.innerHTML = "Loading review...";
+
+        try {
+          const attemptResponse = await fetch(
+            `${API_URL}/tests/attempts/${attemptId}`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+
+          if (!attemptResponse.ok) {
+            throw new Error("Failed to load attempt");
+          }
+
+          const attemptData = await attemptResponse.json();
+          const attempt = attemptData.attempt;
+          const test = attemptData.test;
+
+          const questionsResponse = await fetch(
+            `${API_URL}/tests/${test.id}/questions`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+
+          if (!questionsResponse.ok) {
+            throw new Error("Failed to load questions");
+          }
+
+          const questionData = await questionsResponse.json();
+          const answerMap = new Map(
+            (attempt.answers || []).map((entry) => [
+              entry.questionId,
+              entry.answer,
+            ]),
+          );
+          const resultMap = new Map(
+            (attempt.result?.perQuestion || []).map((entry) => [
+              entry.questionId,
+              entry,
+            ]),
+          );
+
+          const stats = computeReviewStats(
+            questionData.questions || [],
+            answerMap,
+            resultMap,
+          );
+          const chartStyle = buildPieStyle(stats);
+
+          const startedAt = attempt.started_at
+            ? new Date(attempt.started_at).toLocaleString()
+            : "-";
+          const submittedAt = attempt.submitted_at
+            ? new Date(attempt.submitted_at).toLocaleString()
+            : "-";
+          const duration = attempt.duration_seconds
+            ? `${Math.floor(attempt.duration_seconds / 60)}m ${attempt.duration_seconds % 60}s`
+            : "-";
+
+          body.innerHTML = `
+            <div style="font-weight: 700; margin-bottom: 8px;">${test.name}</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+              ${attempt.score || 0}/${attempt.total || 0} • ${attempt.status}
+            </div>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+              <div class="review-chart" style="background: ${chartStyle};"></div>
+              <div class="legend">
+                <div class="legend-item"><span class="legend-color" style="background:#27ae60"></span>Correct: ${stats.correct}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#e74c3c"></span>Wrong: ${stats.wrong}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#f59e0b"></span>Ungraded: ${stats.ungraded}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#94a3b8"></span>Unattempted: ${stats.unattempted}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#667eea"></span>Total: ${stats.total}</div>
+              </div>
+            </div>
+            <div style="display: grid; gap: 6px; font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+              <div>Started: ${startedAt}</div>
+              <div>Submitted: ${submittedAt}</div>
+              <div>Time Taken: ${duration}</div>
+            </div>
+            ${(questionData.questions || [])
+              .map((question, index) => {
+                const questionHtml =
+                  question.question_html ||
+                  question.content?.question_html ||
+                  "Question not available";
+                const qResult = resultMap.get(question.id);
+                const rawUserAnswer = answerMap.get(question.id);
+                const userAnswer = Array.isArray(rawUserAnswer)
+                  ? rawUserAnswer.join(", ")
+                  : (rawUserAnswer ?? "");
+                const correctAnswer = qResult?.correctAnswer ?? "";
+                const status = qResult
+                  ? qResult.isCorrect
+                    ? "Correct"
+                    : "Wrong"
+                  : userAnswer
+                    ? "Not graded"
+                    : "Unattempted";
+                const answerLabel = userAnswer || "Unattempted";
+                return `
+                  <div class="card" style="margin-bottom: 12px;">
+                    <div style="font-weight: 700; margin-bottom: 6px;">Q${index + 1} • ${status}</div>
+                    <div style="margin-bottom: 8px;">${questionHtml}</div>
+                    <div style="font-size: 12px; margin-bottom: 4px;">Your Answer: <strong>${answerLabel}</strong></div>
+                    <div style="font-size: 12px;">Correct Answer: <strong>${correctAnswer}</strong></div>
+                  </div>
+                `;
+              })
+              .join("")}
+          `;
+
+          if (window.MathJax) {
+            MathJax.typesetPromise([body]).catch((err) =>
+              console.log("MathJax render error:", err),
+            );
+          }
+        } catch (error) {
+          body.textContent = "Failed to load review";
+        }
+      }
+
+      // ============ UPLOAD VIEW ============
+      function showUploadView() {
+        window.location.href = "/uploader.html";
+      }
+
+      // ============ MANAGE QUESTIONS ============
+      function manageQuestions(setId, questionIds) {
+        selectedQuestionSetId = setId;
+        currentSetQuestions = questionIds;
+        selectedQuestions = [...questionIds];
+
+        const modal = document.getElementById("questionsModal");
+        modal.classList.add("show");
+
+        loadModalExams();
+      }
+
+      function closeQuestionsModal() {
+        document.getElementById("questionsModal").classList.remove("show");
+        selectedQuestionSetId = null;
+        selectedQuestions = [];
+        currentSetQuestions = [];
+      }
+
+      async function loadModalExams() {
+        try {
+          const response = await fetch(`${API_URL}/questions/exams`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const select = document.getElementById("modalExamSelect");
+            select.innerHTML =
+              '<option value="">Select Exam...</option>' +
+              (data.exams || [])
+                .map((e) => `<option value="${e.id}">${e.id}</option>`)
+                .join("");
+          }
+        } catch (error) {
+          console.error("Error loading exams:", error);
+        }
+      }
+
+      async function loadModalSubjects() {
+        const examId = document.getElementById("modalExamSelect").value;
+        const select = document.getElementById("modalSubjectSelect");
+
+        if (!examId) {
+          select.innerHTML = '<option value="">Select Subject...</option>';
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/exams/${examId}/subjects`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            select.innerHTML =
+              '<option value="">Select Subject...</option>' +
+              (data.subjects || [])
+                .map((s) => `<option value="${s.id}">${s.id}</option>`)
+                .join("");
+          }
+        } catch (error) {
+          console.error("Error loading subjects:", error);
+        }
+      }
+
+      async function loadModalChapters() {
+        const subjectId = document.getElementById("modalSubjectSelect").value;
+        const select = document.getElementById("modalChapterSelect");
+
+        if (!subjectId) {
+          select.innerHTML = '<option value="">Select Chapter...</option>';
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/subjects/${subjectId}/question-sets`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            select.innerHTML =
+              '<option value="">Select Chapter...</option>' +
+              (data.questionSets || [])
+                .map((qs) => `<option value="${qs.id}">${qs.name}</option>`)
+                .join("");
+          }
+        } catch (error) {
+          console.error("Error loading chapters:", error);
+        }
+      }
+
+      async function loadModalQuestions() {
+        const chapterSetId =
+          document.getElementById("modalChapterSelect").value;
+        const container = document.getElementById("availableQuestions");
+
+        if (!chapterSetId) {
+          container.innerHTML = "";
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/question-sets/${chapterSetId}/questions`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            const questions = data.questions || [];
+
+            container.innerHTML =
+              questions.length > 0
+                ? questions
+                    .map(
+                      (q) => `
+              <div class="checkbox-item" onclick="toggleQuestionSelection('${q.id}')">
+                <input type="checkbox" id="q-${q.id}"
+                  ${selectedQuestions.includes(q.id) ? "checked" : ""}
+                  onclick="event.stopPropagation(); toggleQuestionSelection('${q.id}')" />
+                <div>
+                  <div style="font-weight: 500;">${q.id}</div>
+                  <div style="font-size: 12px; color: var(--text-secondary);">
+                    ${q.content.subject || "N/A"} - ${q.content.chapter || "N/A"}
+                  </div>
+                </div>
+              </div>
+            `,
+                    )
+                    .join("")
+                : '<p style="color: var(--text-secondary);">No questions found</p>';
+
+            updateAddedCount();
+          }
+        } catch (error) {
+          console.error("Error loading questions:", error);
+        }
+      }
+
+      function toggleQuestionSelection(questionId) {
+        const checkbox = document.getElementById(`q-${questionId}`);
+        const index = selectedQuestions.indexOf(questionId);
+
+        if (index > -1) {
+          selectedQuestions.splice(index, 1);
+          checkbox.checked = false;
+        } else {
+          selectedQuestions.push(questionId);
+          checkbox.checked = true;
+        }
+
+        updateAddedCount();
+      }
+
+      function updateAddedCount() {
+        const newQuestions = selectedQuestions.filter(
+          (q) => !currentSetQuestions.includes(q),
+        ).length;
+        document.getElementById("addedCount").textContent = newQuestions;
+      }
+
+      async function saveSelectedQuestions() {
+        if (!selectedQuestionSetId) return;
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/my-sets/${selectedQuestionSetId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ questionIds: selectedQuestions }),
+            },
+          );
+
+          if (response.ok) {
+            showMessage("Questions updated successfully!", "success");
+            closeQuestionsModal();
+            loadQuestionSets();
+          } else {
+            const data = await response.json();
+            showMessage(data.error || "Failed to update questions", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      // ============ RANDOM SETS GENERATOR ============
+      async function showRandomSetsView() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-header">
+            <div class="page-title">Random Question Set Generator</div>
+            <div class="page-subtitle">Create random sets from selected chapters</div>
+          </div>
+          
+          <div class="card">
+            <div class="card-title">Generate Random Set</div>
+            <form onsubmit="generateRandomSet(event)">
+              <div class="form-group">
+                <label>Set Name</label>
+                <input type="text" id="randomSetName" required placeholder="e.g., Practice Test 1" />
+              </div>
+              
+              <div class="form-group">
+                <label>Select Exam</label>
+                <select id="randomExamSelect" onchange="loadRandomSubjects()" required>
+                  <option value="">Select Exam...</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label>Select Subject</label>
+                <select id="randomSubjectSelect" onchange="loadRandomChapters()" required>
+                  <option value="">Select Subject...</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label>Select Chapters (Multiple)</label>
+                <div id="chaptersCheckboxList" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;">
+                  <p style="color: var(--text-secondary);">Select a subject first</p>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label>Total Number of Questions to Select</label>
+                <input type="number" id="totalQuestions" required min="1" max="500" placeholder="e.g., 50" />
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">Questions will be randomly selected from all chosen chapters</div>
+              </div>
+              
+              <button type="submit" class="btn btn-primary">Generate Random Set</button>
+            </form>
+          </div>
+        `;
+
+        loadRandomExams();
+      }
+
+      async function loadRandomExams() {
+        try {
+          const response = await fetch(`${API_URL}/questions/exams`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const select = document.getElementById("randomExamSelect");
+            select.innerHTML =
+              '<option value="">Select Exam...</option>' +
+              (data.exams || [])
+                .map((e) => `<option value="${e.id}">${e.id}</option>`)
+                .join("");
+          }
+        } catch (error) {
+          console.error("Error loading exams:", error);
+        }
+      }
+
+      async function loadRandomSubjects() {
+        const examId = document.getElementById("randomExamSelect").value;
+        const select = document.getElementById("randomSubjectSelect");
+
+        if (!examId) {
+          select.innerHTML = '<option value="">Select Subject...</option>';
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/exams/${examId}/subjects`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            select.innerHTML =
+              '<option value="">Select Subject...</option>' +
+              (data.subjects || [])
+                .map((s) => `<option value="${s.id}">${s.id}</option>`)
+                .join("");
+          }
+        } catch (error) {
+          console.error("Error loading subjects:", error);
+        }
+      }
+
+      async function loadRandomChapters() {
+        const subjectId = document.getElementById("randomSubjectSelect").value;
+        const container = document.getElementById("chaptersCheckboxList");
+
+        if (!subjectId) {
+          container.innerHTML =
+            '<p style="color: var(--text-secondary);">Select a subject first</p>';
+          selectedChapters = [];
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/subjects/${subjectId}/question-sets`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            const chapters = data.questionSets || [];
+
+            container.innerHTML =
+              chapters.length > 0
+                ? chapters
+                    .map(
+                      (ch) => `
+              <div class="checkbox-item" onclick="toggleChapterSelection('${ch.id}', '${ch.name}')">
+                <input type="checkbox" id="ch-${ch.id}"
+                  onclick="event.stopPropagation(); toggleChapterSelection('${ch.id}', '${ch.name}')" />
+                <div style="font-weight: 500;">${ch.name}</div>
+              </div>
+            `,
+                    )
+                    .join("")
+                : '<p style="color: var(--text-secondary);">No chapters found</p>';
+          }
+        } catch (error) {
+          console.error("Error loading chapters:", error);
+        }
+      }
+
+      function toggleChapterSelection(chapterId, chapterName) {
+        const checkbox = document.getElementById(`ch-${chapterId}`);
+        const index = selectedChapters.findIndex((c) => c.id === chapterId);
+
+        if (index > -1) {
+          selectedChapters.splice(index, 1);
+          checkbox.checked = false;
+        } else {
+          selectedChapters.push({ id: chapterId, name: chapterName });
+          checkbox.checked = true;
+        }
+      }
+
+      async function generateRandomSet(event) {
+        event.preventDefault();
+
+        const setName = document.getElementById("randomSetName").value.trim();
+        const totalQuestions = parseInt(
+          document.getElementById("totalQuestions").value,
+        );
+
+        if (selectedChapters.length === 0) {
+          showMessage("Please select at least one chapter", "error");
+          return;
+        }
+
+        try {
+          let allQuestions = [];
+
+          // Fetch ALL questions from ALL selected chapters into a pool
+          for (const chapter of selectedChapters) {
+            const response = await fetch(
+              `${API_URL}/questions/question-sets/${chapter.id}/questions`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              },
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              const questions = data.questions || [];
+              allQuestions.push(...questions);
+            }
+          }
+
+          if (allQuestions.length === 0) {
+            showMessage("No questions found in selected chapters", "error");
+            return;
+          }
+
+          // Randomly shuffle the entire pool and select totalQuestions
+          const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+          const selectedCount = Math.min(totalQuestions, shuffled.length);
+          const allQuestionIds = shuffled
+            .slice(0, selectedCount)
+            .map((q) => q.id);
+
+          if (allQuestionIds.length < totalQuestions) {
+            showMessage(
+              `Only ${allQuestionIds.length} questions available, selected all of them`,
+              "warning",
+            );
+          }
+
+          // Create the question set
+          const createResponse = await fetch(
+            `${API_URL}/questions/my-sets/create`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                name: setName,
+                questionIds: allQuestionIds,
+              }),
+            },
+          );
+
+          if (createResponse.ok) {
+            showMessage(
+              `Random set created with ${allQuestionIds.length} questions!`,
+              "success",
+            );
+            document.getElementById("randomSetName").value = "";
+            document.getElementById("totalQuestions").value = "";
+            selectedChapters = [];
+            document.getElementById("randomExamSelect").value = "";
+            document.getElementById("randomSubjectSelect").innerHTML =
+              '<option value="">Select Subject...</option>';
+            document.getElementById("chaptersCheckboxList").innerHTML =
+              '<p style="color: var(--text-secondary);">Select a subject first</p>';
+            showQuestionSetsView();
+          } else {
+            const data = await createResponse.json();
+            showMessage(data.error || "Failed to create set", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      // ============ SHARE STUDENT SET WITH STAFF ============
+      async function openShareStudentSetModal(setId) {
+        currentEditingSet = setId;
+        const modal = document.getElementById("shareStudentSetModal");
+
+        try {
+          // Load all staff members
+          const response = await fetch(`${API_URL}/users/list`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            allStaffMembers = (data.users || []).filter(
+              (u) => u.role === "staff",
+            );
+
+            // Get who already has access
+            const accessResponse = await fetch(
+              `${API_URL}/student-sets/shared-staff/${setId}`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              },
+            );
+
+            let sharedStaff = [];
+            if (accessResponse.ok) {
+              const accessData = await accessResponse.json();
+              sharedStaff = accessData.sharedStaff || [];
+            }
+
+            displayStaffList(sharedStaff);
+            modal.classList.add("show");
+          }
+        } catch (error) {
+          console.error("Error loading staff:", error);
+          showMessage("Error loading staff list", "error");
+        }
+      }
+
+      function displayStaffList(sharedStaff) {
+        const container = document.getElementById("staffListBody");
+
+        if (allStaffMembers.length === 0) {
+          container.innerHTML =
+            '<p style="color: var(--text-secondary);">No staff members found</p>';
+          return;
+        }
+
+        container.innerHTML = allStaffMembers
+          .map((staff) => {
+            const isShared = sharedStaff.includes(staff.email);
+            return `
+            <div class="staff-item">
+              <div class="staff-email">${staff.email}${isShared ? '<span class="shared-badge">Shared</span>' : ""}</div>
+              <div>
+                ${
+                  isShared
+                    ? `<button class="btn btn-danger btn-small" onclick="unshareStudentSet('${staff.email}')">
+                    <i class="fas fa-times"></i> Remove
+                  </button>`
+                    : `<button class="btn btn-primary btn-small" onclick="shareStudentSet('${staff.email}')">
+                    <i class="fas fa-share"></i> Share
+                  </button>`
+                }
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      function filterStaffList() {
+        const searchTerm = document
+          .getElementById("staffSearchInput")
+          .value.toLowerCase();
+        const items = document.querySelectorAll(".staff-item");
+
+        items.forEach((item) => {
+          const email = item
+            .querySelector(".staff-email")
+            .textContent.toLowerCase();
+          item.style.display = email.includes(searchTerm) ? "flex" : "none";
+        });
+      }
+
+      async function shareStudentSet(staffEmail) {
+        try {
+          const response = await fetch(`${API_URL}/student-sets/share`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ setId: currentEditingSet, staffEmail }),
+          });
+
+          if (response.ok) {
+            showMessage("Student set shared successfully!", "success");
+            openShareStudentSetModal(currentEditingSet); // Refresh
+          } else {
+            const data = await response.json();
+            showMessage(data.error || "Failed to share", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      async function unshareStudentSet(staffEmail) {
+        if (!confirm(`Remove access for ${staffEmail}?`)) return;
+
+        try {
+          const response = await fetch(`${API_URL}/student-sets/unshare`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ setId: currentEditingSet, staffEmail }),
+          });
+
+          if (response.ok) {
+            showMessage("Access removed successfully!", "success");
+            openShareStudentSetModal(currentEditingSet); // Refresh
+          } else {
+            const data = await response.json();
+            showMessage(data.error || "Failed to remove access", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      function closeShareStudentSetModal() {
+        document
+          .getElementById("shareStudentSetModal")
+          .classList.remove("show");
+        currentEditingSet = null;
+      }
+
+      // ============ MANAGE STUDENTS IN SET ============
+      async function openManageStudentsModal(setId) {
+        currentEditingSet = setId;
+        const modal = document.getElementById("manageStudentsModal");
+
+        try {
+          // Load all institution students
+          const response = await fetch(
+            `${API_URL}/users/institution-students`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            allInstitutionStudents = data.students || [];
+
+            // Get current set students
+            const set = myStudentSets.find((s) => s.id === setId);
+            const currentStudents = set ? set.students : [];
+
+            displayStudentList(currentStudents);
+            modal.classList.add("show");
+          }
+        } catch (error) {
+          console.error("Error loading students:", error);
+          showMessage("Error loading student list", "error");
+        }
+      }
+
+      function displayStudentList(currentStudents) {
+        const container = document.getElementById("studentListBody");
+
+        if (allInstitutionStudents.length === 0) {
+          container.innerHTML =
+            '<p style="color: var(--text-secondary);">No students found</p>';
+          return;
+        }
+
+        container.innerHTML = allInstitutionStudents
+          .map((student) => {
+            const isInSet = currentStudents.includes(student.email);
+            return `
+            <div class="student-item">
+              <div class="student-email">${student.email}</div>
+              <div>
+                ${
+                  isInSet
+                    ? `<button class="btn btn-danger btn-small" onclick="removeStudentFromSet('${student.email}')">
+                    <i class="fas fa-times"></i> Remove
+                  </button>`
+                    : `<button class="btn btn-primary btn-small" onclick="addStudentToSet('${student.email}')">
+                    <i class="fas fa-plus"></i> Add
+                  </button>`
+                }
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      function filterStudentList() {
+        const searchTerm = document
+          .getElementById("studentSearchInput")
+          .value.toLowerCase();
+        const items = document.querySelectorAll(".student-item");
+
+        items.forEach((item) => {
+          const email = item
+            .querySelector(".student-email")
+            .textContent.toLowerCase();
+          item.style.display = email.includes(searchTerm) ? "flex" : "none";
+        });
+      }
+
+      async function addStudentToSet(studentEmail) {
+        const set = myStudentSets.find((s) => s.id === currentEditingSet);
+        if (!set) return;
+
+        const updatedStudents = [...set.students, studentEmail];
+
+        try {
+          const response = await fetch(
+            `${API_URL}/student-sets/update/${currentEditingSet}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ students: updatedStudents }),
+            },
+          );
+
+          if (response.ok) {
+            showMessage("Student added successfully!", "success");
+            await loadMyStudentSets();
+            openManageStudentsModal(currentEditingSet); // Refresh
+            displayStudentSets();
+          } else {
+            const data = await response.json();
+            showMessage(data.error || "Failed to add student", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      async function removeStudentFromSet(studentEmail) {
+        if (!confirm(`Remove ${studentEmail} from this set?`)) return;
+
+        const set = myStudentSets.find((s) => s.id === currentEditingSet);
+        if (!set) return;
+
+        const updatedStudents = set.students.filter(
+          (email) => email !== studentEmail,
+        );
+
+        try {
+          const response = await fetch(
+            `${API_URL}/student-sets/update/${currentEditingSet}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ students: updatedStudents }),
+            },
+          );
+
+          if (response.ok) {
+            showMessage("Student removed successfully!", "success");
+            await loadMyStudentSets();
+            openManageStudentsModal(currentEditingSet); // Refresh
+            displayStudentSets();
+          } else {
+            const data = await response.json();
+            showMessage(data.error || "Failed to remove student", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      function closeManageStudentsModal() {
+        document.getElementById("manageStudentsModal").classList.remove("show");
+        currentEditingSet = null;
+      }
     </script>
   </body>
 </html>

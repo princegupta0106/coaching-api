@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <style>
       * {
         margin: 0;
@@ -32,8 +36,7 @@
 
       body {
         font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
-          Cantarell, sans-serif;
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         background: var(--bg-secondary);
         color: var(--text-primary);
         transition:
@@ -41,55 +44,6 @@
           color 0.3s;
       }
 
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: rgba(0, 0, 0, 0);
-        transition: background 0.3s;
-      }
-
-      *:hover::-webkit-scrollbar-thumb {
-        background: rgba(0, 0, 0, 0.3);
-      }
-
-      body.dark-mode ::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0);
-      }
-
-      body.dark-mode *:hover::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.3);
-      }
-
-      /* Offline Notification */
-      .offline-notification {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: #e74c3c;
-        color: white;
-        padding: 8px;
-        text-align: center;
-        font-size: 14px;
-        font-weight: 500;
-        z-index: 10000;
-        transform: translateY(-100%);
-        transition: transform 0.3s ease;
-      }
-
-      .offline-notification.show {
-        transform: translateY(0);
-      }
-
-      /* Sidebar */
       .sidebar {
         position: fixed;
         left: 0;
@@ -136,7 +90,6 @@
       .toggle-switch.active {
         background: var(--accent-color);
       }
-
       .toggle-switch.active::after {
         transform: translateX(24px);
       }
@@ -157,7 +110,6 @@
       .nav-item:hover {
         background: var(--bg-secondary);
       }
-
       .nav-item.active {
         background: rgba(102, 126, 234, 0.1);
         border-left-color: var(--accent-color);
@@ -170,6 +122,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        margin-top: auto;
       }
 
       .user-avatar {
@@ -187,12 +140,10 @@
       .user-info {
         flex: 1;
       }
-
       .user-name {
         font-weight: 600;
         font-size: 14px;
       }
-
       .user-email {
         font-size: 12px;
         color: var(--text-secondary);
@@ -206,10 +157,8 @@
         border-radius: 4px;
         font-size: 12px;
         cursor: pointer;
-        white-space: nowrap;
       }
 
-      /* Main Content */
       .main-content {
         margin-left: var(--sidebar-width);
         padding: 30px;
@@ -219,19 +168,16 @@
       .page-header {
         margin-bottom: 30px;
       }
-
       .page-title {
         font-size: 28px;
         font-weight: 600;
         margin-bottom: 10px;
       }
-
       .page-subtitle {
         color: var(--text-secondary);
         font-size: 14px;
       }
 
-      /* Cards */
       .card {
         background: var(--bg-primary);
         border: 1px solid var(--border-color);
@@ -246,7 +192,6 @@
         margin-bottom: 20px;
       }
 
-      /* Form Styles */
       .form-group {
         margin-bottom: 20px;
       }
@@ -300,7 +245,6 @@
         background: var(--accent-color);
         color: white;
       }
-
       .btn-primary:hover {
         background: #5568d3;
       }
@@ -310,7 +254,6 @@
         color: var(--text-primary);
         border: 1px solid var(--border-color);
       }
-
       .btn-secondary:hover {
         background: var(--border-color);
       }
@@ -319,12 +262,15 @@
         background: #e74c3c;
         color: white;
       }
-
       .btn-danger:hover {
         background: #c0392b;
       }
 
-      /* Student Set Items */
+      .btn-small {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
       .set-item {
         background: var(--bg-secondary);
         border: 1px solid var(--border-color);
@@ -345,24 +291,16 @@
         font-size: 16px;
         color: var(--text-primary);
       }
-
       .set-actions {
         display: flex;
         gap: 10px;
       }
-
-      .set-actions .btn {
-        padding: 8px 16px;
-        font-size: 13px;
-      }
-
       .student-list {
         color: var(--text-secondary);
         font-size: 14px;
         line-height: 1.6;
       }
 
-      /* Student Selection Modal */
       .modal {
         display: none;
         position: fixed;
@@ -417,6 +355,14 @@
         flex: 1;
       }
 
+      .modal-footer {
+        padding: 20px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
       .student-checkbox-item {
         padding: 12px;
         border: 1px solid var(--border-color);
@@ -433,56 +379,42 @@
         background: var(--bg-secondary);
       }
 
-      .student-checkbox-item input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-      }
-
-      .modal-footer {
-        padding: 20px;
-        border-top: 1px solid var(--border-color);
+      .staff-item,
+      .student-item {
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 8px;
         display: flex;
-        justify-content: flex-end;
-        gap: 10px;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.2s;
       }
 
-      .floating-confirm {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        padding: 15px 30px;
+      .staff-item:hover,
+      .student-item:hover {
+        background: var(--bg-secondary);
+      }
+
+      .staff-email,
+      .student-email {
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .shared-badge {
         background: var(--accent-color);
         color: white;
-        border: none;
-        border-radius: 50px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        transition: all 0.2s;
-        display: none;
-      }
-
-      .floating-confirm.show {
-        display: block;
-      }
-
-      .floating-confirm:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
-      }
-
-      .selected-count {
-        background: white;
-        color: var(--accent-color);
-        padding: 2px 8px;
+        padding: 4px 12px;
         border-radius: 12px;
         font-size: 12px;
-        margin-left: 8px;
+        margin-left: 10px;
       }
 
-      /* Message/Alert */
+      .search-input {
+        margin-bottom: 15px;
+      }
+
       .message {
         padding: 15px;
         border-radius: 6px;
@@ -501,49 +433,77 @@
         border: 1px solid #f5c6cb;
       }
 
-      /* Mobile */
+      .upload-area {
+        border: 3px dashed #667eea;
+        border-radius: 12px;
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .upload-area:hover {
+        background: rgba(102, 126, 234, 0.05);
+      }
+
+      .chapter-item {
+        background: var(--bg-secondary);
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border-left: 4px solid var(--accent-color);
+      }
+
+      .question-badge {
+        display: inline-block;
+        background: #e0e0e0;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin: 4px;
+        color: #555;
+      }
+
+      .question-badge.success {
+        background: #c8e6c9;
+        color: #2e7d32;
+      }
+      .question-badge.error {
+        background: #ffcdd2;
+        color: #c62828;
+      }
+
       @media (max-width: 768px) {
         .sidebar {
           transform: translateX(-100%);
         }
-
-        .sidebar.mobile-open {
-          transform: translateX(0);
-        }
-
         .main-content {
           margin-left: 0;
           padding: 20px 15px;
-        }
-
-        .modal-content {
-          width: 95%;
-          max-height: 90vh;
         }
       }
     </style>
   </head>
   <body>
-    <!-- Offline Notification -->
-    <div class="offline-notification" id="offlineNotification">
-      ⚠️ No internet connection - Please check your network
-    </div>
-
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar">
       <div class="dark-mode-toggle" onclick="toggleDarkMode()">
         <span>Dark Mode</span>
         <div class="toggle-switch" id="darkModeToggle"></div>
       </div>
 
       <div class="nav-menu">
-        <div class="nav-item active" onclick="showView('create')">
-          ➕ Create Student Set
+        <div class="nav-item active" onclick="showView('students')">
+          <i class="fas fa-users"></i> Student Sets
         </div>
-        <div class="nav-item" onclick="showView('manage')">
-          📋 Manage Student Sets
+        <div class="nav-item" onclick="showView('users')">
+          <i class="fas fa-user-shield"></i> Manage Users
         </div>
-        <div class="nav-item" onclick="showView('users')">👥 Manage Users</div>
+        <div class="nav-item" onclick="showView('bulk')">
+          <i class="fas fa-upload"></i> Bulk Upload
+        </div>
+        <div class="nav-item" onclick="showView('institution')">
+          <i class="fas fa-building"></i> Institution
+        </div>
       </div>
 
       <div class="user-profile">
@@ -556,21 +516,15 @@
       </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent">
-      <!-- Content will be loaded here -->
-    </div>
+    <div class="main-content" id="mainContent"></div>
 
-    <!-- Student Selection Modal -->
     <div class="modal" id="studentModal">
       <div class="modal-content">
         <div class="modal-header">
           <div class="modal-title">Select Students</div>
           <button class="close-modal" onclick="closeStudentModal()">×</button>
         </div>
-        <div class="modal-body" id="studentModalBody">
-          <!-- Student list will be loaded here -->
-        </div>
+        <div class="modal-body" id="studentModalBody"></div>
         <div class="modal-footer">
           <button class="btn btn-secondary" onclick="closeStudentModal()">
             Cancel
@@ -582,8 +536,79 @@
       </div>
     </div>
 
+    <!-- Modal for Managing Students in Set -->
+    <div class="modal" id="manageStudentsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Manage Students in Set</div>
+          <button class="close-modal" onclick="closeManageStudentsModal()">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Search Students</label>
+            <input
+              type="text"
+              id="studentSearchInput"
+              placeholder="Search by email..."
+              oninput="filterStudentList()"
+              class="search-input"
+            />
+          </div>
+          <div
+            id="studentListBody"
+            style="max-height: 400px; overflow-y: auto"
+          ></div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="closeManageStudentsModal()"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Sharing Student Set with Staff -->
+    <div class="modal" id="shareStudentSetModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Share Student Set with Staff</div>
+          <button class="close-modal" onclick="closeShareStudentSetModal()">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Search Staff</label>
+            <input
+              type="text"
+              id="staffSearchInput"
+              placeholder="Search by email..."
+              oninput="filterStaffList()"
+              class="search-input"
+            />
+          </div>
+          <div
+            id="staffListBody"
+            style="max-height: 400px; overflow-y: auto"
+          ></div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="closeShareStudentSetModal()"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
-      // Automatically detect API URL based on environment
       const API_URL =
         window.location.hostname === "localhost"
           ? "http://localhost:3000/api"
@@ -593,25 +618,12 @@
 
       let allStudents = [];
       let selectedStudents = [];
-      let currentView = "create";
+      let chapters = {};
+      let allStaffMembers = [];
+      let allInstitutionStudents = [];
+      let currentEditingSet = null;
+      let currentStudentSets = [];
 
-      // Offline detection
-      function updateOnlineStatus() {
-        const offlineNotification = document.getElementById(
-          "offlineNotification",
-        );
-        if (!navigator.onLine) {
-          offlineNotification.classList.add("show");
-        } else {
-          offlineNotification.classList.remove("show");
-        }
-      }
-
-      window.addEventListener("online", updateOnlineStatus);
-      window.addEventListener("offline", updateOnlineStatus);
-      updateOnlineStatus();
-
-      // Initialize
       window.addEventListener("load", async () => {
         if (!token || user.role !== "admin") {
           alert("Please login as admin");
@@ -619,20 +631,18 @@
           return;
         }
 
-        // Set user info
         document.getElementById("userName").textContent =
           user.email.split("@")[0];
         document.getElementById("userEmail").textContent = user.email;
         document.getElementById("userAvatar").textContent =
           user.email[0].toUpperCase();
 
-        // Load dark mode preference
         if (localStorage.getItem("darkMode") === "true") {
           document.body.classList.add("dark-mode");
           document.getElementById("darkModeToggle").classList.add("active");
         }
 
-        showView("create");
+        showView("students");
         await loadAllStudents();
       });
 
@@ -654,19 +664,30 @@
       }
 
       function showView(view) {
-        currentView = view;
+        // Remove active class from all nav items
         document
           .querySelectorAll(".nav-item")
           .forEach((item) => item.classList.remove("active"));
-        event.target.classList.add("active");
 
-        if (view === "create") {
-          showCreateView();
-        } else if (view === "manage") {
-          showManageView();
-        } else if (view === "users") {
-          showUsersView();
-        }
+        // Add active class to the clicked item (if called from onclick event)
+        // or find the matching nav item by view name
+        const navItems = document.querySelectorAll(".nav-item");
+        navItems.forEach((item) => {
+          const itemText = item.textContent.toLowerCase().trim();
+          if (
+            (view === "students" && itemText.includes("student sets")) ||
+            (view === "users" && itemText.includes("manage users")) ||
+            (view === "bulk" && itemText.includes("bulk upload")) ||
+            (view === "institution" && itemText.includes("institution"))
+          ) {
+            item.classList.add("active");
+          }
+        });
+
+        if (view === "students") showStudentsView();
+        else if (view === "users") showUsersView();
+        else if (view === "bulk") showBulkView();
+        else if (view === "institution") showInstitutionView();
       }
 
       function showMessage(message, type) {
@@ -680,47 +701,42 @@
         setTimeout(() => messageDiv.remove(), 5000);
       }
 
-      // Create Student Set View
-      function showCreateView() {
+      // ============ STUDENT SETS ============
+      async function showStudentsView() {
         const content = document.getElementById("mainContent");
         content.innerHTML = `
-          <div class="page-header">
-            <div class="page-title">Create New Student Set</div>
-            <div class="page-subtitle">Organize students into sets for better management</div>
-          </div>
+        <div class="page-header">
+          <div class="page-title">Student Sets</div>
+          <div class="page-subtitle">Organize students into sets</div>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">Create New Student Set</div>
+          <form onsubmit="createStudentSet(event)">
+            <div class="form-group">
+              <label>Set Name</label>
+              <input type="text" id="setName" required placeholder="e.g., 12A, Physics-Group1" />
+            </div>
+            <div class="form-group">
+              <label>Students</label>
+              <div id="selectedStudentTags" style="margin-bottom: 10px;"></div>
+              <button type="button" class="btn btn-secondary" onclick="openStudentModal()">
+                + Select Students
+              </button>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Student Set</button>
+          </form>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">Manage Student Sets</div>
+          <div id="studentSetsList">Loading...</div>
+        </div>
+      `;
 
-          <div class="card">
-            <form onsubmit="createStudentSet(event)">
-              <div class="form-group">
-                <label for="setName">Set Name</label>
-                <input
-                  type="text"
-                  id="setName"
-                  required
-                  placeholder="e.g., 12A, 12B, Physics-Group1"
-                />
-                <small style="color: var(--text-secondary); font-size: 13px;">
-                  Will be created as: ${user.institution || "institution"}-setname
-                </small>
-              </div>
-
-              <div class="form-group">
-                <label>Students</label>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;" id="selectedStudentTags">
-                  <!-- Selected student tags will appear here -->
-                </div>
-                <button type="button" class="btn btn-secondary" onclick="openStudentModal()">
-                  + Select Students from Institution
-                </button>
-              </div>
-
-              <button type="submit" class="btn btn-primary">Create Student Set</button>
-            </form>
-          </div>
-        `;
+        loadStudentSets();
       }
 
-      // Load all students from institution
       async function loadAllStudents() {
         try {
           const response = await fetch(
@@ -739,7 +755,6 @@
         }
       }
 
-      // Open student selection modal
       function openStudentModal() {
         const modal = document.getElementById("studentModal");
         const modalBody = document.getElementById("studentModalBody");
@@ -747,19 +762,16 @@
         modalBody.innerHTML = allStudents
           .map(
             (student) => `
-          <div class="student-checkbox-item" onclick="toggleStudentSelection('${student.email}')">
-            <input 
-              type="checkbox" 
-              id="student-${student.email}" 
-              ${selectedStudents.includes(student.email) ? "checked" : ""}
-              onclick="event.stopPropagation(); toggleStudentSelection('${student.email}')"
-            />
-            <div>
-              <div style="font-weight: 500;">${student.email}</div>
-              <div style="font-size: 12px; color: var(--text-secondary);">${student.institution || "N/A"}</div>
-            </div>
+        <div class="student-checkbox-item" onclick="toggleStudentSelection('${student.email}')">
+          <input type="checkbox" id="student-${student.email}"
+            ${selectedStudents.includes(student.email) ? "checked" : ""}
+            onclick="event.stopPropagation(); toggleStudentSelection('${student.email}')" />
+          <div>
+            <div style="font-weight: 500;">${student.email}</div>
+            <div style="font-size: 12px; color: var(--text-secondary);">${student.institution || "N/A"}</div>
           </div>
-        `,
+        </div>
+      `,
           )
           .join("");
 
@@ -800,20 +812,12 @@
         container.innerHTML = selectedStudents
           .map(
             (email) => `
-          <div style="
-            background: var(--accent-color);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-          ">
-            ${email}
-            <span onclick="removeStudent('${email}')" style="cursor: pointer; font-weight: bold;">×</span>
-          </div>
-        `,
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--accent-color);
+          color: white; padding: 6px 12px; border-radius: 20px; font-size: 13px; margin: 4px;">
+          ${email}
+          <span onclick="removeStudent('${email}')" style="cursor: pointer; font-weight: bold;">×</span>
+        </div>
+      `,
           )
           .join("");
       }
@@ -850,37 +854,25 @@
             document.getElementById("setName").value = "";
             selectedStudents = [];
             updateSelectedStudentTags();
+            loadStudentSets();
           } else {
             showMessage(data.error || "Failed to create student set", "error");
           }
         } catch (error) {
-          showMessage("Error creating student set: " + error.message, "error");
+          showMessage("Error: " + error.message, "error");
         }
-      }
-
-      // Manage Student Sets View
-      async function showManageView() {
-        const content = document.getElementById("mainContent");
-        content.innerHTML = `
-          <div class="page-header">
-            <div class="page-title">Manage Student Sets</div>
-            <div class="page-subtitle">View and manage all student sets</div>
-          </div>
-          <div id="studentSetsList">Loading...</div>
-        `;
-
-        await loadStudentSets();
       }
 
       async function loadStudentSets() {
         try {
-          const response = await fetch(`${API_URL}/student-sets/my-sets`, {
+          const response = await fetch(`${API_URL}/student-sets/list`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 
           if (response.ok) {
             const data = await response.json();
-            displayStudentSets(data.sets || []);
+            currentStudentSets = data.studentSets || [];
+            displayStudentSets(currentStudentSets);
           }
         } catch (error) {
           console.error("Error loading student sets:", error);
@@ -891,35 +883,41 @@
         const container = document.getElementById("studentSetsList");
 
         if (sets.length === 0) {
-          container.innerHTML = `
-            <div class="card">
-              <p style="color: var(--text-secondary);">No student sets found</p>
-            </div>
-          `;
+          container.innerHTML = `<p style="color: var(--text-secondary);">No student sets found</p>`;
           return;
         }
 
         container.innerHTML = sets
           .map(
             (set) => `
-          <div class="set-item">
-            <div class="set-header">
-              <div>
-                <div class="set-name">${set.id}</div>
-                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
-                  ${set.students.length} students
-                </div>
-              </div>
-              <div class="set-actions">
-                <button class="btn btn-secondary" onclick="viewSetStudents('${set.id}')">View</button>
-                <button class="btn btn-danger" onclick="deleteSet('${set.id}')">Delete</button>
+        <div class="set-item">
+          <div class="set-header">
+            <div>
+              <div class="set-name">${set.id}</div>
+              <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
+                ${set.students.length} students
               </div>
             </div>
-            <div class="student-list" id="students-${set.id}" style="display: none;">
-              ${set.students.join(", ")}
+            <div class="set-actions">
+              <button class="btn btn-secondary btn-small" onclick="viewSetStudents('${set.id}')">
+                <i class="fas fa-eye"></i> View
+              </button>
+              <button class="btn btn-secondary btn-small" onclick="openManageStudentsModal('${set.id}')">
+                <i class="fas fa-edit"></i> Manage Students
+              </button>
+              <button class="btn btn-secondary btn-small" onclick="openShareStudentSetModal('${set.id}')">
+                <i class="fas fa-share"></i> Share with Staff
+              </button>
+              <button class="btn btn-danger btn-small" onclick="deleteSet('${set.id}')">
+                <i class="fas fa-trash"></i> Delete
+              </button>
             </div>
           </div>
-        `,
+          <div class="student-list" id="students-${set.id}" style="display: none;">
+            ${set.students.join(", ")}
+          </div>
+        </div>
+      `,
           )
           .join("");
       }
@@ -931,7 +929,7 @@
       }
 
       async function deleteSet(setId) {
-        if (!confirm(`Are you sure you want to delete set "${setId}"?`)) return;
+        if (!confirm(`Delete "${setId}"?`)) return;
 
         try {
           const response = await fetch(`${API_URL}/student-sets/${setId}`, {
@@ -940,63 +938,351 @@
           });
 
           if (response.ok) {
-            showMessage("Student set deleted successfully", "success");
+            showMessage("Deleted successfully", "success");
             loadStudentSets();
           } else {
-            showMessage("Failed to delete student set", "error");
+            showMessage("Failed to delete", "error");
           }
         } catch (error) {
-          showMessage("Error deleting student set: " + error.message, "error");
+          showMessage("Error: " + error.message, "error");
         }
       }
 
-      // Users View
+      // ============ MANAGE STUDENTS IN SET ============
+      async function openManageStudentsModal(setId) {
+        currentEditingSet = setId;
+        const modal = document.getElementById("manageStudentsModal");
+
+        try {
+          // Load all institution students
+          const response = await fetch(
+            `${API_URL}/users/institution-students`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            allInstitutionStudents = data.students || [];
+
+            // Get current set students
+            const set = currentStudentSets.find((s) => s.id === setId);
+            const currentStudents = set ? set.students : [];
+
+            displayStudentList(currentStudents);
+            modal.classList.add("show");
+          }
+        } catch (error) {
+          console.error("Error loading students:", error);
+          showMessage("Error loading student list", "error");
+        }
+      }
+
+      function displayStudentList(currentStudents) {
+        const container = document.getElementById("studentListBody");
+
+        if (allInstitutionStudents.length === 0) {
+          container.innerHTML =
+            '<p style="color: var(--text-secondary);">No students found</p>';
+          return;
+        }
+
+        container.innerHTML = allInstitutionStudents
+          .map((student) => {
+            const isInSet = currentStudents.includes(student.email);
+            return `
+            <div class="student-item">
+              <div class="student-email">${student.email}</div>
+              <div>
+                ${
+                  isInSet
+                    ? `<button class="btn btn-danger btn-small" onclick="removeStudentFromSet('${student.email}')">
+                    <i class="fas fa-times"></i> Remove
+                  </button>`
+                    : `<button class="btn btn-primary btn-small" onclick="addStudentToSet('${student.email}')">
+                    <i class="fas fa-plus"></i> Add
+                  </button>`
+                }
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      function filterStudentList() {
+        const searchTerm = document
+          .getElementById("studentSearchInput")
+          .value.toLowerCase();
+        const items = document.querySelectorAll(".student-item");
+
+        items.forEach((item) => {
+          const email = item
+            .querySelector(".student-email")
+            .textContent.toLowerCase();
+          item.style.display = email.includes(searchTerm) ? "flex" : "none";
+        });
+      }
+
+      async function addStudentToSet(studentEmail) {
+        const set = currentStudentSets.find((s) => s.id === currentEditingSet);
+        if (!set) return;
+
+        const updatedStudents = [...set.students, studentEmail];
+
+        try {
+          const response = await fetch(
+            `${API_URL}/student-sets/update/${currentEditingSet}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ students: updatedStudents }),
+            },
+          );
+
+          if (response.ok) {
+            showMessage("Student added successfully!", "success");
+            await loadStudentSets();
+            openManageStudentsModal(currentEditingSet); // Refresh
+          } else {
+            const data = await response.json();
+            showMessage(data.error || "Failed to add student", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      async function removeStudentFromSet(studentEmail) {
+        if (!confirm(`Remove ${studentEmail} from this set?`)) return;
+
+        const set = currentStudentSets.find((s) => s.id === currentEditingSet);
+        if (!set) return;
+
+        const updatedStudents = set.students.filter(
+          (email) => email !== studentEmail,
+        );
+
+        try {
+          const response = await fetch(
+            `${API_URL}/student-sets/update/${currentEditingSet}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ students: updatedStudents }),
+            },
+          );
+
+          if (response.ok) {
+            showMessage("Student removed successfully!", "success");
+            await loadStudentSets();
+            openManageStudentsModal(currentEditingSet); // Refresh
+          } else {
+            const data = await response.json();
+            showMessage(data.error || "Failed to remove student", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      function closeManageStudentsModal() {
+        document.getElementById("manageStudentsModal").classList.remove("show");
+        currentEditingSet = null;
+      }
+
+      // ============ SHARE STUDENT SET WITH STAFF ============
+      async function openShareStudentSetModal(setId) {
+        currentEditingSet = setId;
+        const modal = document.getElementById("shareStudentSetModal");
+
+        try {
+          // Load all staff members
+          const response = await fetch(`${API_URL}/users/list`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            allStaffMembers = (data.users || []).filter(
+              (u) => u.role === "staff",
+            );
+
+            // Get who already has access
+            const accessResponse = await fetch(
+              `${API_URL}/student-sets/shared-staff/${setId}`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              },
+            );
+
+            let sharedStaff = [];
+            if (accessResponse.ok) {
+              const accessData = await accessResponse.json();
+              sharedStaff = accessData.sharedStaff || [];
+            }
+
+            displayStaffList(sharedStaff);
+            modal.classList.add("show");
+          }
+        } catch (error) {
+          console.error("Error loading staff:", error);
+          showMessage("Error loading staff list", "error");
+        }
+      }
+
+      function displayStaffList(sharedStaff) {
+        const container = document.getElementById("staffListBody");
+
+        if (allStaffMembers.length === 0) {
+          container.innerHTML =
+            '<p style="color: var(--text-secondary);">No staff members found</p>';
+          return;
+        }
+
+        container.innerHTML = allStaffMembers
+          .map((staff) => {
+            const isShared = sharedStaff.includes(staff.email);
+            return `
+            <div class="staff-item">
+              <div class="staff-email">${staff.email}${isShared ? '<span class="shared-badge">Shared</span>' : ""}</div>
+              <div>
+                ${
+                  isShared
+                    ? `<button class="btn btn-danger btn-small" onclick="unshareStudentSet('${staff.email}')">
+                    <i class="fas fa-times"></i> Remove
+                  </button>`
+                    : `<button class="btn btn-primary btn-small" onclick="shareStudentSet('${staff.email}')">
+                    <i class="fas fa-share"></i> Share
+                  </button>`
+                }
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      function filterStaffList() {
+        const searchTerm = document
+          .getElementById("staffSearchInput")
+          .value.toLowerCase();
+        const items = document.querySelectorAll(".staff-item");
+
+        items.forEach((item) => {
+          const email = item
+            .querySelector(".staff-email")
+            .textContent.toLowerCase();
+          item.style.display = email.includes(searchTerm) ? "flex" : "none";
+        });
+      }
+
+      async function shareStudentSet(staffEmail) {
+        try {
+          const response = await fetch(`${API_URL}/student-sets/share`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ setId: currentEditingSet, staffEmail }),
+          });
+
+          if (response.ok) {
+            showMessage("Student set shared successfully!", "success");
+            openShareStudentSetModal(currentEditingSet); // Refresh
+          } else {
+            const data = await response.json();
+            showMessage(data.error || "Failed to share", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      async function unshareStudentSet(staffEmail) {
+        if (!confirm(`Remove access for ${staffEmail}?`)) return;
+
+        try {
+          const response = await fetch(`${API_URL}/student-sets/unshare`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ setId: currentEditingSet, staffEmail }),
+          });
+
+          if (response.ok) {
+            showMessage("Access removed successfully!", "success");
+            openShareStudentSetModal(currentEditingSet); // Refresh
+          } else {
+            const data = await response.json();
+            showMessage(data.error || "Failed to remove access", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      function closeShareStudentSetModal() {
+        document
+          .getElementById("shareStudentSetModal")
+          .classList.remove("show");
+        currentEditingSet = null;
+      }
+
+      // ============ USERS ============
       async function showUsersView() {
         const content = document.getElementById("mainContent");
         content.innerHTML = `
-          <div class="page-header">
-            <div class="page-title">Manage Users</div>
-            <div class="page-subtitle">Create and manage user accounts</div>
-          </div>
+        <div class="page-header">
+          <div class="page-title">Manage Users</div>
+          <div class="page-subtitle">Create and manage user accounts</div>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">Create New User</div>
+          <form onsubmit="createUser(event)">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="newUserEmail" required placeholder="user@example.com" />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="newUserPassword" required placeholder="Minimum 6 characters" />
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <select id="newUserRole" required>
+                <option value="student">Student</option>
+                <option value="staff">Staff</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Create User</button>
+          </form>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">All Users</div>
+          <div id="usersList">Loading...</div>
+        </div>
+      `;
 
-          <div class="card">
-            <div class="card-title">Create New User</div>
-            <form onsubmit="createUser(event)">
-              <div class="form-group">
-                <label for="newUserEmail">Email</label>
-                <input type="email" id="newUserEmail" required placeholder="user@example.com" />
-              </div>
-
-              <div class="form-group">
-                <label for="newUserPassword">Password</label>
-                <input type="password" id="newUserPassword" required placeholder="Minimum 6 characters" />
-              </div>
-
-              <div class="form-group">
-                <label for="newUserRole">Role</label>
-                <select id="newUserRole" required>
-                  <option value="student">Student</option>
-                  <option value="staff">Staff</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-
-              <button type="submit" class="btn btn-primary">Create User</button>
-            </form>
-          </div>
-
-          <div class="card">
-            <div class="card-title">All Users</div>
-            <div id="usersList">Loading...</div>
-          </div>
-        `;
-
-        await loadUsers();
+        loadUsers();
       }
 
       async function loadUsers() {
         try {
-          const response = await fetch(`${API_URL}/users`, {
+          const response = await fetch(`${API_URL}/users/list`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 
@@ -1015,20 +1301,20 @@
         container.innerHTML = users
           .map(
             (u) => `
-          <div class="set-item">
-            <div class="set-header">
-              <div>
-                <div class="set-name">${u.email}</div>
-                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
-                  Role: ${u.role} | Institution: ${u.institution || "N/A"}
-                </div>
-              </div>
-              <div class="set-actions">
-                <button class="btn btn-danger" onclick="deleteUser('${u.id}')">Delete</button>
+        <div class="set-item">
+          <div class="set-header">
+            <div>
+              <div class="set-name">${u.email}</div>
+              <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
+                Role: ${u.role} | Institution: ${u.institution || "N/A"}
               </div>
             </div>
+            <div class="set-actions">
+              <button class="btn btn-danger btn-small" onclick="deleteUser('${u.email}')">Delete</button>
+            </div>
           </div>
-        `,
+        </div>
+      `,
           )
           .join("");
       }
@@ -1061,27 +1347,326 @@
             showMessage(data.error || "Failed to create user", "error");
           }
         } catch (error) {
-          showMessage("Error creating user: " + error.message, "error");
+          showMessage("Error: " + error.message, "error");
         }
       }
 
-      async function deleteUser(userId) {
-        if (!confirm("Are you sure you want to delete this user?")) return;
+      async function deleteUser(email) {
+        if (!confirm("Delete this user?")) return;
 
         try {
-          const response = await fetch(`${API_URL}/users/${userId}`, {
+          const response = await fetch(`${API_URL}/users/delete/${email}`, {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
           });
 
           if (response.ok) {
-            showMessage("User deleted successfully", "success");
+            showMessage("User deleted", "success");
             loadUsers();
           } else {
-            showMessage("Failed to delete user", "error");
+            showMessage("Failed to delete", "error");
           }
         } catch (error) {
-          showMessage("Error deleting user: " + error.message, "error");
+          showMessage("Error: " + error.message, "error");
+        }
+      }
+
+      // ============ BULK UPLOAD ============
+      async function showBulkView() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+        <div class="page-header">
+          <div class="page-title">Bulk Question Upload</div>
+          <div class="page-subtitle">Upload multiple questions organized by chapters</div>
+        </div>
+        
+        <div class="card">
+          <div class="form-group">
+            <label>Exam ID</label>
+            <select id="examSelect" onchange="loadSubjects()">
+              <option value="">Select Exam...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Subject ID</label>
+            <select id="subjectSelect" onchange="clearChapters()">
+              <option value="">Select Subject...</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="card">
+          <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;" onchange="handleFolderSelect(event)" />
+          <div class="upload-area" onclick="document.getElementById('folderInput').click()">
+            <div style="font-size: 48px; margin-bottom: 15px;">📁</div>
+            <h3>Select Folder with Questions</h3>
+            <p style="color: var(--text-secondary); margin-top: 10px;">
+              Folder should contain subdirectories for each chapter with JSON question files
+            </p>
+          </div>
+          <div id="chapterList"></div>
+          <button id="uploadBtn" class="btn btn-primary" onclick="uploadBulk()" disabled style="width: 100%; margin-top: 20px;">
+            Upload All Questions
+          </button>
+          <div id="uploadProgress" style="display: none; margin-top: 20px;">
+            <div style="background: var(--bg-secondary); height: 30px; border-radius: 15px; overflow: hidden;">
+              <div id="progressBar" style="height: 100%; background: var(--accent-color); width: 0%; transition: width 0.3s;"></div>
+            </div>
+            <div style="text-align: center; margin-top: 10px; color: var(--text-secondary);">
+              <span id="progressText">0%</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+        loadExams();
+      }
+
+      async function loadExams() {
+        try {
+          const response = await fetch(`${API_URL}/questions/exams`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const select = document.getElementById("examSelect");
+            select.innerHTML =
+              '<option value="">Select Exam...</option>' +
+              (data.exams || [])
+                .map((e) => `<option value="${e.id}">${e.id}</option>`)
+                .join("");
+          }
+        } catch (error) {
+          console.error("Error loading exams:", error);
+        }
+      }
+
+      async function loadSubjects() {
+        const examId = document.getElementById("examSelect").value;
+        const subjectSelect = document.getElementById("subjectSelect");
+
+        if (!examId) {
+          subjectSelect.innerHTML =
+            '<option value="">Select Subject...</option>';
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/exams/${examId}/subjects`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            subjectSelect.innerHTML =
+              '<option value="">Select Subject...</option>' +
+              (data.subjects || [])
+                .map((s) => `<option value="${s.id}">${s.id}</option>`)
+                .join("");
+          }
+        } catch (error) {
+          console.error("Error loading subjects:", error);
+        }
+      }
+
+      function clearChapters() {
+        chapters = {};
+        document.getElementById("chapterList").innerHTML = "";
+        document.getElementById("uploadBtn").disabled = true;
+      }
+
+      function handleFolderSelect(event) {
+        const files = Array.from(event.target.files);
+        chapters = {};
+
+        files.forEach((file) => {
+          if (file.name.endsWith(".json")) {
+            const pathParts = file.webkitRelativePath.split("/");
+            const chapterName =
+              pathParts.length > 1
+                ? pathParts[pathParts.length - 2]
+                : "default";
+
+            if (!chapters[chapterName]) chapters[chapterName] = [];
+            chapters[chapterName].push(file);
+          }
+        });
+
+        displayChapters();
+        document.getElementById("uploadBtn").disabled =
+          Object.keys(chapters).length === 0 ||
+          !document.getElementById("examSelect").value ||
+          !document.getElementById("subjectSelect").value;
+      }
+
+      function displayChapters() {
+        const container = document.getElementById("chapterList");
+
+        if (Object.keys(chapters).length === 0) {
+          container.innerHTML = "";
+          return;
+        }
+
+        container.innerHTML = Object.entries(chapters)
+          .map(
+            ([name, files]) => `
+        <div class="chapter-item">
+          <h4>📂 ${name}</h4>
+          <div style="font-size: 13px; color: var(--text-secondary);">${files.length} questions</div>
+          <div style="margin-top: 8px;" id="questions-${name.replace(/\s+/g, "-")}">
+            ${files.map((f, i) => `<span class="question-badge" id="q-${name.replace(/\s+/g, "-")}-${i}">${f.name}</span>`).join("")}
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      async function uploadBulk() {
+        const examId = document.getElementById("examSelect").value;
+        const subjectId = document.getElementById("subjectSelect").value;
+
+        if (!examId || !subjectId || Object.keys(chapters).length === 0) {
+          showMessage("Please select exam, subject and folder", "error");
+          return;
+        }
+
+        document.getElementById("uploadBtn").disabled = true;
+        document.getElementById("uploadProgress").style.display = "block";
+
+        let totalChapters = Object.keys(chapters).length;
+        let processedChapters = 0;
+        let totalUploaded = 0;
+
+        for (const [chapterName, files] of Object.entries(chapters)) {
+          try {
+            const questionsData = await Promise.all(
+              files.map(async (file) => {
+                const content = await file.text();
+                const data = JSON.parse(content);
+                return { id: data.id || file.name.replace(".json", ""), data };
+              }),
+            );
+
+            const batchSize = 10;
+            let chapterQuestionSetId = null;
+
+            for (let i = 0; i < questionsData.length; i += batchSize) {
+              const batch = questionsData.slice(i, i + batchSize);
+              const isFirstBatch = i === 0;
+
+              const response = await fetch(`${API_URL}/questions/bulk-upload`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  examId,
+                  subjectId,
+                  chapterName,
+                  questions: batch,
+                  createChapter: isFirstBatch,
+                  questionSetId: chapterQuestionSetId,
+                }),
+              });
+
+              if (response.ok) {
+                const result = await response.json();
+                if (result.questionSetId)
+                  chapterQuestionSetId = result.questionSetId;
+                totalUploaded += result.questionsAdded || 0;
+
+                batch.forEach((q, idx) => {
+                  const badge = document.getElementById(
+                    `q-${chapterName.replace(/\s+/g, "-")}-${i + idx}`,
+                  );
+                  if (badge) badge.classList.add("success");
+                });
+              } else {
+                batch.forEach((q, idx) => {
+                  const badge = document.getElementById(
+                    `q-${chapterName.replace(/\s+/g, "-")}-${i + idx}`,
+                  );
+                  if (badge) badge.classList.add("error");
+                });
+              }
+            }
+          } catch (error) {
+            console.error("Upload error:", error);
+          }
+
+          processedChapters++;
+          const progress = (processedChapters / totalChapters) * 100;
+          document.getElementById("progressBar").style.width = progress + "%";
+          document.getElementById("progressText").textContent =
+            Math.round(progress) + "%";
+        }
+
+        document.getElementById("uploadBtn").disabled = false;
+        showMessage(
+          `Upload complete! ${totalUploaded} questions uploaded`,
+          "success",
+        );
+      }
+
+      // ============ INSTITUTION ============
+      async function showInstitutionView() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+        <div class="page-header">
+          <div class="page-title">Institution Details</div>
+          <div class="page-subtitle">View institution information</div>
+        </div>
+        
+        <div class="card">
+          <div id="institutionDetails">Loading...</div>
+        </div>
+      `;
+
+        try {
+          const response = await fetch(`${API_URL}/institution/view`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const inst = data.institution;
+
+            document.getElementById("institutionDetails").innerHTML = `
+            <div style="margin-bottom: 20px;">
+              <h3 style="font-size: 20px; margin-bottom: 10px;">${inst.institution_name}</h3>
+              <p style="color: var(--text-secondary);">ID: ${inst.institution_id}</p>
+            </div>
+            
+            <div class="form-group">
+              <label>Total Students</label>
+              <div style="font-size: 24px; font-weight: 600; color: var(--accent-color);">
+                ${(inst.all_students || []).length}
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>All Students</label>
+              <div style="max-height: 300px; overflow-y: auto;">
+                ${(inst.all_students || [])
+                  .map(
+                    (email) => `
+                  <div style="padding: 8px; border-bottom: 1px solid var(--border-color);">${email}</div>
+                `,
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `;
+          }
+        } catch (error) {
+          document.getElementById("institutionDetails").innerHTML =
+            `<p style="color: var(--text-secondary);">Failed to load institution details</p>`;
         }
       }
     </script>

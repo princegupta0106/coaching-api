@@ -164,38 +164,47 @@ router.post("/bulk-upload", verifyToken, async (req, res) => {
       `Bulk upload batch: ${examId}/${subjectId}/${chapterName} with ${questions.length} questions`,
     );
 
-    let questionSetToUse;
+    let questionSetToUse = null;
     let chapterCreated = false;
 
-    // If questionSetId provided, use it; otherwise create or find chapter
+    // Step 1: Find or create question set
     if (questionSetId) {
-      const { data: existingSet } = await supabase
+      // Use provided question set ID
+      const { data: existingSet, error: fetchError } = await supabase
         .from("question_sets")
         .select("*")
         .eq("id", questionSetId)
         .single();
 
+      if (fetchError || !existingSet) {
+        return res.status(404).json({ error: "Question set not found" });
+      }
+
       questionSetToUse = existingSet;
-    } else if (createChapter !== false) {
-      // Check if question set already exists by name
+      console.log("Using existing question set:", questionSetId);
+    } else {
+      // Create or find question set by name
       const { data: existingSet } = await supabase
         .from("question_sets")
         .select("*")
         .eq("name", chapterName)
-        .single();
+        .maybeSingle();
 
-      if (!existingSet) {
-        // Generate question set ID
+      if (existingSet) {
+        // Found existing set with same name
+        questionSetToUse = existingSet;
+        console.log("Found existing question set by name:", chapterName);
+      } else {
+        // Create new question set
         const newQuestionSetId = `qs-${subjectId.toLowerCase()}-${Date.now()}`;
 
-        // Create new question set
         const { data: newSet, error: setError } = await supabase
           .from("question_sets")
           .insert({
             id: newQuestionSetId,
             name: chapterName,
             question_ids: [],
-            created_by: req.user.id,
+            created_by: req.user.email,
           })
           .select()
           .single();
@@ -204,7 +213,10 @@ router.post("/bulk-upload", verifyToken, async (req, res) => {
           console.error("Error creating question set:", setError);
           return res
             .status(500)
-            .json({ error: "Failed to create question set" });
+            .json({
+              error: "Failed to create question set",
+              details: setError.message,
+            });
         }
 
         questionSetToUse = newSet;
@@ -215,27 +227,36 @@ router.post("/bulk-upload", verifyToken, async (req, res) => {
           .from("subjects")
           .select("*")
           .eq("id", subjectId)
-          .single();
+          .maybeSingle();
 
         if (subject) {
           const questionSets = subject.question_sets || [];
           if (!questionSets.some((qs) => qs.id === newQuestionSetId)) {
             questionSets.push({ id: newQuestionSetId, name: chapterName });
 
-            await supabase
+            const { error: updateError } = await supabase
               .from("subjects")
               .update({ question_sets: questionSets })
               .eq("id", subjectId);
+
+            if (updateError) {
+              console.error("Error updating subject:", updateError);
+            }
           }
         }
 
-        console.log("Created question set:", newQuestionSetId);
-      } else {
-        questionSetToUse = existingSet;
+        console.log("Created new question set:", newQuestionSetId);
       }
     }
 
-    // Prepare file system path
+    // Validate that we have a question set
+    if (!questionSetToUse || !questionSetToUse.id) {
+      return res.status(400).json({
+        error: "Failed to get or create question set",
+      });
+    }
+
+    // Step 2: Prepare file system path
     const examSlug = examId.toLowerCase().replace(/\s+/g, "-");
     const subjectSlug = subjectId.toLowerCase().replace(/\s+/g, "-");
     const chapterSlug = chapterName.toLowerCase().replace(/\s+/g, "-");
@@ -252,14 +273,27 @@ router.post("/bulk-upload", verifyToken, async (req, res) => {
     // Create directory if it doesn't exist
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
+      console.log("Created directory:", dirPath);
     }
 
     let questionsAdded = 0;
-    const currentQuestionIds = questionSetToUse.question_ids || [];
+    let questionsUpdated = 0;
+    const errors = [];
+    const currentQuestionIds = Array.isArray(questionSetToUse.question_ids)
+      ? [...questionSetToUse.question_ids]
+      : [];
 
-    // Process each question
+    // Step 3: Process each question
     for (const question of questions) {
       try {
+        if (!question.id || !question.data) {
+          errors.push({
+            question: question.id || "unknown",
+            error: "Missing id or data",
+          });
+          continue;
+        }
+
         const questionId = question.id;
         const questionData = question.data;
 
@@ -276,45 +310,73 @@ router.post("/bulk-upload", verifyToken, async (req, res) => {
           .from("questions")
           .select("id")
           .eq("id", questionId)
-          .single();
+          .maybeSingle();
 
         if (!existingQuestion) {
           // Insert into questions table
-          await supabase.from("questions").insert({
-            id: questionId,
-            content: questionData,
-            institutions: [],
-          });
+          const { error: insertError } = await supabase
+            .from("questions")
+            .insert({
+              id: questionId,
+              content: questionData,
+              institutions: [],
+            });
+
+          if (insertError) {
+            errors.push({
+              question: questionId,
+              error: insertError.message,
+            });
+            continue;
+          }
         }
 
         // Add to question set if not already there
         if (!currentQuestionIds.includes(questionId)) {
           currentQuestionIds.push(questionId);
           questionsAdded++;
+        } else {
+          questionsUpdated++;
         }
 
-        console.log("Processed question:", questionId);
+        console.log(`Processed question: ${questionId}`);
       } catch (error) {
         console.error("Error processing question:", error);
+        errors.push({
+          question: question.id || "unknown",
+          error: error.message,
+        });
       }
     }
 
-    // Update question set with all question IDs
-    await supabase
+    // Step 4: Update question set with all question IDs
+    const { error: updateError } = await supabase
       .from("question_sets")
       .update({ question_ids: currentQuestionIds })
       .eq("id", questionSetToUse.id);
 
+    if (updateError) {
+      console.error("Error updating question set:", updateError);
+      return res.status(500).json({
+        error: "Failed to update question set",
+        details: updateError.message,
+      });
+    }
+
     res.json({
-      message: "Bulk upload successful",
+      success: true,
+      message: "Bulk upload completed",
       chapterCreated,
       questionSetId: questionSetToUse.id,
+      questionSetName: questionSetToUse.name,
       questionsAdded,
+      questionsUpdated,
       totalQuestions: questions.length,
+      errors: errors.length > 0 ? errors : undefined,
     });
   } catch (error) {
     console.error("Bulk upload error:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message, stack: error.stack });
   }
 });
 

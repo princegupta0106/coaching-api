@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tests Report</title>
+
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [["$", "$"]],
+          displayMath: [["$$", "$$"]],
+          processEscapes: true,
+          processEnvironments: true,
+        },
+        svg: { fontCache: "global" },
+        options: {
+          skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+        },
+      };
+    </script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+    ></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --text-primary: #333;
+        --text-secondary: #666;
+        --border-color: #e0e0e0;
+        --accent-color: #667eea;
+        --sidebar-width: 260px;
+      }
+
+      body.dark-mode {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #2d2d2d;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --border-color: #404040;
+        --accent-color: #7c8adb;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+      }
+
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: var(--bg-primary);
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        z-index: 100;
+      }
+
+      .sidebar-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .sidebar-title {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .sidebar-link {
+        padding: 10px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        background: var(--bg-secondary);
+      }
+
+      .sidebar-link:hover {
+        background: var(--border-color);
+      }
+
+      .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 30px;
+        min-height: 100vh;
+      }
+
+      .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .test-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .test-card:last-child {
+        border-bottom: none;
+      }
+
+      .btn {
+        padding: 10px 18px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: #10b981;
+        color: white;
+      }
+
+      .btn-secondary {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+      }
+
+      .review-chart {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .review-chart::after {
+        content: "";
+        position: absolute;
+        inset: 16px;
+        border-radius: 50%;
+        background: var(--bg-primary);
+      }
+
+      .legend {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .legend-color {
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+      }
+
+      .chart-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .question-text .MathJax,
+      .option-content .MathJax {
+        display: inline-block !important;
+        margin: 0 !important;
+      }
+
+      .MathJax_Display {
+        display: inline !important;
+        margin: 0 !important;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 20px 15px;
+        }
+
+        .test-card {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Tests Report</div>
+        <div class="sidebar-link" onclick="goToStaff()">Back to Staff</div>
+      </div>
+    </div>
+
+    <div class="main-content" id="mainContent"></div>
+
+    <script>
+      const API_URL =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000/api"
+          : `${window.location.origin}/api`;
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      window.addEventListener("load", () => {
+        if (!token || user.role !== "staff") {
+          alert("Please login as staff");
+          window.location.href = "/index.html";
+          return;
+        }
+
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+        }
+
+        handleRoute();
+        window.addEventListener("hashchange", handleRoute);
+      });
+
+      function goToStaff() {
+        window.location.href = "/staff.html";
+      }
+
+      async function handleRoute() {
+        const params = new URLSearchParams(window.location.search);
+        const testId = params.get("testId");
+        const hash = window.location.hash.replace("#", "");
+
+        if (hash.startsWith("attempt/")) {
+          const attemptId = hash.split("/")[1];
+          await renderAttemptDetail(attemptId);
+          return;
+        }
+
+        if (testId) {
+          await renderTestReport(testId);
+          return;
+        }
+
+        await renderTestsList();
+      }
+
+      async function renderTestsList() {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-title">All Tests</div>
+          <div class="page-subtitle">Open a report to see attempts</div>
+          <div class="card" id="testsContainer">Loading tests...</div>
+        `;
+
+        try {
+          const response = await fetch(`${API_URL}/tests`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) throw new Error("Failed to load tests");
+
+          const data = await response.json();
+          const tests = data.tests || [];
+          const container = document.getElementById("testsContainer");
+
+          if (!tests.length) {
+            container.innerHTML =
+              '<div class="page-subtitle">No tests found.</div>';
+            return;
+          }
+
+          container.innerHTML = tests
+            .map(
+              (test) => `
+              <div class="test-card">
+                <div>
+                  <div style="font-weight: 600;">${test.name}</div>
+                  <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+                    ${test.duration_minutes || 30} min • ${(test.question_ids || []).length} questions
+                  </div>
+                </div>
+                <button class="btn btn-primary" onclick="openReport('${test.id}')">Open Report</button>
+              </div>
+            `,
+            )
+            .join("");
+        } catch (error) {
+          document.getElementById("testsContainer").textContent =
+            "Failed to load tests";
+        }
+      }
+
+      function openReport(testId) {
+        window.location.href = `/tests-report.html?testId=${testId}`;
+      }
+
+      async function renderTestReport(testId) {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-title">Test Report</div>
+          <div class="page-subtitle">Loading report...</div>
+          <div class="card" id="reportContainer"></div>
+        `;
+
+        try {
+          const testResponse = await fetch(`${API_URL}/tests/${testId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (!testResponse.ok) throw new Error("Failed to load test");
+          const testData = await testResponse.json();
+          const test = testData.test;
+
+          const attemptsResponse = await fetch(
+            `${API_URL}/tests/${testId}/attempts`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          if (!attemptsResponse.ok) throw new Error("Failed to load attempts");
+          const attemptsData = await attemptsResponse.json();
+          const attempts = attemptsData.attempts || [];
+
+          const container = document.getElementById("reportContainer");
+
+          if (!attempts.length) {
+            container.innerHTML =
+              '<div class="page-subtitle">No attempts yet.</div>';
+            return;
+          }
+
+          container.innerHTML = `
+            <div class="page-subtitle">${test.name}</div>
+            ${attempts
+              .map((attempt) => buildAttemptCard(test, attempt))
+              .join("")}
+          `;
+        } catch (error) {
+          document.getElementById("reportContainer").textContent =
+            "Failed to load report";
+        }
+      }
+
+      function buildAttemptCard(test, attempt) {
+        const stats = computeAttemptStats(test, attempt);
+        const chartStyle = buildPieStyle(stats);
+
+        return `
+          <div class="card">
+            <div class="test-card">
+              <div>
+                <div style="font-weight: 600;">${attempt.student_email}</div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                  ${attempt.status} • ${attempt.score || 0}/${attempt.total || 0}
+                </div>
+              </div>
+              <button class="btn btn-secondary" onclick="openAttempt('${attempt.id}')">Detailed Review</button>
+            </div>
+            <div class="chart-row">
+              <div class="review-chart" style="background: ${chartStyle};"></div>
+              <div class="legend">
+                <div class="legend-item"><span class="legend-color" style="background:#27ae60"></span>Correct: ${stats.correct}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#e74c3c"></span>Wrong: ${stats.wrong}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#f59e0b"></span>Ungraded: ${stats.ungraded}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#94a3b8"></span>Unattempted: ${stats.unattempted}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function openAttempt(attemptId) {
+        window.location.hash = `attempt/${attemptId}`;
+      }
+
+      async function renderAttemptDetail(attemptId) {
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-title">Attempt Review</div>
+          <div class="page-subtitle">Loading...</div>
+        `;
+
+        try {
+          const attemptResponse = await fetch(
+            `${API_URL}/tests/attempts/${attemptId}`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          if (!attemptResponse.ok) throw new Error("Failed to load attempt");
+          const attemptData = await attemptResponse.json();
+          const attempt = attemptData.attempt;
+          const test = attemptData.test;
+
+          const questionsResponse = await fetch(
+            `${API_URL}/tests/${test.id}/questions`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          if (!questionsResponse.ok)
+            throw new Error("Failed to load questions");
+          const questionData = await questionsResponse.json();
+
+          renderAttemptQuestions(test, attempt, questionData.questions || []);
+        } catch (error) {
+          content.innerHTML = `
+            <div class="page-title">Attempt Review</div>
+            <div class="page-subtitle">Failed to load review</div>
+          `;
+        }
+      }
+
+      function renderAttemptQuestions(test, attempt, questions) {
+        const answerMap = new Map(
+          (attempt.answers || []).map((entry) => [
+            entry.questionId,
+            entry.answer,
+          ]),
+        );
+        const resultMap = new Map(
+          (attempt.result?.perQuestion || []).map((entry) => [
+            entry.questionId,
+            entry,
+          ]),
+        );
+
+        const stats = computeReviewStats(questions, answerMap, resultMap);
+        const chartStyle = buildPieStyle(stats);
+
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-title">Attempt Review</div>
+          <div class="page-subtitle">${test.name}</div>
+          <div class="card">
+            <div style="font-weight: 700; margin-bottom: 8px;">${attempt.student_email}</div>
+            <div class="chart-row" style="margin-bottom: 12px;">
+              <div class="review-chart" style="background: ${chartStyle};"></div>
+              <div class="legend">
+                <div class="legend-item"><span class="legend-color" style="background:#27ae60"></span>Correct: ${stats.correct}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#e74c3c"></span>Wrong: ${stats.wrong}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#f59e0b"></span>Ungraded: ${stats.ungraded}</div>
+                <div class="legend-item"><span class="legend-color" style="background:#94a3b8"></span>Unattempted: ${stats.unattempted}</div>
+              </div>
+            </div>
+            <button class="btn btn-secondary" onclick="goBackToReport('${test.id}')">Back to Report</button>
+          </div>
+          ${questions
+            .map((question, index) => {
+              const questionHtml =
+                question.question_html ||
+                question.content?.question_html ||
+                "Question not available";
+              const qResult = resultMap.get(question.id);
+              const rawUserAnswer = answerMap.get(question.id);
+              const userAnswer = Array.isArray(rawUserAnswer)
+                ? rawUserAnswer.join(", ")
+                : (rawUserAnswer ?? "");
+              const correctAnswer = qResult?.correctAnswer ?? "";
+              const status = qResult
+                ? qResult.isCorrect
+                  ? "Correct"
+                  : "Wrong"
+                : userAnswer
+                  ? "Not graded"
+                  : "Unattempted";
+              const answerLabel = userAnswer || "Unattempted";
+              return `
+                <div class="card">
+                  <div style="font-weight: 700; margin-bottom: 6px;">Q${index + 1} • ${status}</div>
+                  <div class="question-text">${questionHtml}</div>
+                  <div style="font-size: 12px; margin-bottom: 4px;">Your Answer: <strong>${answerLabel}</strong></div>
+                  <div style="font-size: 12px;">Correct Answer: <strong>${correctAnswer}</strong></div>
+                </div>
+              `;
+            })
+            .join("")}
+        `;
+
+        if (window.MathJax) {
+          MathJax.typesetPromise([content]).catch((err) =>
+            console.log("MathJax render error:", err),
+          );
+        }
+      }
+
+      function goBackToReport(testId) {
+        window.location.hash = "";
+        window.location.href = `/tests-report.html?testId=${testId}`;
+      }
+
+      function buildPieStyle(stats) {
+        const total = Math.max(1, stats.total);
+        const correctPct = (stats.correct / total) * 100;
+        const wrongPct = (stats.wrong / total) * 100;
+        const ungradedPct = (stats.ungraded / total) * 100;
+        const unattemptedPct = (stats.unattempted / total) * 100;
+
+        const a = correctPct;
+        const b = a + wrongPct;
+        const c = b + ungradedPct;
+        const d = c + unattemptedPct;
+
+        return `conic-gradient(
+          #27ae60 0% ${a}%,
+          #e74c3c ${a}% ${b}%,
+          #f59e0b ${b}% ${c}%,
+          #94a3b8 ${c}% ${d}%
+        )`;
+      }
+
+      function computeAttemptStats(test, attempt) {
+        const questionCount = (test.question_ids || []).length;
+        const answersList = Array.isArray(attempt.answers)
+          ? attempt.answers
+          : [];
+        const attemptedCount = answersList.filter((entry) => {
+          const value = entry?.answer;
+          if (Array.isArray(value)) return value.length > 0;
+          return value !== undefined && value !== null && `${value}` !== "";
+        }).length;
+
+        const resultList = Array.isArray(attempt.result?.perQuestion)
+          ? attempt.result.perQuestion
+          : [];
+        const correct = resultList.filter((entry) => entry.isCorrect).length;
+        const wrong = resultList.filter((entry) => !entry.isCorrect).length;
+        const ungraded = Math.max(0, attemptedCount - (correct + wrong));
+        const unattempted = Math.max(0, questionCount - attemptedCount);
+
+        return {
+          total: questionCount,
+          correct,
+          wrong,
+          ungraded,
+          unattempted,
+        };
+      }
+
+      function computeReviewStats(reviewQuestions, answerMap, resultMap) {
+        let correct = 0;
+        let wrong = 0;
+        let ungraded = 0;
+        let unattempted = 0;
+
+        reviewQuestions.forEach((question) => {
+          const userAnswer = answerMap.get(question.id);
+          const hasAnswer = Array.isArray(userAnswer)
+            ? userAnswer.length > 0
+            : userAnswer !== undefined &&
+              userAnswer !== null &&
+              `${userAnswer}` !== "";
+
+          const qResult = resultMap.get(question.id);
+          if (!hasAnswer) {
+            unattempted += 1;
+            return;
+          }
+
+          if (!qResult) {
+            ungraded += 1;
+            return;
+          }
+
+          if (qResult.isCorrect) {
+            correct += 1;
+          } else {
+            wrong += 1;
+          }
+        });
+
+        return {
+          total: reviewQuestions.length,
+          correct,
+          wrong,
+          ungraded,
+          unattempted,
+        };
+      }
+    </script>
+  </body>
+</html>

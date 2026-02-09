@@ -9,11 +9,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY,
 );
 
-// Get all students in admin's institution
+// Get all students in admin's institution (admin and staff)
 router.get("/institution-students", verifyToken, async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ error: "Only admins can view students" });
+    if (req.user.role !== "admin" && req.user.role !== "staff") {
+      return res
+        .status(403)
+        .json({ error: "Only admins and staff can view students" });
     }
 
     const { data: students, error } = await supabase
@@ -31,16 +33,18 @@ router.get("/institution-students", verifyToken, async (req, res) => {
   }
 });
 
-// Get all users in admin's institution
+// Get all users in admin's institution (admin and staff)
 router.get("/list", verifyToken, async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ error: "Only admins can view users" });
+    if (req.user.role !== "admin" && req.user.role !== "staff") {
+      return res
+        .status(403)
+        .json({ error: "Only admins and staff can view users" });
     }
 
     const { data: users, error } = await supabase
       .from("users")
-      .select("id, email, role, student_sets, institution")
+      .select("email, role, student_sets, institution")
       .eq("institution", req.user.institution);
 
     if (error) throw error;

@@ -95,30 +95,6 @@
         color: #3c3;
         border: 1px solid #cfc;
       }
-      .dashboard {
-        display: none;
-        text-align: center;
-      }
-      .dashboard h3 {
-        margin-bottom: 20px;
-        color: #333;
-      }
-      .user-info {
-        background: #f5f5f5;
-        padding: 20px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-      }
-      .user-info p {
-        margin: 10px 0;
-        color: #555;
-      }
-      .logout-btn {
-        background: #e74c3c;
-      }
-      .logout-btn:hover {
-        background: #c0392b;
-      }
     </style>
   </head>
   <body>
@@ -138,79 +114,7 @@
             </div>
             <button type="submit">Login</button>
           </form>
-          <div class="toggle">
-            Don't have an account? <a onclick="showRegister()">Register</a>
-          </div>
         </div>
-
-        <div id="registerForm" style="display: none">
-          <h2>Register</h2>
-          <div class="message" id="registerMessage"></div>
-          <form onsubmit="handleRegister(event)">
-            <div class="form-group">
-              <label for="registerEmail">Email</label>
-              <input type="email" id="registerEmail" required />
-            </div>
-            <div class="form-group">
-              <label for="registerPassword">Password</label>
-              <input type="password" id="registerPassword" required />
-            </div>
-            <div class="form-group">
-              <label for="registerInstitution">Institution ID</label>
-              <input
-                type="text"
-                id="registerInstitution"
-                required
-                placeholder="e.g., inst-1"
-              />
-            </div>
-            <div class="form-group">
-              <label for="registerRole">Role</label>
-              <select id="registerRole" required>
-                <option value="student">Student</option>
-                <option value="staff">Staff</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <button type="submit">Register</button>
-          </form>
-          <div class="toggle">
-            Already have an account? <a onclick="showLogin()">Login</a>
-          </div>
-        </div>
-      </div>
-
-      <div id="dashboard" class="dashboard">
-        <h3>Welcome!</h3>
-        <div class="user-info">
-          <p><strong>Email:</strong> <span id="userEmail"></span></p>
-          <p>
-            <strong>Institution:</strong> <span id="userInstitution"></span>
-          </p>
-          <p><strong>Role:</strong> <span id="userRole"></span></p>
-        </div>
-        <button
-          id="institutionBtn"
-          onclick="viewInstitution()"
-          style="margin-bottom: 10px; display: none"
-        >
-          View Institution
-        </button>
-        <button
-          id="adminBtn"
-          onclick="viewAdminPanel()"
-          style="margin-bottom: 10px; display: none"
-        >
-          Admin Panel
-        </button>
-        <button
-          id="staffBtn"
-          onclick="viewStaffDashboard()"
-          style="margin-bottom: 10px; display: none"
-        >
-          Staff Dashboard
-        </button>
-        <button class="logout-btn" onclick="handleLogout()">Logout</button>
       </div>
     </div>
 
@@ -231,55 +135,6 @@
         }, 3000);
       }
 
-      function showRegister() {
-        document.getElementById("loginForm").style.display = "none";
-        document.getElementById("registerForm").style.display = "block";
-      }
-
-      function showLogin() {
-        document.getElementById("registerForm").style.display = "none";
-        document.getElementById("loginForm").style.display = "block";
-      }
-
-      async function handleRegister(event) {
-        event.preventDefault();
-        const email = document.getElementById("registerEmail").value;
-        const password = document.getElementById("registerPassword").value;
-        const institution = document.getElementById(
-          "registerInstitution",
-        ).value;
-        const role = document.getElementById("registerRole").value;
-
-        try {
-          const response = await fetch(`${API_URL}/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password, institution, role }),
-          });
-
-          const data = await response.json();
-
-          if (response.ok) {
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
-            showMessage(
-              "registerMessage",
-              "Registration successful!",
-              "success",
-            );
-            setTimeout(() => showDashboard(data.user), 1000);
-          } else {
-            showMessage(
-              "registerMessage",
-              data.error || "Registration failed",
-              "error",
-            );
-          }
-        } catch (error) {
-          showMessage("registerMessage", "Network error", "error");
-        }
-      }
-
       async function handleLogin(event) {
         event.preventDefault();
         const email = document.getElementById("loginEmail").value;
@@ -298,7 +153,7 @@
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
             showMessage("loginMessage", "Login successful!", "success");
-            setTimeout(() => showDashboard(data.user), 1000);
+            setTimeout(() => redirectByRole(data.user), 500);
           } else {
             showMessage("loginMessage", data.error || "Login failed", "error");
           }
@@ -307,52 +162,15 @@
         }
       }
 
-      function showDashboard(user) {
-        // Redirect students directly to student portal
-        if (user.role === "student") {
-          window.location.href = "/student.html";
-          return;
-        }
-
-        document.getElementById("authForms").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-        document.getElementById("userEmail").textContent = user.email;
-        document.getElementById("userInstitution").textContent =
-          user.institution;
-        document.getElementById("userRole").textContent =
-          user.role || "student";
-
-        // Show appropriate buttons based on role
-        const adminBtn = document.getElementById("adminBtn");
-        const staffBtn = document.getElementById("staffBtn");
-        const institutionBtn = document.getElementById("institutionBtn");
-
+      function redirectByRole(user) {
+        if (!user || !user.role) return;
         if (user.role === "admin") {
-          adminBtn.style.display = "block";
-          institutionBtn.style.display = "block";
+          window.location.href = "/admin.html";
         } else if (user.role === "staff") {
-          staffBtn.style.display = "block";
+          window.location.href = "/staff.html";
+        } else {
+          window.location.href = "/student.html";
         }
-      }
-
-      function handleLogout() {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        document.getElementById("dashboard").style.display = "none";
-        document.getElementById("authForms").style.display = "block";
-        showLogin();
-      }
-
-      function viewInstitution() {
-        window.location.href = "/institution.html";
-      }
-
-      function viewAdminPanel() {
-        window.location.href = "/admin.html";
-      }
-
-      function viewStaffDashboard() {
-        window.location.href = "/staff.html";
       }
 
       // Check if user is already logged in
@@ -363,7 +181,7 @@
         if (token && userStr) {
           try {
             const user = JSON.parse(userStr);
-            showDashboard(user);
+            redirectByRole(user);
           } catch (error) {
             console.error("Failed to parse user data:", error);
             localStorage.removeItem("token");

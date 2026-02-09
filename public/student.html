@@ -231,6 +231,25 @@
         border-bottom: 1px solid var(--border-color);
       }
 
+      .sidebar-links {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .sidebar-link {
+        padding: 10px 12px;
+        border-radius: 6px;
+        color: var(--sidebar-text);
+        cursor: pointer;
+        margin-bottom: 8px;
+        background: transparent;
+        transition: background 0.2s;
+      }
+
+      .sidebar-link:hover {
+        background: var(--sidebar-hover);
+      }
+
       .portal-title {
         font-size: 20px;
         font-weight: 700;
@@ -329,6 +348,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        margin-top: auto;
       }
 
       .user-avatar {
@@ -421,7 +441,7 @@
       .card {
         background: var(--bg-primary);
         border: 1px solid var(--border-color);
-        border-radius: 0;
+        border-radius: 8px;
         padding: 20px;
         cursor: pointer;
         transition:
@@ -798,7 +818,7 @@
         .main-content {
           margin-left: 0;
           padding: 15px;
-          margin-bottom: 70px;
+          margin-bottom: 90px;
         }
 
         .main-content.viewing-question {
@@ -838,6 +858,10 @@
 
         .card-grid {
           grid-template-columns: 1fr;
+        }
+
+        .question-content-box {
+          padding: 20px;
         }
       }
 
@@ -935,6 +959,15 @@
         </button>
       </div>
 
+      <div class="sidebar-links">
+        <div
+          class="sidebar-link"
+          onclick="window.location.href = '/tests.html'"
+        >
+          ⏱️ Tests
+        </div>
+      </div>
+
       <div class="exam-list" id="examList">
         <!-- Exams will be loaded here -->
       </div>
@@ -1007,6 +1040,10 @@
       <div class="nav-item" onclick="showDPPs()">
         <div class="nav-icon">📝</div>
         <div>DPPs</div>
+      </div>
+      <div class="nav-item" onclick="window.location.href = '/tests.html'">
+        <div class="nav-icon">⏱️</div>
+        <div>Tests</div>
       </div>
       <div class="nav-item" onclick="showProfile()">
         <div class="nav-icon">👤</div>
@@ -1601,6 +1638,33 @@
         displayQuestionViewer();
       }
 
+      function getCleanOptionText(opt) {
+        if (!opt) return "";
+
+        const rawLabel = (opt.label || "").toString().trim();
+        let text = "";
+
+        if (opt.html) {
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = opt.html;
+          text = (tempDiv.textContent || tempDiv.innerText || "").trim();
+        }
+
+        if (!text) {
+          text = (opt.text || opt.value || "").toString().trim();
+        }
+
+        if (!text) return "";
+
+        if (rawLabel) {
+          const escapedLabel = rawLabel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          const labelRegex = new RegExp(`^${escapedLabel}[.)]?\\s*`, "i");
+          text = text.replace(labelRegex, "").trim();
+        }
+
+        return text;
+      }
+
       function displayQuestionViewer() {
         const question = currentQuestions[currentQuestionIndex];
         console.log("Displaying question:", question);
@@ -1710,11 +1774,7 @@
                 <div class="options-list" id="optionsList">
                   ${options
                     .map((opt, i) => {
-                      // Extract text from HTML, removing all tags
-                      const tempDiv = document.createElement("div");
-                      tempDiv.innerHTML = opt.html || opt.label;
-                      const cleanText =
-                        tempDiv.textContent || tempDiv.innerText || opt.label;
+                      const cleanText = getCleanOptionText(opt);
                       const label = opt.label.toUpperCase();
                       return `
                     <div class="option-item" onclick="toggleMultipleOption('${opt.label}', ${i})">
@@ -1732,11 +1792,7 @@
                 <div class="options-list" id="optionsList">
                   ${options
                     .map((opt, i) => {
-                      // Extract text from HTML, removing all tags
-                      const tempDiv = document.createElement("div");
-                      tempDiv.innerHTML = opt.html || opt.label;
-                      const cleanText =
-                        tempDiv.textContent || tempDiv.innerText || opt.label;
+                      const cleanText = getCleanOptionText(opt);
                       const label = opt.label.toUpperCase();
                       return `
                     <div class="option-item" onclick="selectOption('${opt.label}', ${i})">
