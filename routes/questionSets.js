@@ -9,10 +9,37 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY,
 );
 
+async function getAllowedExamsForUser(user) {
+  if (!user || user.role !== "student") {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("allowed_exams")
+    .eq("email", user.email)
+    .single();
+
+  if (error) {
+    console.error("Fetch allowed exams error:", error);
+    return null;
+  }
+
+  const allowed = Array.isArray(data?.allowed_exams)
+    ? data.allowed_exams.filter(Boolean)
+    : [];
+
+  return allowed.length > 0 ? allowed : null;
+}
+
 // Get all exams
 router.get("/exams", verifyToken, async (req, res) => {
   try {
-    const { data: exams, error } = await supabase.from("exams").select("*");
+    const allowedExams = await getAllowedExamsForUser(req.user);
+    const query = supabase.from("exams").select("*");
+    const { data: exams, error } = allowedExams
+      ? await query.in("id", allowedExams)
+      : await query;
 
     if (error) throw error;
 
@@ -27,6 +54,11 @@ router.get("/exams", verifyToken, async (req, res) => {
 router.get("/exams/:examId/subjects", verifyToken, async (req, res) => {
   try {
     const { examId } = req.params;
+
+    const allowedExams = await getAllowedExamsForUser(req.user);
+    if (allowedExams && !allowedExams.includes(examId)) {
+      return res.status(403).json({ error: "Access denied" });
+    }
 
     const { data: exam, error } = await supabase
       .from("exams")

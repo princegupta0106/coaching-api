@@ -84,10 +84,18 @@ router.post("/upload", verifyToken, async (req, res) => {
       .single();
 
     if (!existingQuestion) {
+      const subjectName =
+        questionData.subject_name ||
+        questionData.metadata?.subject_name ||
+        questionData.subject ||
+        questionData.metadata?.subject ||
+        null;
+
       // Insert into questions table with full content
       const { error: questionError } = await supabase.from("questions").insert({
         id: questionId,
         content: questionData,
+        subject_name: subjectName,
         institutions: [],
       });
 
@@ -211,12 +219,10 @@ router.post("/bulk-upload", verifyToken, async (req, res) => {
 
         if (setError) {
           console.error("Error creating question set:", setError);
-          return res
-            .status(500)
-            .json({
-              error: "Failed to create question set",
-              details: setError.message,
-            });
+          return res.status(500).json({
+            error: "Failed to create question set",
+            details: setError.message,
+          });
         }
 
         questionSetToUse = newSet;
@@ -313,12 +319,20 @@ router.post("/bulk-upload", verifyToken, async (req, res) => {
           .maybeSingle();
 
         if (!existingQuestion) {
+          const subjectName =
+            questionData.subject_name ||
+            questionData.metadata?.subject_name ||
+            questionData.subject ||
+            questionData.metadata?.subject ||
+            null;
+
           // Insert into questions table
           const { error: insertError } = await supabase
             .from("questions")
             .insert({
               id: questionId,
               content: questionData,
+              subject_name: subjectName,
               institutions: [],
             });
 

@@ -32,6 +32,10 @@
         box-sizing: border-box;
       }
 
+      html {
+        font-size: 90%;
+      }
+
       :root {
         --bg-primary: #ffffff;
         --bg-secondary: #f8f9fa;
@@ -152,14 +156,23 @@
       }
 
       .question-nav-box.seen {
-        background: #ffd700;
-        border-color: #ffd700;
+        background: #93c5fd;
+        border-color: #93c5fd;
       }
 
       .question-nav-box.answered {
         background: #27ae60;
         border-color: #27ae60;
         color: white;
+      }
+
+      .mobile-question-nav {
+        display: none;
+        margin-top: 18px;
+        padding: 14px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
       }
 
       .user-profile {
@@ -273,6 +286,18 @@
         border: 1px solid var(--border-color);
         border-radius: 8px;
         padding: 25px;
+      }
+
+      .question-type-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        background: var(--accent-color);
+        color: #ffffff;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-right: 6px;
+        margin-bottom: 10px;
       }
 
       .question-text {
@@ -439,18 +464,78 @@
         border-radius: 2px;
       }
 
+      .leaderboard-card {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .leaderboard-row {
+        display: grid;
+        grid-template-columns: 40px 1.2fr 0.6fr 0.6fr 0.6fr;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        align-items: center;
+      }
+
+      .leaderboard-row.header {
+        background: var(--bg-secondary);
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+
+      .leaderboard-row.highlight {
+        border-color: var(--accent-color);
+        background: rgba(102, 126, 234, 0.08);
+      }
+
+      .leaderboard-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+
+      .leaderboard-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
       .bottom-nav {
         display: none;
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        height: 70px;
+        height: 60px;
         background: var(--bg-primary);
         border-top: 1px solid var(--border-color);
-        justify-content: space-around;
+        justify-content: space-evenly;
         align-items: center;
         z-index: 100;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        touch-action: manipulation;
+        gap: 12px;
+      }
+
+      .bottom-nav * {
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
       }
 
       .nav-item {
@@ -458,10 +543,13 @@
         flex-direction: column;
         align-items: center;
         gap: 4px;
-        padding: 8px 12px;
+        padding: 6px 8px;
         cursor: pointer;
         color: var(--text-secondary);
-        font-size: 12px;
+        font-size: 11px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
       }
 
       .nav-item.active {
@@ -469,7 +557,7 @@
       }
 
       .nav-icon {
-        font-size: 22px;
+        font-size: 20px;
       }
 
       @media (max-width: 768px) {
@@ -498,6 +586,47 @@
 
         .bottom-nav {
           display: flex;
+        }
+
+        .leaderboard-row {
+          grid-template-columns: 34px 1.2fr 0.6fr 0.6fr;
+          font-size: 12px;
+        }
+
+        .leaderboard-row .hide-mobile {
+          display: none;
+        }
+      }
+
+      @media (max-width: 720px) {
+        body {
+          font-size: 90%;
+        }
+
+        .card {
+          padding: 16px;
+        }
+
+        .page-title {
+          font-size: 22px;
+        }
+
+        .question-text {
+          font-size: 16px;
+        }
+
+        .option-item {
+          padding: 10px 12px;
+          font-size: 14px;
+        }
+
+        .btn {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+
+        .mobile-question-nav {
+          display: block;
         }
       }
     </style>
@@ -534,13 +663,9 @@
         <div class="nav-icon">🏠</div>
         <div>Home</div>
       </div>
-      <div class="nav-item" onclick="goToDashboard()">
-        <div class="nav-icon">📚</div>
-        <div>Exams</div>
-      </div>
-      <div class="nav-item" onclick="goToDashboard()">
-        <div class="nav-icon">📝</div>
-        <div>DPPs</div>
+      <div class="nav-item" onclick="goToBookmarks()">
+        <div class="nav-icon">🔖</div>
+        <div>Bookmarks</div>
       </div>
       <div class="nav-item active">
         <div class="nav-icon">⏱️</div>
@@ -558,7 +683,7 @@
           ? "http://localhost:3000/api"
           : `${window.location.origin}/api`;
       const token = localStorage.getItem("token");
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      let user = JSON.parse(localStorage.getItem("user") || "{}");
 
       let tests = [];
       let attempts = [];
@@ -572,7 +697,15 @@
       let autosaveTimer = null;
       let upcomingTimerInterval = null;
       let timerInterval = null;
+      let autoSubmitTimeout = null;
       let remainingSeconds = 0;
+      let leaderboardExpanded = false;
+      let lastLeaderboardData = null;
+      let isSubmitting = false;
+
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
 
       function markQuestionSeen(questionId) {
         if (!questionId) return;
@@ -621,18 +754,15 @@
         }
       }
 
-      window.addEventListener("load", () => {
+      window.addEventListener("load", async () => {
         if (!token || user.role !== "student") {
           alert("Please login as a student");
           window.location.href = "/index.html";
           return;
         }
 
-        document.getElementById("userName").textContent =
-          user.email.split("@")[0];
-        document.getElementById("userEmail").textContent = user.email;
-        document.getElementById("userAvatar").textContent =
-          user.email[0].toUpperCase();
+        await refreshUserProfile();
+        applyUserProfile();
 
         if (localStorage.getItem("darkMode") === "true") {
           document.body.classList.add("dark-mode");
@@ -642,7 +772,42 @@
         window.addEventListener("hashchange", handleRouteFromURL);
       });
 
+      async function refreshUserProfile() {
+        try {
+          const response = await fetch(`${API_URL}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) return;
+
+          const data = await response.json();
+          if (data.user) {
+            user = data.user;
+            localStorage.setItem("user", JSON.stringify(user));
+          }
+        } catch (error) {
+          console.error("Failed to refresh user profile:", error);
+        }
+      }
+
+      function getDisplayName() {
+        const fullName = `${user.full_name || ""}`.trim();
+        if (fullName) return fullName;
+        if (user.email) return user.email.split("@")[0];
+        return "Student";
+      }
+
+      function applyUserProfile() {
+        const displayName = getDisplayName();
+        document.getElementById("userName").textContent = displayName;
+        document.getElementById("userEmail").textContent = user.email || "";
+        const avatarSource = displayName || user.email || "S";
+        document.getElementById("userAvatar").textContent =
+          avatarSource[0].toUpperCase();
+      }
+
       async function handleRouteFromURL() {
+        scrollToTop();
         const hash = window.location.hash.replace("#", "");
 
         if (!hash || hash === "tests") {
@@ -658,6 +823,11 @@
           return;
         }
 
+        if (parts[0] === "leaderboard" && parts[1]) {
+          await viewLeaderboard(parts[1]);
+          return;
+        }
+
         if (parts[0] === "attempt" && parts[1]) {
           await viewAttempt(parts[1]);
           return;
@@ -668,6 +838,10 @@
 
       function goToDashboard() {
         window.location.href = "/student.html";
+      }
+
+      function goToBookmarks() {
+        window.location.href = "/student.html#bookmarks";
       }
 
       function handleLogout() {
@@ -805,6 +979,10 @@
         const duration = test.duration_minutes || 30;
         let action = "";
         let badge = "";
+        const showLeaderboard = state !== "upcoming";
+        const leaderboardButton = showLeaderboard
+          ? `<button class="btn btn-secondary" onclick="openLeaderboard('${test.id}')">Leaderboard</button>`
+          : "";
 
         if (state === "upcoming") {
           const startAt = test.start_at ? new Date(test.start_at).getTime() : 0;
@@ -833,7 +1011,10 @@
               </div>
               ${badge}
             </div>
-            ${action}
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              ${action}
+              ${leaderboardButton}
+            </div>
           </div>
         `;
       }
@@ -892,11 +1073,102 @@
                   ${scoreLine}
                 </div>
               </div>
-              ${actionButton}
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                ${actionButton}
+                <button class="btn btn-secondary" onclick="openLeaderboard('${attempt.test_id}')">Leaderboard</button>
+              </div>
             </div>
           `;
           })
           .join("");
+      }
+
+      function formatDuration(seconds) {
+        const total = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
+        const minutes = Math.floor(total / 60);
+        const remaining = total % 60;
+        return `${minutes}m ${remaining}s`;
+      }
+
+      async function viewLeaderboard(testId) {
+        leaderboardExpanded = false;
+        const content = document.getElementById("mainContent");
+        content.innerHTML = `
+          <div class="page-title">Leaderboard</div>
+          <div class="page-subtitle">Loading leaderboard...</div>
+          <div class="card" id="leaderboardCard">Loading...</div>
+        `;
+
+        try {
+          const response = await fetch(
+            `${API_URL}/tests/${testId}/leaderboard`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+
+          if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "Failed to load leaderboard");
+          }
+
+          const data = await response.json();
+          lastLeaderboardData = data;
+          renderLeaderboard(data, leaderboardExpanded);
+        } catch (error) {
+          const card = document.getElementById("leaderboardCard");
+          if (card) card.textContent = error.message;
+        }
+      }
+
+      function renderLeaderboard(data, expanded) {
+        const content = document.getElementById("mainContent");
+        const testName = data.test?.name || "Test";
+        const topFive = data.topFive || [];
+        const list = data.leaderboard || [];
+        const showList = expanded ? list : topFive;
+        const me = data.me;
+
+        content.innerHTML = `
+          <div class="page-title">Leaderboard</div>
+          <div class="page-subtitle">${testName}</div>
+          <div class="card leaderboard-card" id="leaderboardCard">
+            <div class="leaderboard-row header">
+              <div>#</div>
+              <div>Student</div>
+              <div>Correct</div>
+              <div>Score%</div>
+              <div class="hide-mobile">Time</div>
+            </div>
+            ${showList
+              .map((entry) => {
+                const highlight =
+                  me && entry.email === me.email ? "highlight" : "";
+                return `
+                  <div class="leaderboard-row ${highlight}">
+                    <div>${entry.rank}</div>
+                    <div>${entry.name}</div>
+                    <div>${entry.correct}/${entry.total}</div>
+                    <div>${entry.percentage}%</div>
+                    <div class="hide-mobile">${formatDuration(entry.durationSeconds)}</div>
+                  </div>
+                `;
+              })
+              .join("")}
+            ${!showList.length ? '<div style="color: var(--text-secondary);">No submissions yet.</div>' : ""}
+            <div class="leaderboard-actions">
+              <button class="btn btn-secondary" onclick="toggleLeaderboardView()">
+                ${expanded ? "Show Top 5" : "Show Full"}
+              </button>
+              <button class="btn btn-secondary" onclick="goToTestsHome()">Back</button>
+            </div>
+          </div>
+        `;
+      }
+
+      function toggleLeaderboardView() {
+        leaderboardExpanded = !leaderboardExpanded;
+        if (lastLeaderboardData) {
+          renderLeaderboard(lastLeaderboardData, leaderboardExpanded);
+        }
       }
 
       async function startTest(testId, indexOverride) {
@@ -988,7 +1260,17 @@
 
       function startTimerWithSeconds(seconds) {
         clearInterval(timerInterval);
+        if (autoSubmitTimeout) {
+          clearTimeout(autoSubmitTimeout);
+        }
         remainingSeconds = Math.max(0, seconds);
+        if (remainingSeconds <= 0) {
+          submitTest();
+          return;
+        }
+        autoSubmitTimeout = setTimeout(() => {
+          submitTest();
+        }, remainingSeconds * 1000);
         timerInterval = setInterval(() => {
           remainingSeconds -= 1;
           updateTimerDisplay();
@@ -1017,8 +1299,21 @@
         window.location.hash = `attempt/${attemptIdToLoad}`;
       }
 
+      function updateLeaderboardRoute(testId) {
+        if (!testId) return;
+        const target = `#leaderboard/${testId}`;
+        if (window.location.hash !== target) {
+          window.location.hash = target;
+        }
+      }
+
+      function openLeaderboard(testId) {
+        updateLeaderboardRoute(testId);
+      }
+
       function goToTestsHome() {
         window.location.hash = "tests";
+        scrollToTop();
         loadTests();
       }
 
@@ -1038,6 +1333,19 @@
           text = text.slice(label.length).trim();
         }
         return text;
+      }
+
+      function getQuestionTypeMeta(questionType) {
+        if (questionType === "numerical") {
+          return { label: "Numerical", color: "#f59e0b" };
+        }
+        if (questionType === "mcq_multiple") {
+          return { label: "Multiple Correct MCQ", color: "#0ea5e9" };
+        }
+        if (questionType === "subjective" || questionType === "other") {
+          return { label: "Subjective", color: "#8b5cf6" };
+        }
+        return { label: "Single Correct MCQ", color: "#22c55e" };
       }
 
       function renderTestQuestion() {
@@ -1065,6 +1373,7 @@
           question.content?.question_html ||
           "Question not available";
         const questionType = question.question_type || "mcq_single";
+        const typeMeta = getQuestionTypeMeta(questionType);
         const options = question.options || [];
 
         let answerSection = "";
@@ -1139,6 +1448,26 @@
           `;
         }
 
+        const mobileNav = `
+          <div class="mobile-question-nav">
+            <div style="margin-bottom: 12px; font-weight: 600;">Questions</div>
+            <div class="question-nav-grid">
+              ${questions
+                .map((q, i) => {
+                  const status = questionStatus[q.id] || "";
+                  const isActive = i === currentQuestionIndex;
+                  return `
+                    <div class="question-nav-box ${status} ${isActive ? "active" : ""}"
+                         onclick="navigateQuestion(${i})">
+                      ${i + 1}
+                    </div>
+                  `;
+                })
+                .join("")}
+            </div>
+          </div>
+        `;
+
         const content = document.getElementById("mainContent");
         content.innerHTML = `
           <div class="test-header">
@@ -1153,6 +1482,9 @@
             </div>
           </div>
           <div class="card question-box">
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+              <div class="question-type-badge" style="background: ${typeMeta.color}">${typeMeta.label}</div>
+            </div>
             <div class="question-text">${questionHtml}</div>
             ${answerSection}
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -1160,6 +1492,7 @@
               <button class="btn btn-secondary" onclick="nextQuestion()">Next</button>
             </div>
           </div>
+          ${mobileNav}
         `;
 
         scheduleAutosave();
@@ -1254,8 +1587,12 @@
       }
 
       async function submitTest() {
-        if (!activeTest) return;
+        if (!activeTest || isSubmitting) return;
+        isSubmitting = true;
         clearInterval(timerInterval);
+        if (autoSubmitTimeout) {
+          clearTimeout(autoSubmitTimeout);
+        }
 
         const payload = {
           answers: Array.from(answers.entries()).map(
@@ -1288,6 +1625,8 @@
           renderResult(data);
         } catch (error) {
           alert(error.message);
+        } finally {
+          isSubmitting = false;
         }
       }
 
@@ -1453,12 +1792,21 @@
             </div>
             <button class="btn btn-secondary" onclick="goToTestsHome()">Back</button>
           </div>
+          <div class="card">
+            <div class="card-title">Leaderboard</div>
+            <div id="leaderboardPreview">Loading leaderboard...</div>
+            <div class="leaderboard-actions" style="margin-top: 12px;">
+              <button class="btn btn-secondary" onclick="openLeaderboard('${test.id}')">View Full Leaderboard</button>
+            </div>
+          </div>
           ${reviewQuestions
             .map((question, index) => {
               const questionHtml =
                 question.question_html ||
                 question.content?.question_html ||
                 "Question not available";
+              const questionType = question.question_type || "mcq_single";
+              const typeMeta = getQuestionTypeMeta(questionType);
               const qResult = resultMap.get(question.id);
               const rawUserAnswer = answerMap.get(question.id);
               const userAnswer = Array.isArray(rawUserAnswer)
@@ -1476,6 +1824,9 @@
               return `
                 <div class="card question-box">
                   <div style="font-weight: 700; margin-bottom: 8px;">Q${index + 1} • ${status}</div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    <div class="question-type-badge" style="background: ${typeMeta.color}">${typeMeta.label}</div>
+                  </div>
                   <div class="question-text">${questionHtml}</div>
                   <div style="font-size: 14px; margin-bottom: 6px;">
                     Your Answer: <strong>${answerLabel}</strong>
@@ -1494,6 +1845,8 @@
             console.log("MathJax render error:", err),
           );
         }
+
+        loadLeaderboardPreview(test.id, "leaderboardPreview");
       }
 
       function renderResult(result) {
@@ -1513,9 +1866,67 @@
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
               <button class="btn btn-primary" onclick="goToTestsHome()">Back to Tests</button>
               <button class="btn btn-secondary" onclick="viewAttempt('${result.attempt.id}')">Review</button>
+              <button class="btn btn-secondary" onclick="openLeaderboard('${activeTest.id}')">Leaderboard</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Leaderboard</div>
+            <div id="leaderboardPreview">Loading leaderboard...</div>
+            <div class="leaderboard-actions" style="margin-top: 12px;">
+              <button class="btn btn-secondary" onclick="openLeaderboard('${activeTest.id}')">View Full Leaderboard</button>
             </div>
           </div>
         `;
+
+        loadLeaderboardPreview(activeTest.id, "leaderboardPreview");
+      }
+
+      async function loadLeaderboardPreview(testId, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        try {
+          const response = await fetch(
+            `${API_URL}/tests/${testId}/leaderboard?limit=5`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+
+          if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "Failed to load leaderboard");
+          }
+
+          const data = await response.json();
+          const topFive = data.topFive || [];
+          if (!topFive.length) {
+            container.textContent = "No submissions yet.";
+            return;
+          }
+
+          container.innerHTML = `
+            <div class="leaderboard-row header">
+              <div>#</div>
+              <div>Student</div>
+              <div>Correct</div>
+              <div>Score%</div>
+              <div class="hide-mobile">Time</div>
+            </div>
+            ${topFive
+              .map((entry) => {
+                return `
+                  <div class="leaderboard-row">
+                    <div>${entry.rank}</div>
+                    <div>${entry.name}</div>
+                    <div>${entry.correct}/${entry.total}</div>
+                    <div>${entry.percentage}%</div>
+                    <div class="hide-mobile">${formatDuration(entry.durationSeconds)}</div>
+                  </div>
+                `;
+              })
+              .join("")}
+          `;
+        } catch (error) {
+          container.textContent = error.message;
+        }
       }
     </script>
   </body>

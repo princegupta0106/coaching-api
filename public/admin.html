@@ -105,6 +105,9 @@
         cursor: pointer;
         transition: background 0.2s;
         border-left: 3px solid transparent;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .nav-item:hover {
@@ -114,6 +117,37 @@
         background: rgba(102, 126, 234, 0.1);
         border-left-color: var(--accent-color);
         color: var(--accent-color);
+      }
+
+      .bottom-nav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        background: var(--bg-primary);
+        border-top: 1px solid var(--border-color);
+        justify-content: space-around;
+        align-items: center;
+        z-index: 200;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .bottom-nav .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 12px;
+        font-size: 12px;
+        border-left: none;
+      }
+
+      .nav-icon {
+        font-size: 20px;
       }
 
       .user-profile {
@@ -482,6 +516,28 @@
           padding: 20px 15px;
         }
       }
+
+      @media (max-width: 720px) {
+        .sidebar {
+          display: none;
+        }
+
+        .main-content {
+          padding: 18px 14px 90px;
+        }
+
+        .page-title {
+          font-size: 22px;
+        }
+
+        .card {
+          padding: 18px;
+        }
+
+        .bottom-nav {
+          display: flex;
+        }
+      }
     </style>
   </head>
   <body>
@@ -492,16 +548,24 @@
       </div>
 
       <div class="nav-menu">
-        <div class="nav-item active" onclick="showView('students')">
+        <div
+          class="nav-item active"
+          data-view="students"
+          onclick="showView('students')"
+        >
           <i class="fas fa-users"></i> Student Sets
         </div>
-        <div class="nav-item" onclick="showView('users')">
+        <div class="nav-item" data-view="users" onclick="showView('users')">
           <i class="fas fa-user-shield"></i> Manage Users
         </div>
-        <div class="nav-item" onclick="showView('bulk')">
+        <div class="nav-item" data-view="bulk" onclick="showView('bulk')">
           <i class="fas fa-upload"></i> Bulk Upload
         </div>
-        <div class="nav-item" onclick="showView('institution')">
+        <div
+          class="nav-item"
+          data-view="institution"
+          onclick="showView('institution')"
+        >
           <i class="fas fa-building"></i> Institution
         </div>
       </div>
@@ -517,6 +581,33 @@
     </div>
 
     <div class="main-content" id="mainContent"></div>
+
+    <div class="bottom-nav">
+      <div
+        class="nav-item active"
+        data-view="students"
+        onclick="showView('students')"
+      >
+        <div class="nav-icon"><i class="fas fa-users"></i></div>
+        <div>Students</div>
+      </div>
+      <div class="nav-item" data-view="users" onclick="showView('users')">
+        <div class="nav-icon"><i class="fas fa-user-shield"></i></div>
+        <div>Users</div>
+      </div>
+      <div class="nav-item" data-view="bulk" onclick="showView('bulk')">
+        <div class="nav-icon"><i class="fas fa-upload"></i></div>
+        <div>Bulk</div>
+      </div>
+      <div
+        class="nav-item"
+        data-view="institution"
+        onclick="showView('institution')"
+      >
+        <div class="nav-icon"><i class="fas fa-building"></i></div>
+        <div>Institute</div>
+      </div>
+    </div>
 
     <div class="modal" id="studentModal">
       <div class="modal-content">
@@ -663,26 +754,23 @@
         }
       }
 
-      function showView(view) {
-        // Remove active class from all nav items
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
+
+      function setActiveNav(view) {
         document
           .querySelectorAll(".nav-item")
           .forEach((item) => item.classList.remove("active"));
 
-        // Add active class to the clicked item (if called from onclick event)
-        // or find the matching nav item by view name
-        const navItems = document.querySelectorAll(".nav-item");
-        navItems.forEach((item) => {
-          const itemText = item.textContent.toLowerCase().trim();
-          if (
-            (view === "students" && itemText.includes("student sets")) ||
-            (view === "users" && itemText.includes("manage users")) ||
-            (view === "bulk" && itemText.includes("bulk upload")) ||
-            (view === "institution" && itemText.includes("institution"))
-          ) {
-            item.classList.add("active");
-          }
-        });
+        document
+          .querySelectorAll(`.nav-item[data-view="${view}"]`)
+          .forEach((item) => item.classList.add("active"));
+      }
+
+      function showView(view) {
+        setActiveNav(view);
+        scrollToTop();
 
         if (view === "students") showStudentsView();
         else if (view === "users") showUsersView();
@@ -1256,6 +1344,14 @@
               <input type="email" id="newUserEmail" required placeholder="user@example.com" />
             </div>
             <div class="form-group">
+              <label>Student Name</label>
+              <input type="text" id="newUserFullName" placeholder="Full name" />
+            </div>
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input type="text" id="newUserMobile" placeholder="10-digit mobile" />
+            </div>
+            <div class="form-group">
               <label>Password</label>
               <input type="password" id="newUserPassword" required placeholder="Minimum 6 characters" />
             </div>
@@ -1266,6 +1362,10 @@
                 <option value="staff">Staff</option>
                 <option value="admin">Admin</option>
               </select>
+            </div>
+            <div class="form-group">
+              <label>Allowed Exams (comma separated)</label>
+              <input type="text" id="newUserAllowedExams" placeholder="jee-main, neet" />
             </div>
             <button type="submit" class="btn btn-primary">Create User</button>
           </form>
@@ -1308,6 +1408,12 @@
               <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
                 Role: ${u.role} | Institution: ${u.institution || "N/A"}
               </div>
+              <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+                Name: ${u.full_name || "-"} | Mobile: ${u.mobile_number || "-"}
+              </div>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                Exams: ${(u.allowed_exams || []).join(", ") || "All"}
+              </div>
             </div>
             <div class="set-actions">
               <button class="btn btn-danger btn-small" onclick="deleteUser('${u.email}')">Delete</button>
@@ -1323,8 +1429,23 @@
         event.preventDefault();
 
         const email = document.getElementById("newUserEmail").value.trim();
+        const fullName = document
+          .getElementById("newUserFullName")
+          .value.trim();
+        const mobileNumber = document
+          .getElementById("newUserMobile")
+          .value.trim();
         const password = document.getElementById("newUserPassword").value;
         const role = document.getElementById("newUserRole").value;
+        const allowedExamsInput = document
+          .getElementById("newUserAllowedExams")
+          .value.trim();
+        const allowedExams = allowedExamsInput
+          ? allowedExamsInput
+              .split(",")
+              .map((v) => v.trim())
+              .filter(Boolean)
+          : [];
 
         try {
           const response = await fetch(`${API_URL}/users/create`, {
@@ -1333,7 +1454,14 @@
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ email, password, role }),
+            body: JSON.stringify({
+              email,
+              password,
+              role,
+              fullName,
+              mobileNumber,
+              allowedExams,
+            }),
           });
 
           const data = await response.json();
@@ -1341,7 +1469,10 @@
           if (response.ok) {
             showMessage("User created successfully!", "success");
             document.getElementById("newUserEmail").value = "";
+            document.getElementById("newUserFullName").value = "";
+            document.getElementById("newUserMobile").value = "";
             document.getElementById("newUserPassword").value = "";
+            document.getElementById("newUserAllowedExams").value = "";
             loadUsers();
           } else {
             showMessage(data.error || "Failed to create user", "error");

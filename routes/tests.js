@@ -19,6 +19,15 @@ function uniqueArray(values) {
 
 function parseTimestamp(value) {
   if (!value) return null;
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+    const hasTimezone = /[zZ]|[+-]\d{2}:?\d{2}$/.test(trimmed);
+    const normalized = trimmed.length === 16 ? `${trimmed}:00` : trimmed;
+    const withOffset = hasTimezone ? normalized : `${normalized}+05:30`;
+    const date = new Date(withOffset);
+    return Number.isNaN(date.getTime()) ? null : date.toISOString();
+  }
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
@@ -42,6 +51,18 @@ function isStartWindowOpen(test, now) {
     if (!Number.isNaN(lastStartTime) && nowTime > lastStartTime) return false;
   }
   return true;
+}
+
+async function canStudentAccessTest(test, studentEmail) {
+  if (test.is_public) return true;
+  const { data: studentSets } = await supabase
+    .from("student_sets")
+    .select("id")
+    .contains("students", [studentEmail]);
+
+  const studentSetIds = (studentSets || []).map((set) => set.id);
+  const assigned = test.assigned_student_sets || [];
+  return assigned.some((setId) => studentSetIds.includes(setId));
 }
 
 // Create a new test (staff only)
@@ -564,6 +585,95 @@ router.post("/:testId/submit", verifyToken, async (req, res) => {
   } catch (error) {
     console.error("Submit test error:", error);
     res.status(500).json({ error: "Failed to submit test" });
+  }
+});
+
+// Leaderboard for a test
+router.get("/:testId/leaderboard", verifyToken, async (req, res) => {
+  try {
+    const { testId } = req.params;
+    const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100);
+
+    const { data: test, error: testError } = await supabase
+      .from("tests")
+      .select(
+        "id, name, institution, created_by, is_public, assigned_student_sets",
+      )
+      .eq("id", testId)
+      .single();
+
+    if (testError || !test) {
+      return res.status(404).json({ error: "Test not found" });
+    }
+
+    if (test.institution !== req.user.institution) {
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    if (req.user.role === "staff" && test.created_by !== req.user.email) {
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    if (req.user.role === "student") {
+      const allowed = await canStudentAccessTest(test, req.user.email);
+      if (!allowed) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+    }
+
+    const { data: attempts, error } = await supabase
+      .from("test_attempts")
+      .select("id, student_email, score, total, duration_seconds, submitted_at")
+      .eq("test_id", testId)
+      .eq("status", "submitted")
+      .order("score", { ascending: false })
+      .order("duration_seconds", { ascending: true })
+      .order("submitted_at", { ascending: true })
+      .limit(limit);
+
+    if (error) throw error;
+
+    const attemptEmails = (attempts || []).map((a) => a.student_email);
+    const { data: usersData } = await supabase
+      .from("users")
+      .select("email, full_name")
+      .in("email", attemptEmails.length ? attemptEmails : ["__none__"]);
+    const nameMap = new Map(
+      (usersData || []).map((u) => [u.email, u.full_name]),
+    );
+
+    const leaderboard = (attempts || []).map((attempt, index) => {
+      const correct = Number.isFinite(attempt.score) ? attempt.score : 0;
+      const total = Number.isFinite(attempt.total) ? attempt.total : 0;
+      const percentage = total ? Math.round((correct / total) * 100) : 0;
+      const displayName =
+        nameMap.get(attempt.student_email) ||
+        (attempt.student_email || "").split("@")[0].replace(/\./g, " ");
+      return {
+        rank: index + 1,
+        attemptId: attempt.id,
+        email: attempt.student_email,
+        name: displayName || attempt.student_email,
+        correct,
+        total,
+        percentage,
+        durationSeconds: attempt.duration_seconds || 0,
+        submittedAt: attempt.submitted_at,
+      };
+    });
+
+    const me = leaderboard.find((entry) => entry.email === req.user.email);
+
+    res.json({
+      test,
+      totalCount: leaderboard.length,
+      topFive: leaderboard.slice(0, 5),
+      leaderboard,
+      me: me || null,
+    });
+  } catch (error) {
+    console.error("Leaderboard error:", error);
+    res.status(500).json({ error: "Failed to fetch leaderboard" });
   }
 });
 

@@ -603,7 +603,7 @@
             .map(
               (exam) => `
             <div class="card" onclick="loadSubjects('${exam.id}')">
-              <div class="card-title">${exam.id}</div>
+              <div class="card-title">${exam.name || exam.id}</div>
             </div>
           `,
             )
@@ -650,7 +650,7 @@
             .map(
               (subject) => `
             <div class="card" onclick="loadQuestionSets('${subject.id}')">
-              <div class="card-title">${subject.id}</div>
+              <div class="card-title">${subject.name || subject.id}</div>
             </div>
           `,
             )
@@ -1155,7 +1155,7 @@
             if (qsResponse.ok) {
               const qsData = await qsResponse.json();
               randomSubjectsData[subject.id] = {
-                name: subject.id,
+                name: subject.name || subject.id,
                 questionSets: qsData.questionSets || [],
               };
             }

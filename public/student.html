@@ -35,6 +35,10 @@
         box-sizing: border-box;
       }
 
+      html {
+        font-size: 90%;
+      }
+
       :root {
         --bg-primary: #ffffff;
         --bg-secondary: #f8f9fa;
@@ -207,8 +211,8 @@
       }
 
       .question-nav-box.seen {
-        background: #ffd700;
-        border-color: #ffd700;
+        background: #93c5fd;
+        border-color: #93c5fd;
       }
 
       .question-nav-box.correct {
@@ -244,6 +248,9 @@
         margin-bottom: 8px;
         background: transparent;
         transition: background 0.2s;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .sidebar-link:hover {
@@ -375,6 +382,14 @@
       .user-email {
         font-size: 12px;
         color: var(--text-secondary);
+      }
+
+      .sidebar .user-name {
+        color: #ffffff;
+      }
+
+      .sidebar .user-email {
+        color: var(--sidebar-text);
       }
 
       /* Main Content */
@@ -517,8 +532,8 @@
       }
 
       .question-box.seen {
-        background: #ffd700;
-        border-color: #ffd700;
+        background: #93c5fd;
+        border-color: #93c5fd;
       }
 
       .question-box.correct {
@@ -730,6 +745,73 @@
         flex-wrap: wrap;
       }
 
+      .bookmark-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 1px solid var(--border-color);
+        background: transparent;
+        color: #ec4899;
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .bookmark-icon.active {
+        background: rgba(236, 72, 153, 0.15);
+        border-color: #ec4899;
+        color: #ec4899;
+      }
+
+      .bookmark-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .bookmark-item {
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        border-radius: 8px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+
+      .bookmark-item:hover {
+        border-color: var(--accent-color);
+        background: var(--bg-secondary);
+      }
+
+      .bookmark-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .bookmark-title {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .bookmark-meta {
+        margin-top: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .bookmark-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
       .btn {
         padding: 8px 16px;
         border: none;
@@ -781,6 +863,11 @@
         background: var(--border-color);
       }
 
+      .btn-small {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
       .btn-solution {
         background: #667eea;
         color: white;
@@ -811,6 +898,10 @@
 
       /* Mobile Styles */
       @media (max-width: 720px) {
+        body {
+          font-size: 90%;
+        }
+
         .sidebar {
           display: none;
         }
@@ -861,7 +952,25 @@
         }
 
         .question-content-box {
-          padding: 20px;
+          padding: 16px;
+        }
+
+        .card {
+          padding: 16px;
+        }
+
+        .question-text {
+          font-size: 16px;
+        }
+
+        .option-item {
+          font-size: 14px;
+          padding: 8px 12px;
+        }
+
+        .btn {
+          padding: 7px 12px;
+          font-size: 12px;
         }
       }
 
@@ -872,12 +981,24 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: 70px;
+        height: 60px;
         background: var(--bg-primary);
         border-top: 1px solid var(--border-color);
-        justify-content: space-around;
+        justify-content: space-evenly;
         align-items: center;
         z-index: 100;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        touch-action: manipulation;
+        gap: 12px;
+      }
+
+      .bottom-nav * {
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
       }
 
       .nav-item {
@@ -885,10 +1006,13 @@
         flex-direction: column;
         align-items: center;
         gap: 4px;
-        padding: 8px 12px;
+        padding: 6px 8px;
         cursor: pointer;
         color: var(--text-secondary);
-        font-size: 12px;
+        font-size: 11px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
       }
 
       .nav-item.active {
@@ -896,7 +1020,7 @@
       }
 
       .nav-icon {
-        font-size: 24px;
+        font-size: 20px;
       }
 
       .explanation-box {
@@ -966,6 +1090,7 @@
         >
           ⏱️ Tests
         </div>
+        <div class="sidebar-link" onclick="showBookmarks()">🔖 Bookmarks</div>
       </div>
 
       <div class="exam-list" id="examList">
@@ -1029,23 +1154,23 @@
 
     <!-- Bottom Navigation (Mobile) -->
     <div class="bottom-nav">
-      <div class="nav-item active" onclick="showHome()">
+      <div class="nav-item active" data-view="home" onclick="showHome()">
         <div class="nav-icon">🏠</div>
         <div>Home</div>
       </div>
-      <div class="nav-item" onclick="showExams()">
-        <div class="nav-icon">📚</div>
-        <div>Exams</div>
+      <div class="nav-item" data-view="bookmarks" onclick="showBookmarks()">
+        <div class="nav-icon">🔖</div>
+        <div>Bookmarks</div>
       </div>
-      <div class="nav-item" onclick="showDPPs()">
-        <div class="nav-icon">📝</div>
-        <div>DPPs</div>
-      </div>
-      <div class="nav-item" onclick="window.location.href = '/tests.html'">
+      <div
+        class="nav-item"
+        data-view="tests"
+        onclick="window.location.href = '/tests.html'"
+      >
         <div class="nav-icon">⏱️</div>
         <div>Tests</div>
       </div>
-      <div class="nav-item" onclick="showProfile()">
+      <div class="nav-item" data-view="profile" onclick="showProfile()">
         <div class="nav-icon">👤</div>
         <div>Profile</div>
       </div>
@@ -1058,7 +1183,7 @@
           ? "http://localhost:3000/api"
           : `${window.location.origin}/api`;
       const token = localStorage.getItem("token");
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      let user = JSON.parse(localStorage.getItem("user") || "{}");
 
       // Debug logging
       console.log("[INIT] API URL:", API_URL);
@@ -1073,6 +1198,8 @@
       let questionStatus = {};
       let selectedAnswer = null;
       let accessSets = []; // Store loaded access sets with full details
+      let bookmarks = [];
+      let bookmarkedQuestions = [];
 
       // Navigation history stack and current view state
       let navigationHistory = JSON.parse(
@@ -1112,14 +1239,8 @@
           return;
         }
 
-        // Set user info
-        document.getElementById("userName").textContent =
-          user.email.split("@")[0];
-        document.getElementById("userEmail").textContent = user.email;
-        document.getElementById("userAvatar").textContent =
-          user.email[0].toUpperCase();
-        document.getElementById("institutionName").textContent =
-          user.institution || "Institution";
+        await refreshUserProfile();
+        applyUserProfile();
 
         // Load dark mode preference
         const isDark = localStorage.getItem("darkMode") === "true";
@@ -1132,6 +1253,7 @@
         await loadExams();
         await loadQuestionStatus();
         await loadAccessSets();
+        await loadBookmarks();
 
         // URL-based routing - parse hash
         handleRouteFromURL();
@@ -1139,6 +1261,51 @@
         // Listen for URL changes
         window.addEventListener("hashchange", handleRouteFromURL);
       });
+
+      async function refreshUserProfile() {
+        try {
+          const response = await fetch(`${API_URL}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) return;
+
+          const data = await response.json();
+          if (data.user) {
+            user = data.user;
+            localStorage.setItem("user", JSON.stringify(user));
+          }
+        } catch (error) {
+          console.error("Failed to refresh user profile:", error);
+        }
+      }
+
+      function getDisplayName() {
+        const fullName = `${user.full_name || ""}`.trim();
+        if (fullName) return fullName;
+        if (user.email) return user.email.split("@")[0];
+        return "Student";
+      }
+
+      function applyUserProfile() {
+        const displayName = getDisplayName();
+        document.getElementById("userName").textContent = displayName;
+        document.getElementById("userEmail").textContent = user.email || "";
+        const avatarSource = displayName || user.email || "S";
+        document.getElementById("userAvatar").textContent =
+          avatarSource[0].toUpperCase();
+        document.getElementById("institutionName").textContent =
+          user.institution || "Institution";
+      }
+
+      function renderWithDelay(renderFn, delayMs = 1000) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            renderFn();
+            resolve();
+          }, delayMs);
+        });
+      }
 
       // URL-based routing handler
       async function handleRouteFromURL() {
@@ -1187,9 +1354,46 @@
               displayQuestionViewer();
             }
           }, 100);
+        } else if (route === "bookmarks") {
+          const questionIndex =
+            parts[1] === "q" && parts[2] ? parseInt(parts[2]) : null;
+          if (
+            Number.isFinite(questionIndex) &&
+            currentView.type === "bookmarks" &&
+            currentQuestionIndex === questionIndex &&
+            document.querySelector(".question-viewer")
+          ) {
+            return;
+          }
+
+          await showBookmarks(true);
+          if (Number.isFinite(questionIndex)) {
+            setTimeout(() => {
+              if (bookmarkedQuestions.length > 0) {
+                openBookmarkQuestion(questionIndex);
+              }
+            }, 100);
+          }
+          return;
+        } else if (route === "profile") {
+          showProfile();
+          return;
         } else {
           await showHome();
         }
+      }
+
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
+
+      function setActiveNav(view) {
+        document
+          .querySelectorAll(".bottom-nav .nav-item")
+          .forEach((item) => item.classList.remove("active"));
+        document
+          .querySelectorAll(`.bottom-nav .nav-item[data-view="${view}"]`)
+          .forEach((item) => item.classList.add("active"));
       }
 
       function toggleDarkMode() {
@@ -1257,6 +1461,8 @@
           } else {
             showHome();
           }
+        } else if (currentView.type === "bookmarks") {
+          showBookmarks();
         } else {
           showHome();
         }
@@ -1311,6 +1517,248 @@
         }
       }
 
+      async function loadBookmarks() {
+        try {
+          const response = await fetch(`${API_URL}/users/bookmarks`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const raw = data.bookmarks;
+            if (Array.isArray(raw)) {
+              bookmarks = raw.map((id) => `${id}`.trim()).filter(Boolean);
+            } else if (typeof raw === "string") {
+              bookmarks = raw
+                .replace(/[{}]/g, "")
+                .split(",")
+                .map((id) => id.trim())
+                .filter(Boolean);
+            } else {
+              bookmarks = [];
+            }
+          } else {
+            bookmarks = [];
+          }
+        } catch (error) {
+          console.error("Error loading bookmarks:", error);
+          bookmarks = [];
+        }
+      }
+
+      function isBookmarked(questionId) {
+        return bookmarks.includes(`${questionId}`.trim());
+      }
+
+      async function addBookmark(questionId) {
+        const response = await fetch(`${API_URL}/users/bookmarks`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ questionId: `${questionId}`.trim() }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : [];
+        }
+      }
+
+      async function removeBookmark(questionId) {
+        const response = await fetch(
+          `${API_URL}/users/bookmarks/${encodeURIComponent(
+            `${questionId}`.trim(),
+          )}`,
+          {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : [];
+        }
+      }
+
+      async function toggleBookmark(questionId) {
+        if (isBookmarked(questionId)) {
+          await removeBookmark(questionId);
+        } else {
+          await addBookmark(questionId);
+        }
+
+        const button = document.getElementById("bookmarkToggle");
+        if (button) {
+          const active = isBookmarked(questionId);
+          button.innerHTML = active ? "&#9829;" : "&#9825;";
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+        }
+      }
+
+      function getPlainTextFromHtml(html) {
+        if (!html) return "";
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = html;
+        return (tempDiv.textContent || tempDiv.innerText || "").trim();
+      }
+
+      function getQuestionTypeInfo(questionType) {
+        if (questionType === "numerical") {
+          return { label: "Numerical", color: "#f59e0b" };
+        }
+        if (questionType === "mcq_multiple") {
+          return { label: "Multiple Correct MCQ", color: "#0ea5e9" };
+        }
+        if (questionType === "other" || questionType === "subjective") {
+          return { label: "Subjective", color: "#8b5cf6" };
+        }
+        return { label: "Single Correct MCQ", color: "#22c55e" };
+      }
+
+      async function showBookmarks(skipHashUpdate = false) {
+        saveViewState("bookmarks");
+        if (!skipHashUpdate) {
+          const targetHash = "#bookmarks";
+          if (!window.location.hash.startsWith(targetHash)) {
+            window.location.hash = "bookmarks";
+          }
+        }
+        setActiveNav("bookmarks");
+
+        const content = document.getElementById("mainContent");
+        const sidebar = document.getElementById("sidebar");
+        const examList = document.getElementById("examList");
+        const questionNavSidebar =
+          document.getElementById("questionNavSidebar");
+
+        sidebar.classList.remove("viewing-question");
+        content.classList.remove("viewing-question");
+        examList.style.display = "none";
+        questionNavSidebar.style.display = "none";
+
+        await renderWithDelay(() => {
+          content.innerHTML = `
+            <div class="back-button" onclick="showHome()">← Back</div>
+            <h2 class="section-title">Bookmarks</h2>
+            <div id="bookmarksContainer">Loading bookmarks...</div>
+          `;
+        });
+
+        try {
+          await loadBookmarks();
+
+          if (!bookmarks.length) {
+            document.getElementById("bookmarksContainer").innerHTML =
+              '<p style="color: var(--text-secondary);">No bookmarks yet.</p>';
+            return;
+          }
+
+          const response = await fetch(`${API_URL}/users/bookmarks/questions`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to load bookmarked questions");
+          }
+
+          const data = await response.json();
+          const questions = data.questions || [];
+          bookmarkedQuestions = questions;
+
+          if (!bookmarkedQuestions.length) {
+            document.getElementById("bookmarksContainer").innerHTML =
+              '<p style="color: var(--text-secondary);">No bookmarked questions found.</p>';
+            return;
+          }
+
+          document.getElementById("bookmarksContainer").innerHTML = `
+            <div class="bookmark-list">
+              ${bookmarkedQuestions
+                .map((question, index) => {
+                  const questionHtml =
+                    question.question_html ||
+                    question.content?.question_html ||
+                    "";
+                  const previewRaw =
+                    getPlainTextFromHtml(questionHtml) ||
+                    "Question not available";
+                  const preview =
+                    previewRaw.length > 180
+                      ? `${previewRaw.slice(0, 180)}...`
+                      : previewRaw;
+                  const subjectLabel =
+                    question.subject_name ||
+                    question.subject ||
+                    question.metadata?.subject_name ||
+                    question.metadata?.subject ||
+                    "";
+                  const chapterLabel =
+                    question.chapter_name || question.chapter || "";
+                  const examLabel =
+                    question.exam_name ||
+                    question.metadata?.exam ||
+                    question.exam ||
+                    "";
+                  const typeInfo = getQuestionTypeInfo(
+                    question.question_type || "mcq_single",
+                  );
+
+                  const tags = [
+                    `<div class="question-type-badge" style="background: ${typeInfo.color}">${typeInfo.label}</div>`,
+                    examLabel
+                      ? `<div class="question-type-badge" style="background: #14b8a6">${examLabel}</div>`
+                      : "",
+                    subjectLabel
+                      ? `<div class="question-type-badge" style="background: #06b6d4">${subjectLabel}</div>`
+                      : "",
+                    chapterLabel
+                      ? `<div class="question-type-badge" style="background: #84cc16">${chapterLabel}</div>`
+                      : "",
+                  ]
+                    .filter(Boolean)
+                    .join("");
+
+                  return `
+                    <div class="bookmark-item" onclick="openBookmarkQuestion(${index})">
+                      <div class="bookmark-header">
+                        <div class="bookmark-title">Q${index + 1}. ${preview}</div>
+                        <div class="bookmark-actions">
+                          <button class="btn btn-secondary btn-small" onclick="event.stopPropagation(); openBookmarkQuestion(${index})">Open</button>
+                          <button class="btn btn-secondary btn-small" onclick="event.stopPropagation(); toggleBookmark('${question.id}'); showBookmarks();">Remove</button>
+                        </div>
+                      </div>
+                      <div class="bookmark-meta">${tags}</div>
+                    </div>
+                  `;
+                })
+                .join("")}
+            </div>
+          `;
+
+          if (window.MathJax) {
+            MathJax.typesetPromise([content]).catch((err) =>
+              console.log("MathJax render error:", err),
+            );
+          }
+        } catch (error) {
+          document.getElementById("bookmarksContainer").textContent =
+            error.message;
+        }
+      }
+
+      function openBookmarkQuestion(index) {
+        if (!bookmarkedQuestions.length) return;
+        currentQuestions = bookmarkedQuestions;
+        currentQuestionIndex = Math.max(0, index);
+        saveViewState("bookmarks", { questionIndex: currentQuestionIndex });
+        window.location.hash = `bookmarks/q/${currentQuestionIndex}`;
+        displayQuestionViewer();
+      }
+
       function displaySidebarExams() {
         const container = document.getElementById("examList");
 
@@ -1319,7 +1767,7 @@
             (exam) => `
               <div class="exam-item">
                 <div class="exam-header" onclick="toggleExam('${exam.id}')">
-                  <span>${exam.id}</span>
+                  <span>${exam.name || exam.id}</span>
                   <span>▼</span>
                 </div>
                 <div class="subject-list" id="subjects-${exam.id}">
@@ -1355,8 +1803,8 @@
             subjectList.innerHTML = subjects
               .map(
                 (subject) => `
-                  <div class="subject-item" onclick="selectSubject('${examId}', '${subject.id}')">
-                    ${subject.id}
+                  <div class="subject-item" onclick="selectSubject('${examId}', '${subject.id}', '${subject.name || subject.id}')">
+                    ${subject.name || subject.id}
                   </div>
                 `,
               )
@@ -1369,8 +1817,30 @@
         }
       }
 
+      async function resolveSubjectName(examId, subjectId) {
+        try {
+          const response = await fetch(
+            `${API_URL}/questions/exams/${examId}/subjects`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (!response.ok) {
+            return subjectId;
+          }
+
+          const data = await response.json();
+          const match = (data.subjects || []).find((s) => s.id === subjectId);
+          return match?.name || match?.id || subjectId;
+        } catch (error) {
+          return subjectId;
+        }
+      }
+
       async function selectSubjectRestore(examId, subjectId) {
-        document.getElementById("topbarTitle").textContent = subjectId;
+        const subjectName = await resolveSubjectName(examId, subjectId);
+        document.getElementById("topbarTitle").textContent = subjectName;
 
         try {
           const response = await fetch(
@@ -1383,7 +1853,7 @@
           if (response.ok) {
             const data = await response.json();
             currentChapters = data.questionSets || [];
-            displayChapterList(subjectId);
+            displayChapterList(subjectName);
           } else if (response.status === 401 || response.status === 403) {
             console.error("Authentication failed. Redirecting to login.");
             alert("Session expired. Please login again.");
@@ -1403,13 +1873,14 @@
         }
       }
 
-      async function selectSubject(examId, subjectId) {
+      async function selectSubject(examId, subjectId, subjectName) {
         saveViewState("subject", { examId, subjectId });
 
         // Update URL
         window.location.hash = `subject/${examId}/${subjectId}`;
 
-        document.getElementById("topbarTitle").textContent = subjectId;
+        const displayName = subjectName || subjectId;
+        document.getElementById("topbarTitle").textContent = displayName;
 
         console.log(`[SELECT SUBJECT] Loading chapters for: ${subjectId}`);
         console.log(`[SELECT SUBJECT] API_URL: ${API_URL}`);
@@ -1438,7 +1909,7 @@
           if (response.ok) {
             const data = await response.json();
             currentChapters = data.questionSets || [];
-            displayChapterList(subjectId);
+            displayChapterList(displayName);
           } else if (response.status === 401 || response.status === 403) {
             console.error("Authentication failed. Redirecting to login.");
             alert("Session expired. Please login again.");
@@ -1461,25 +1932,26 @@
       function displayChapterList(subjectName) {
         const content = document.getElementById("mainContent");
 
-        content.innerHTML = `
-              <div class="back-button" onclick="goBack()">← Back</div>
-              <h2 class="section-title">${subjectName} - Chapters</h2>
-              <div class="chapter-list">
-                ${currentChapters
-                  .map(
-                    (chapter) => `
-                  <div class="chapter-item-card" onclick="loadChapterQuestions('${chapter.id}', '${chapter.name}')">
-                    <div>
-                      <div style="font-weight: 600; margin-bottom: 5px;">${chapter.name}</div>
-                      <div style="font-size: 14px; color: var(--text-secondary);">${chapter.id}</div>
+        renderWithDelay(() => {
+          content.innerHTML = `
+                <div class="back-button" onclick="goBack()">← Back</div>
+                <h2 class="section-title">${subjectName} - Chapters</h2>
+                <div class="chapter-list">
+                  ${currentChapters
+                    .map(
+                      (chapter) => `
+                    <div class="chapter-item-card" onclick="loadChapterQuestions('${chapter.id}', '${chapter.name}')">
+                      <div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">${chapter.name}</div>
+                      </div>
+                      <div>→</div>
                     </div>
-                    <div>→</div>
-                  </div>
-                `,
-                  )
-                  .join("")}
-              </div>
-            `;
+                  `,
+                    )
+                    .join("")}
+                </div>
+              `;
+        });
       }
 
       async function loadChapterQuestionsRestore(chapterId, chapterName) {
@@ -1591,22 +2063,24 @@
       function displayQuestionGrid(chapterName) {
         const content = document.getElementById("mainContent");
 
-        content.innerHTML = `
-              <div class="back-button" onclick="goBack()">← Back</div>
-              <h2 class="section-title">${chapterName}</h2>
-              <div class="question-grid">
-                ${currentQuestions
-                  .map((q, index) => {
-                    const status = questionStatus[q.id] || "unseen";
-                    return `
-                    <div class="question-box ${status}" onclick="openQuestion(${index})">
-                      ${index + 1}
-                    </div>
-                  `;
-                  })
-                  .join("")}
-              </div>
-            `;
+        renderWithDelay(() => {
+          content.innerHTML = `
+                <div class="back-button" onclick="goBack()">← Back</div>
+                <h2 class="section-title">${chapterName}</h2>
+                <div class="question-grid">
+                  ${currentQuestions
+                    .map((q, index) => {
+                      const status = questionStatus[q.id] || "unseen";
+                      return `
+                      <div class="question-box ${status}" onclick="openQuestion(${index})">
+                        ${index + 1}
+                      </div>
+                    `;
+                    })
+                    .join("")}
+                </div>
+              `;
+        });
       }
 
       async function openQuestion(index) {
@@ -1827,40 +2301,46 @@
               </div>
             `;
 
-        content.innerHTML = `
-              <div class="question-viewer">
-                <div class="back-button" onclick="exitQuestionViewer()">
-                  ← Back to Questions
-                </div>
-                <div class="question-content-box">
-                  <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px;">
-                    ${metadataTags}
+        const bookmarked = isBookmarked(question.id);
+
+        renderWithDelay(() => {
+          content.innerHTML = `
+                <div class="question-viewer">
+                  <div class="back-button" onclick="exitQuestionViewer()">
+                    ← Back to Questions
                   </div>
-                  <div class="validation-message" id="validationMessage"></div>
-                  <div class="question-text">${questionHTML}</div>
+                  <div class="question-content-box">
+                    <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px;">
+                      ${metadataTags}
+                    </div>
+                    <div class="validation-message" id="validationMessage"></div>
+                    <div class="question-text">${questionHTML}</div>
 
-                  ${answerSection}
+                    ${answerSection}
 
-                  <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="submitAnswer()">Submit</button>
-                    <button class="btn btn-solution" onclick="showSolution()">Show Solution</button>
-                    ${currentQuestionIndex > 0 ? '<button class="btn btn-secondary" onclick="previousQuestion()">Previous</button>' : ""}
-                    ${currentQuestionIndex < currentQuestions.length - 1 ? '<button class="btn btn-secondary" onclick="nextQuestion()">Next</button>' : ""}
+                    <div class="action-buttons">
+                      <button class="btn btn-primary" onclick="submitAnswer()">Check</button>
+                      <button class="btn btn-solution" onclick="showSolution()">Solution</button>
+                      <button class="bookmark-icon ${bookmarked ? "active" : ""}" id="bookmarkToggle" onclick="toggleBookmark('${question.id}')" aria-pressed="${bookmarked ? "true" : "false"}">
+                        ${bookmarked ? "&#9829;" : "&#9825;"}
+                      </button>
+                      ${currentQuestionIndex > 0 ? '<button class="btn btn-secondary" onclick="previousQuestion()">&#8592;</button>' : ""}
+                      ${currentQuestionIndex < currentQuestions.length - 1 ? '<button class="btn btn-secondary" onclick="nextQuestion()">&#8594;</button>' : ""}
+                    </div>
+
+                    <div id="explanationContainer"></div>
                   </div>
 
-                  <div id="explanationContainer"></div>
+                  ${mobileNav}
                 </div>
+              `;
 
-                ${mobileNav}
-              </div>
-            `;
-
-        // Render MathJax after content is inserted
-        if (window.MathJax) {
-          MathJax.typesetPromise([content]).catch((err) =>
-            console.log("MathJax render error:", err),
-          );
-        }
+          if (window.MathJax) {
+            MathJax.typesetPromise([content]).catch((err) =>
+              console.log("MathJax render error:", err),
+            );
+          }
+        });
       }
 
       function exitQuestionViewer() {
@@ -1872,7 +2352,8 @@
 
         sidebar.classList.remove("viewing-question");
         content.classList.remove("viewing-question");
-        examList.style.display = "block";
+        examList.style.display =
+          currentView.type === "bookmarks" ? "none" : "block";
         questionNavSidebar.style.display = "none";
 
         // Clear saved state
@@ -2100,6 +2581,14 @@
           return;
         }
 
+        if (currentView.type === "bookmarks") {
+          currentQuestionIndex = index;
+          window.location.hash = `bookmarks/q/${index}`;
+          saveViewState("bookmarks", { questionIndex: index });
+          displayQuestionViewer();
+          return;
+        }
+
         currentQuestionIndex = index;
         const question = currentQuestions[index];
 
@@ -2216,6 +2705,8 @@
 
       async function showHome() {
         saveViewState("home");
+        setActiveNav("home");
+        window.location.hash = "";
 
         document.getElementById("topbarTitle").textContent = "Dashboard";
         const content = document.getElementById("mainContent");
@@ -2230,43 +2721,45 @@
         examList.style.display = "block";
         questionNavSidebar.style.display = "none";
 
-        content.innerHTML = `
-              <div class="welcome-section">
-                <h1 class="welcome-title">Welcome, ${user.email.split("@")[0]}! 👋</h1>
-              </div>
-
-              ${currentExams
-                .map(
-                  (exam) => `
-                <div>
-                  <h2 class="section-title">${exam.id}</h2>
-                  <div class="card-grid" id="subjects-home-${exam.id}">
-                    <!-- Subjects will be loaded -->
-                  </div>
-                  <div class="section-divider"></div>
+        await renderWithDelay(() => {
+          content.innerHTML = `
+                <div class="welcome-section">
+                  <h1 class="welcome-title">Welcome, ${getDisplayName()}! 👋</h1>
                 </div>
-              `,
-                )
-                .join("")}
 
-              <h2 class="section-title">Shared Question Sets</h2>
-              <div class="card-grid">
-                ${
-                  accessSets.length > 0
-                    ? accessSets
-                        .map(
-                          (dpp) => `
-                  <div class="card" onclick="openDPP('${dpp.id}')">
-                    <div class="card-title">${dpp.name}</div>
-                    <div class="card-subtitle">${(dpp.question_ids || []).length} Questions</div>
+                ${currentExams
+                  .map(
+                    (exam) => `
+                  <div>
+                    <h2 class="section-title">${exam.name || exam.id}</h2>
+                    <div class="card-grid" id="subjects-home-${exam.id}">
+                      <!-- Subjects will be loaded -->
+                    </div>
+                    <div class="section-divider"></div>
                   </div>
                 `,
-                        )
-                        .join("")
-                    : '<p style="color: var(--text-secondary);">No shared sets available yet</p>'
-                }
-              </div>
-            `;
+                  )
+                  .join("")}
+
+                <h2 class="section-title">Shared Question Sets</h2>
+                <div class="card-grid">
+                  ${
+                    accessSets.length > 0
+                      ? accessSets
+                          .map(
+                            (dpp) => `
+                    <div class="card" onclick="openDPP('${dpp.id}')">
+                      <div class="card-title">${dpp.name}</div>
+                      <div class="card-subtitle">${(dpp.question_ids || []).length} Questions</div>
+                    </div>
+                  `,
+                          )
+                          .join("")
+                      : '<p style="color: var(--text-secondary);">No shared sets available yet</p>'
+                  }
+                </div>
+              `;
+        });
 
         // Load subjects for each exam
         for (const exam of currentExams) {
@@ -2294,8 +2787,8 @@
               container.innerHTML = subjects
                 .map(
                   (subject) => `
-                    <div class="card" onclick="selectSubject('${examId}', '${subject.id}')">
-                      <div class="card-title">${subject.id}</div>
+                    <div class="card" onclick="selectSubject('${examId}', '${subject.id}', '${subject.name || subject.id}')">
+                      <div class="card-title">${subject.name || subject.id}</div>
                     </div>
                   `,
                 )
@@ -2453,7 +2946,21 @@
       }
 
       function showProfile() {
+        saveViewState("profile");
+        setActiveNav("profile");
+        window.location.hash = "profile";
+
         const content = document.getElementById("mainContent");
+        const sidebar = document.getElementById("sidebar");
+        const examList = document.getElementById("examList");
+        const questionNavSidebar =
+          document.getElementById("questionNavSidebar");
+
+        sidebar.classList.remove("viewing-question");
+        content.classList.remove("viewing-question");
+        examList.style.display = "none";
+        questionNavSidebar.style.display = "none";
+
         content.innerHTML = `
               <h2 class="section-title">Profile</h2>
               <div class="card" style="max-width: 500px;">

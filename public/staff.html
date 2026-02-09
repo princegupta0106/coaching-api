@@ -124,6 +124,9 @@
         cursor: pointer;
         transition: background 0.2s;
         border-left: 3px solid transparent;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .nav-item:hover {
@@ -133,6 +136,37 @@
         background: rgba(102, 126, 234, 0.1);
         border-left-color: var(--accent-color);
         color: var(--accent-color);
+      }
+
+      .bottom-nav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        background: var(--bg-primary);
+        border-top: 1px solid var(--border-color);
+        justify-content: space-around;
+        align-items: center;
+        z-index: 200;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .bottom-nav .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 12px;
+        font-size: 12px;
+        border-left: none;
+      }
+
+      .nav-icon {
+        font-size: 20px;
       }
 
       .user-profile {
@@ -510,6 +544,28 @@
           flex-wrap: wrap;
         }
       }
+
+      @media (max-width: 720px) {
+        .sidebar {
+          display: none;
+        }
+
+        .main-content {
+          padding: 18px 14px 90px;
+        }
+
+        .page-title {
+          font-size: 22px;
+        }
+
+        .card {
+          padding: 18px;
+        }
+
+        .bottom-nav {
+          display: flex;
+        }
+      }
     </style>
   </head>
   <body>
@@ -520,19 +576,39 @@
       </div>
 
       <div class="nav-menu">
-        <div class="nav-item active" onclick="showView(event, 'questionSets')">
+        <div
+          class="nav-item active"
+          data-view="questionSets"
+          onclick="showView(event, 'questionSets')"
+        >
           <i class="fas fa-clipboard-list"></i> My Question Sets
         </div>
-        <div class="nav-item" onclick="showView(event, 'randomSets')">
+        <div
+          class="nav-item"
+          data-view="randomSets"
+          onclick="showView(event, 'randomSets')"
+        >
           <i class="fas fa-random"></i> Random Set Generator
         </div>
-        <div class="nav-item" onclick="showView(event, 'studentSets')">
+        <div
+          class="nav-item"
+          data-view="studentSets"
+          onclick="showView(event, 'studentSets')"
+        >
           <i class="fas fa-users"></i> Student Sets
         </div>
-        <div class="nav-item" onclick="showView(event, 'tests')">
+        <div
+          class="nav-item"
+          data-view="tests"
+          onclick="showView(event, 'tests')"
+        >
           <i class="fas fa-clipboard-check"></i> Tests
         </div>
-        <div class="nav-item" onclick="showView(event, 'upload')">
+        <div
+          class="nav-item"
+          data-view="upload"
+          onclick="showView(event, 'upload')"
+        >
           <i class="fas fa-upload"></i> Upload Question
         </div>
       </div>
@@ -548,6 +624,45 @@
     </div>
 
     <div class="main-content" id="mainContent"></div>
+
+    <div class="bottom-nav">
+      <div
+        class="nav-item active"
+        data-view="questionSets"
+        onclick="showView(null, 'questionSets')"
+      >
+        <div class="nav-icon"><i class="fas fa-clipboard-list"></i></div>
+        <div>Sets</div>
+      </div>
+      <div
+        class="nav-item"
+        data-view="randomSets"
+        onclick="showView(null, 'randomSets')"
+      >
+        <div class="nav-icon"><i class="fas fa-random"></i></div>
+        <div>Random</div>
+      </div>
+      <div
+        class="nav-item"
+        data-view="studentSets"
+        onclick="showView(null, 'studentSets')"
+      >
+        <div class="nav-icon"><i class="fas fa-users"></i></div>
+        <div>Students</div>
+      </div>
+      <div class="nav-item" data-view="tests" onclick="showView(null, 'tests')">
+        <div class="nav-icon"><i class="fas fa-clipboard-check"></i></div>
+        <div>Tests</div>
+      </div>
+      <div
+        class="nav-item"
+        data-view="upload"
+        onclick="showView(null, 'upload')"
+      >
+        <div class="nav-icon"><i class="fas fa-upload"></i></div>
+        <div>Upload</div>
+      </div>
+    </div>
 
     <!-- Modal for Sharing Question Sets -->
     <div class="modal" id="shareModal">
@@ -769,18 +884,23 @@
         }
       }
 
-      function showView(event, view) {
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
+
+      function setActiveNav(view) {
         document
           .querySelectorAll(".nav-item")
           .forEach((item) => item.classList.remove("active"));
 
-        if (event && event.target) {
-          // Find the closest nav-item
-          const navItem = event.target.closest(".nav-item");
-          if (navItem) {
-            navItem.classList.add("active");
-          }
-        }
+        document
+          .querySelectorAll(`.nav-item[data-view="${view}"]`)
+          .forEach((item) => item.classList.add("active"));
+      }
+
+      function showView(event, view) {
+        setActiveNav(view);
+        scrollToTop();
 
         if (view === "questionSets") showQuestionSetsView();
         else if (view === "randomSets") showRandomSetsView();
@@ -1204,6 +1324,22 @@
         }
       }
 
+      function toIstIso(value) {
+        if (!value) return null;
+        const normalized = value.length === 16 ? `${value}:00` : value;
+        const hasTimezone = /[zZ]|[+-]\d{2}:?\d{2}$/.test(normalized);
+        const withOffset = hasTimezone ? normalized : `${normalized}+05:30`;
+        const date = new Date(withOffset);
+        return Number.isNaN(date.getTime()) ? null : date.toISOString();
+      }
+
+      function formatIstDate(value) {
+        if (!value) return "Anytime";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "Anytime";
+        return date.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+      }
+
       async function createTest(event) {
         event.preventDefault();
 
@@ -1232,8 +1368,8 @@
               name,
               questionSetIds: selectedTestSetIds,
               durationMinutes,
-              startAt: startAtInput || null,
-              lastStartAt: lastStartAtInput || null,
+              startAt: toIstIso(startAtInput),
+              lastStartAt: toIstIso(lastStartAtInput),
             }),
           });
 
@@ -1289,7 +1425,7 @@
                   ${test.duration_minutes || 30} min • ${(test.question_ids || []).length} questions
                 </div>
                 <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
-                  Start: ${test.start_at || "Anytime"} • Last start: ${test.last_start_at || "Anytime"}
+                  Start: ${formatIstDate(test.start_at)} • Last start: ${formatIstDate(test.last_start_at)}
                 </div>
               </div>
               <div class="set-actions">

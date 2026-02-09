@@ -9,6 +9,61 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY,
 );
 
+function normalizeQuestion(question) {
+  const base = question.content || question;
+  const normalized = { id: question.id, ...base };
+
+  if (!normalized.subject_name && question.subject_name) {
+    normalized.subject_name = question.subject_name;
+  }
+  if (!normalized.subject && question.subject) {
+    normalized.subject = question.subject;
+  }
+  if (!normalized.exam && question.exam) {
+    normalized.exam = question.exam;
+  }
+  if (!normalized.chapter && question.chapter) {
+    normalized.chapter = question.chapter;
+  }
+
+  return normalized;
+}
+
+function uniqueArray(values) {
+  return [...new Set(values.filter(Boolean))];
+}
+
+// Load questions by IDs (used for bookmarks)
+router.post("/by-ids", verifyToken, async (req, res) => {
+  try {
+    const { questionIds = [] } = req.body;
+    if (!Array.isArray(questionIds) || questionIds.length === 0) {
+      return res.json({ questions: [] });
+    }
+
+    const ids = uniqueArray(questionIds);
+    const { data: questions, error } = await supabase
+      .from("questions")
+      .select("*")
+      .in("id", ids);
+
+    if (error) throw error;
+
+    const userInstitution = req.user.institution;
+    const filteredQuestions = (questions || []).filter((q) => {
+      const institutions = q.institutions || [];
+      return (
+        institutions.length === 0 || institutions.includes(userInstitution)
+      );
+    });
+
+    res.json({ questions: filteredQuestions.map(normalizeQuestion) });
+  } catch (error) {
+    console.error("Load questions by ids error:", error);
+    res.status(500).json({ error: "Failed to load questions" });
+  }
+});
+
 // Get only question IDs/metadata (fast - no file loading)
 router.get("/metadata/:setId", verifyToken, async (req, res) => {
   try {
@@ -59,10 +114,7 @@ router.get("/single/:questionId", verifyToken, async (req, res) => {
     }
 
     // Flatten the question data - merge content into root level
-    const flatQuestion = {
-      id: question.id,
-      ...(question.content || question),
-    };
+    const flatQuestion = normalizeQuestion(question);
 
     console.log(
       `[SINGLE] Found: ${questionId}, type: ${flatQuestion.question_type}`,
@@ -124,10 +176,7 @@ router.get("/load/:setId", verifyToken, async (req, res) => {
     }
 
     // Flatten all questions - merge content into root level
-    const flatQuestions = (questions || []).map((q) => ({
-      id: q.id,
-      ...(q.content || q),
-    }));
+    const flatQuestions = (questions || []).map(normalizeQuestion);
 
     const duration = Date.now() - startTime;
     console.log(

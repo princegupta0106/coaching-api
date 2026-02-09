@@ -17,7 +17,9 @@ router.get("/me", verifyToken, async (req, res) => {
   try {
     const { data: user, error } = await supabase
       .from("users")
-      .select("email, institution, role, access_sets, student_sets")
+      .select(
+        "email, institution, role, access_sets, student_sets, full_name, mobile_number, allowed_exams",
+      )
       .eq("email", req.user.email)
       .single();
 
@@ -33,6 +35,11 @@ router.get("/me", verifyToken, async (req, res) => {
 router.post("/register", async (req, res) => {
   try {
     const { email, password, institution, role = "student" } = req.body;
+    const fullName = req.body.fullName || null;
+    const mobileNumber = req.body.mobileNumber || null;
+    const allowedExams = Array.isArray(req.body.allowedExams)
+      ? req.body.allowedExams
+      : [];
 
     if (!email || !password || !institution) {
       return res
@@ -71,7 +78,17 @@ router.post("/register", async (req, res) => {
     // Create user
     const { data, error } = await supabase
       .from("users")
-      .insert([{ email, password, institution, role }])
+      .insert([
+        {
+          email,
+          password,
+          institution,
+          role,
+          full_name: fullName,
+          mobile_number: mobileNumber,
+          allowed_exams: allowedExams,
+        },
+      ])
       .select()
       .single();
 
@@ -118,6 +135,9 @@ router.post("/register", async (req, res) => {
         email: data.email,
         institution: data.institution,
         role: data.role,
+        full_name: data.full_name,
+        mobile_number: data.mobile_number,
+        allowed_exams: data.allowed_exams || [],
       },
     });
   } catch (error) {
@@ -136,7 +156,9 @@ router.post("/login", async (req, res) => {
 
     const { data: user, error } = await supabase
       .from("users")
-      .select("*")
+      .select(
+        "email, institution, role, full_name, mobile_number, allowed_exams, password",
+      )
       .eq("email", email)
       .eq("password", password)
       .single();
@@ -161,6 +183,9 @@ router.post("/login", async (req, res) => {
         email: user.email,
         institution: user.institution,
         role: user.role,
+        full_name: user.full_name,
+        mobile_number: user.mobile_number,
+        allowed_exams: user.allowed_exams || [],
       },
     });
   } catch (error) {
